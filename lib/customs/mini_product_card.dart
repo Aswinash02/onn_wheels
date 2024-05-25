@@ -49,8 +49,8 @@ class _MiniProductCardState extends State<MiniProductCard> {
                       //   fit: BoxFit.cover,
                       // ),
                       child: Image.network(
-                        widget.product.image!,
-                        fit: BoxFit.cover,
+                        "https://onnwheels.com/storage/app/public/product/${widget.product.image!}",
+                        fit: BoxFit.fill,
                       ),
                     ),
                   ),

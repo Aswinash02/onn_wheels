@@ -79,28 +79,28 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.only(left: 8.0),
           child: Row(
             children: [
-              Obx(
-                () => DropdownButton<String>(
-                  // Value will hold the selected city
-                  value: homeController.selectedCity.value.isEmpty
-                      ? null
-                      : homeController.selectedCity.value,
-                  // Called when the user selects an item
-                  onChanged: (String? newValue) {
-                    if (newValue != null) {
-                      homeController.selectCity(newValue);
-                    }
-                  },
-                  // Map each city to a DropdownMenuItem
-                  items: homeController.tamilNaduCities
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ),
-              ),
+              // Obx(
+              //   () => DropdownButton<String>(
+              //     // Value will hold the selected city
+              //     value: homeController.selectedCity.value.isEmpty
+              //         ? null
+              //         : homeController.selectedCity.value,
+              //     // Called when the user selects an item
+              //     onChanged: (String? newValue) {
+              //       if (newValue != null) {
+              //         homeController.selectCity(newValue);
+              //       }
+              //     },
+              //     // Map each city to a DropdownMenuItem
+              //     items: homeController.tamilNaduCities
+              //         .map<DropdownMenuItem<String>>((String value) {
+              //       return DropdownMenuItem<String>(
+              //         value: value,
+              //         child: Text(value),
+              //       );
+              //     }).toList(),
+              //   ),
+              // ),
               TextButton(
                 onPressed: () {
                   Get.to(

@@ -50,6 +50,7 @@ dependencies:
   geocoding:
   dotted_border:
   image_picker:
+  shared_preferences:
   flutter_staggered_grid_view:
   flutter_localizations:
     sdk: flutter
