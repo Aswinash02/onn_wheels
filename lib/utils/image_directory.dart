@@ -4,7 +4,7 @@ class ImageDirectory{
   static const String splashScreenBackground = 'assets/splash_login_registration_background_image.png';
   //home page images
   static const String homeIconImage = 'assets/home.png';
-  static const String bikesIconImage = 'assets/bike_image.png';
+  static const String bikesIconImage = 'assets/categories.png';
   static const String cartIconImage = 'assets/cart.png';
   static const String notificationIconImage = 'assets/bell.png';
   static const String profileIconImage = 'assets/profile.png';

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:onnwheels/views/bikedetails/bike_details.dart';
 import 'package:onnwheels/views/verification/verification_page.dart';
 import 'package:onnwheels/views/zone_areas/zone_list.dart';
 
@@ -6,7 +7,7 @@ class Routes {
   static String mainPage = '/';
   static String verification = '/verification';
   static String zonePage = '/zonePage';
-  static String flashDeal = '/flashDeal';
+  static String bikeDetails = '/bikeDetails';
   static String subCategory = '/subcategory';
   static String wishlist = '/wishlist';
   static String orders = '/orders';
@@ -34,6 +35,7 @@ class Routes {
 }
 
 List<GetPage<dynamic>>? getPages = [
+
   GetPage(
     name: Routes.zonePage,
     page: () => const ZoneAreasPage(),
@@ -41,5 +43,9 @@ List<GetPage<dynamic>>? getPages = [
   GetPage(
     name: Routes.verification,
     page: () => const VerificationFlowPage(),
+  ),
+  GetPage(
+    name: Routes.bikeDetails,
+    page: () => const BikeDetailsPage(id: 0),
   ),
 ];

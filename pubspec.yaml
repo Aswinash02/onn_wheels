@@ -51,7 +51,9 @@ dependencies:
   dotted_border:
   image_picker:
   shared_preferences:
+  carousel_slider:
   flutter_staggered_grid_view:
+  flutter_datetime_picker_plus:
   flutter_localizations:
     sdk: flutter
 

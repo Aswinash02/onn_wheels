@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:one_context/one_context.dart';
+import 'package:onnwheels/views/categories/categories.dart';
 import '../../mytheme.dart';
 import '../../utils/image_directory.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../utils/shared_value.dart';
-import '../all_bikes/all_bikes.dart';
 import '../home/home_page.dart';
 import '../profile/profile_page.dart';
 import '../wishlist/wishlist.dart';
@@ -29,7 +29,7 @@ class _MainPageState extends State<MainPage> {
   int _currentIndex = 0;
   var bottomPages = [
     const HomePage(),
-    const AllBikesPage(),
+    const CategoriesPage(),
     const WishListPage(),
     const ProfilePage()
   ];
@@ -127,7 +127,7 @@ class _MainPageState extends State<MainPage> {
                   color: MyTheme.accent_color,
                   fontSize: 12),
               unselectedLabelStyle: const TextStyle(
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w400,
                   color: MyTheme.black,
                   fontSize: 12),
               items: [
@@ -142,7 +142,8 @@ class _MainPageState extends State<MainPage> {
                         height: 16,
                       ),
                     ),
-                    label: AppLocalizations.of(context)!.home_ucf),
+                    label: AppLocalizations.of(context)!.home_ucf,
+                ),
                 BottomNavigationBarItem(
                   icon: Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
@@ -154,7 +155,7 @@ class _MainPageState extends State<MainPage> {
                       height: 16,
                     ),
                   ),
-                  label: AppLocalizations.of(context)!.all_bikes,
+                  label: AppLocalizations.of(context)!.categories_ucf,
                 ),
                 BottomNavigationBarItem(
                     icon: Padding(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:onnwheels/views/bikedetails/bike_details.dart';
 
 import '../models/all_bike_response.dart';
 import '../mytheme.dart';
@@ -27,7 +28,13 @@ class _MiniProductCardState extends State<MiniProductCard> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Get.to(
+          () => BikeDetailsPage(
+            id: widget.product.id!,
+          ),
+        );
+      },
       child: Container(
         width: 145,
         decoration: BoxDecorations.buildBoxDecoration_2(),
@@ -93,7 +100,6 @@ class _MiniProductCardState extends State<MiniProductCard> {
                             fontWeight: FontWeight.w700),
                       ),
                     ),
-
                   ],
                 ),
                 Padding(
