@@ -1,25 +1,25 @@
 
+import 'package:onnwheels/models/login_response_model.dart';
+
 import '../utils/shared_value.dart';
 
 class AuthHelper {
-  // setUserData(LoginResponse loginResponse) {
-  //   if (loginResponse.result == true) {
-      // SystemConfig.systemUser= loginResponse.user;
-      // is_logged_in.$ = true;
-      // is_logged_in.save();
-      // access_token.$ = loginResponse.access_token;
-      // access_token.save();
-      // user_id.$ = loginResponse.user?.id;
-      // user_id.save();
-      // user_name.$ = loginResponse.user?.name;
-      // user_name.save();
-      // user_email.$ = loginResponse.user?.email??"";
-      // user_email.save();
-      // user_phone.$ = loginResponse.user?.phone??"";
-      // user_phone.save();
-      // avatar_original.$ = loginResponse.user?.avatar_original;
-      // avatar_original.save();
-    // }
+  setUserData(LoginResponse loginResponse) {
+      if (loginResponse.token != '') {
+          is_logged_in.$ = true;
+          is_logged_in.save();
+          access_token.$ = loginResponse.token;
+          access_token.save();
+          user_id.$ = loginResponse.user?.id;
+          user_id.save();
+          user_name.$ = loginResponse.user?.fName;
+          user_name.save();
+          user_email.$ = loginResponse.user?.email ?? "";
+          user_email.save();
+          user_phone.$ = loginResponse.user?.phone ?? "";
+          user_phone.save();
+      }
+  }
   }
 
   clearUserData() {

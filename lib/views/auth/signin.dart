@@ -1,24 +1,21 @@
 import 'dart:convert';
-import 'dart:io' show Platform;
 import 'dart:math';
-// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:onnwheels/helpers/auth_helper.dart';
+import 'package:onnwheels/models/login_response_model.dart';
 import 'package:onnwheels/views/auth/password_forgot.dart';
 import 'package:onnwheels/views/auth/phone_login.dart';
 import 'package:onnwheels/views/auth/signup.dart';
 import '../../customs/auth_ui.dart';
-import '../../customs/intl_phone_input.dart';
 import '../../helpers/validator_helper.dart';
 import '../../mytheme.dart';
 import '../../repositories/auth_repositories.dart';
 import '../../utils/app_config.dart';
 import '../../utils/btn_elements.dart';
 import '../../utils/shared_value.dart';
-import '../main_page/main_page.dart';
 import 'components/input_decorations.dart';
 import 'package:crypto/crypto.dart';
 
@@ -70,52 +67,10 @@ class _LoginState extends State<Login> {
     // Loading.show(context);
     var email = _emailController.text.toString();
     var password = _passwordController.text.toString();
-    var loginResponse = await AuthRepository().getLoginResponse(
+    LoginResponse loginResponse = await AuthRepository().getLoginResponse(
         _login_by == 'email' ? email : _phone, password,);
     // Loading.close();
-    // if (loginResponse.result == false) {
-    //   if (loginResponse.message.runtimeType == List) {
-    //     ToastComponent.showDialog(loginResponse.message!.join("\n"),
-    //         gravity: Toast.center, duration: 3);
-    //     return;
-    //   }
-    //   ToastComponent.showDialog(loginResponse.message!.toString(),
-    //       gravity: Toast.center, duration: Toast.lengthLong);
-    // } else {
-    //   ToastComponent.showDialog(loginResponse.message!,
-    //       gravity: Toast.center, duration: Toast.lengthLong);
-    //   AuthHelper().setUserData(loginResponse);
-    //   // push notification starts
-    //   // if (OtherConfig.USE_PUSH_NOTIFICATION) {
-    //   //   final FirebaseMessaging fcm = FirebaseMessaging.instance;
-    //   //
-    //   //   await fcm.requestPermission(
-    //   //     alert: true,
-    //   //     announcement: false,
-    //   //     badge: true,
-    //   //     carPlay: false,
-    //   //     criticalAlert: false,
-    //   //     provisional: false,
-    //   //     sound: true,
-    //   //   );
-    //   //
-    //   //   String? fcmToken = await fcm.getToken();
-    //   //
-    //   //   if (fcmToken != null) {
-    //   //     print("--fcm token--");
-    //   //     if (is_logged_in.$ == true) {
-    //   //       // update device token
-    //   //       var deviceTokenUpdateResponse = await ProfileRepository()
-    //   //           .getDeviceTokenUpdateResponse(fcmToken);
-    //   //     }
-    //   //   }
-    //   // }
-    //
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) {
-      return MainPage();
-    }), (newRoute) => false);
-    //
-    // }
+    AuthHelper().setUserData(loginResponse);
   }
 
   // onPressedFacebookLogin() async {

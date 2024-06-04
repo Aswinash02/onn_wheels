@@ -36,25 +36,27 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
           title: AppLocalizations.of(context)!.bike_details_ucf,
           backgroundColor: MyTheme.white,
           setLeading: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Get.back();
+            },
             icon: Icon(Icons.arrow_back, color: MyTheme.black),
           ),
           textColor: MyTheme.black),
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        physics: BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Obx(
-            // ()=> Image(
-            //     image: NetworkImage("https://onnwheels.com/storage/app/public/product/${bikeDetailsController.imageFile.value}"),
-            //   ),
-            // ),
-            BikeDetailWidgets.buildProductSliderImageSection(
+            Obx(
+              () => BikeDetailWidgets.buildProductSliderImageSection(
                 productImageList: bikeDetailsController.bikeImageResponse,
                 carouselController: bikeDetailsController.carouselController,
                 currentImage: bikeDetailsController.currentImage.value,
-                controller: bikeDetailsController),
+                controller: bikeDetailsController,
+              ),
+            ),
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),

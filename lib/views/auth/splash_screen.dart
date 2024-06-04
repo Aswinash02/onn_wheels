@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:onnwheels/helpers/auth_helper.dart';
 import 'package:onnwheels/utils/app_config.dart';
+import 'package:onnwheels/utils/shared_preference.dart';
 import 'package:onnwheels/utils/shared_value.dart';
 import 'package:onnwheels/views/auth/signin.dart';
+import 'package:onnwheels/views/main_page/main_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -12,29 +14,36 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   @override
   void initState() {
     super.initState();
-    getSharedValueHelperData().then((value) {
-      // Future.delayed(const Duration(seconds: 3)).then((value) async {
-      //   final isLogged = await SharedPreference().getLogin();
-      //   if (isLogged) {
-      //     Navigator.pushReplacement(context,
-      //         MaterialPageRoute(builder: (context) => DashBoardTabBar()));
-      //   } else {
-      //     Navigator.pushAndRemoveUntil(
-      //       context,
-      //       MaterialPageRoute(
-      //         builder: (context) {
-      //           return Login();
-      //         },
-      //       ),
-      //           (route) => false,
-      //     );
-      //   }
-      // });
-    });
+    getSharedValueHelperData().then(
+      (value) {
+        Future.delayed(const Duration(seconds: 3)).then(
+          (value) async {
+            final isLogged = await SharedPreference().getLogin();
+            if (isLogged) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MainPage(),
+                ),
+              );
+            } else {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return Login();
+                  },
+                ),
+                (route) => false,
+              );
+            }
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -62,9 +71,6 @@ class _SplashScreenState extends State<SplashScreen> {
     await app_mobile_language.load();
     await app_language_rtl.load();
     await system_currency.load();
-    // Provider.of<CurrencyPresenter>(context, listen: false).fetchListData();
-    // print("new splash screen ${app_mobile_language.$}");
-    // print("new splash screen app_language_rtl ${app_language_rtl.$}");
     return app_mobile_language.$;
   }
 }
