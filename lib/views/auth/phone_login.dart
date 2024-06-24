@@ -320,11 +320,10 @@ class _PhoneLoginState extends State<PhoneLogin> {
                             gravity: Toast.center,
                             duration: Toast.lengthLong);
                       } else {
-                        // var optResponseData =
-                        // await AuthRepository().getOtpMobile(
-                        //   phoneNumber:
-                        //   _phoneNumberController.text.trim().toString(),
-                        // );
+                        var optResponseData =
+                        await AuthRepository().getLoginResponsePhone(
+                          _phoneNumberController.text.trim().toString(),
+                        );
                         Future.delayed(Duration(seconds: 2), sendOtp());
                       }
                     },
@@ -342,7 +341,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
                   color: MyTheme.amber,
                   shape: RoundedRectangleBorder(
                       borderRadius:
-                          const BorderRadius.all(Radius.circular(6.0))),
+                          const BorderRadius.all(Radius.circular(6.0),),),
                   child: Text(
                     AppLocalizations.of(context)!.or_login_with_an_email,
                     style: TextStyle(
