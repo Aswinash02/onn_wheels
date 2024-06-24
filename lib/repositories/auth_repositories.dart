@@ -81,7 +81,7 @@ class AuthRepository {
 
     String url = ("${AppConfig.BASE_URL}/auth/verify-phone");
     print(url);
-    print(post_body);
+    print("Post Body Confirm Code ${post_body}");
     final response = await ApiHelper.post(
         url: url,
         headers: {
@@ -90,8 +90,32 @@ class AuthRepository {
           "Authorization": "Bearer ${access_token.$}",
         },
         body: post_body);
-    print(response.body);
+    print("confirm Code RESPONSE bODY============>${response.body}");
 
     // return confirmCodeResponseFromJson(response.body);
+  }
+
+  Future getLoginResponsePhone(
+      String? phone,
+      ) async {
+    var post_body = jsonEncode({"phone": "$phone"});
+
+    String url = ("${AppConfig.BASE_URL}/auth/login");
+    final response = await ApiHelper.post(
+        url: url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: post_body);
+    // if (response.statusCode == 200) {
+    //   print("status 200");
+    //   SharedPreference().setLogin(true);
+    //   Get.offAll(() => MainPage());
+    //   return loginResponseFromJson(response.body);
+    // } else if (response.statusCode == 401) {
+    //   print("status 401");
+    //   ToastComponent.showDialog('Unauthorized',
+    //       gravity: Toast.center, duration: Toast.lengthLong);
+    // }
   }
 }

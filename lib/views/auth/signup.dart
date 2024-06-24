@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:onnwheels/customs/loading_class.dart';
 import 'package:onnwheels/helpers/validator_helper.dart';
 import 'package:onnwheels/views/auth/signin.dart';
 import '../../customs/auth_ui.dart';
@@ -66,8 +67,7 @@ class _RegistrationState extends State<Registration> {
   }
 
   onPressSignUp() async {
-    // Loading.show(context);
-    //
+    Loading.show(context);
     var name = _nameController.text.toString();
     var email = _emailController.text.toString();
     var phone = _phoneNumberController.text.toString();
@@ -80,6 +80,7 @@ class _RegistrationState extends State<Registration> {
       password,
       // googleRecaptchaKey
     );
+    Loading.close();
   }
 
   @override

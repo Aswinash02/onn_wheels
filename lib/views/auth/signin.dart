@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:onnwheels/customs/loading_class.dart';
 import 'package:onnwheels/helpers/auth_helper.dart';
 import 'package:onnwheels/models/login_response_model.dart';
 import 'package:onnwheels/views/auth/password_forgot.dart';
@@ -64,12 +65,12 @@ class _LoginState extends State<Login> {
   }
 
   onPressedLogin() async {
-    // Loading.show(context);
+    Loading.show(context);
     var email = _emailController.text.toString();
     var password = _passwordController.text.toString();
     LoginResponse loginResponse = await AuthRepository().getLoginResponse(
         _login_by == 'email' ? email : _phone, password,);
-    // Loading.close();
+    Loading.close();
     AuthHelper().setUserData(loginResponse);
   }
 

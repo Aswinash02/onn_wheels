@@ -146,7 +146,7 @@ class _OtpState extends State<Otp> {
                         Padding(
                           padding: EdgeInsets.only(bottom: 15),
                           child: Text(
-                            "Enter the 6-digit verification code send to your email address.",
+                            "Enter the 4-digit verification code send to your email address.",
                             style: TextStyle(
                                 fontSize: 12, color: MyTheme.grey_153),
                           ),

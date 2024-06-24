@@ -216,7 +216,7 @@ class _ProfilePageState extends State<ProfilePage> {
     // AuthHelper().clearUserData();
 
     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) {
-      return MainPage();
+      return Login();
     }), (route) => false);
   }
 
