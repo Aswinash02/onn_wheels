@@ -16,6 +16,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   HomeController homeController = Get.put(HomeController());
+  // final HomeController homeController = Get.find();
   TextEditingController dateCtl1 = TextEditingController();
   TextEditingController dateCtl2 = TextEditingController();
   TextEditingController timeCtl1 = TextEditingController();

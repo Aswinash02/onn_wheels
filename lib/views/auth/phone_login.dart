@@ -151,19 +151,6 @@ class _PhoneLoginState extends State<PhoneLogin> {
           },
         ),
         actions: [
-          // TextButton(
-          //   child: Text(
-          //     "Send OTP",
-          //     style: TextStyle(color: MyTheme.cinnabar),
-          //   ),
-          //   onPressed: () async {
-          //     // var deliveryStatusChangeResponse =
-          //     // await DeliveryRepository().getDeliveryOtpResponse(
-          //     //     status: "delivered",
-          //     //     order_id: order_id,
-          //     //     otp: otpPin);
-          //   },
-          // ),
           TextButton(
             child: Text(
               AppLocalizations.of(context)!.close_ucf,
@@ -184,11 +171,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
             ),
             onPressed: () async {
               print("otp cehvk ${_verificationController}");
-              // var getLoginResponse = await AuthRepository().loginUsingOTP(
-              //     phoneNumber: _phoneNumberController.text.toString(),
-              //     otp: otpPin.toString());
               Navigator.of(_).pop();
-              // AuthHelper().setUserData(getLoginResponse);
               onPressConfirm();
 
               // onConfirmMarkDelivered(order_id);

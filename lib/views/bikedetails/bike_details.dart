@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:onnwheels/controllers/bike_details_controller.dart';
+import 'package:onnwheels/models/bike_details.dart';
 import 'package:onnwheels/mytheme.dart';
 import 'package:onnwheels/views/bikedetails/components/bike_details_widgets.dart';
 import 'package:onnwheels/views/bikedetails/components/date_time_picker.dart';
 import 'package:onnwheels/views/bikedetails/components/toggle_switch.dart';
 import 'package:onnwheels/views/main_page/components/custom_appbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:onnwheels/views/payment/checkout_page.dart';
 
 import 'components/text_widget.dart';
 
@@ -229,24 +231,6 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                   InkWell(
                     onTap: () {
                       dateTimeRangeBottomSheet(context);
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => DateTimeRangePicker()));
-
-                      // DatePicker.showDateTimePicker(
-                      //   context,
-                      //   showTitleActions: true,
-                      //   onConfirm: (date) {
-                      //     setState(() {
-                      //       print('date  $date');
-                      //     });
-                      //   },
-                      //   currentTime: DateTime.now(),
-                      // );
-                      // setState(() async {
-                      //   await bikeDetailsController.dateTimePicker(context);
-                      // });
                     },
                     child: Container(
                       height: 40,
@@ -267,51 +251,107 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 20,
+                  Obx(
+                    () => bikeDetailsController
+                            .stationDropdownItems.value.isNotEmpty
+                        ? SizedBox(
+                            height: 20,
+                          )
+                        : SizedBox(),
                   ),
-                  CustomText(text: 'Available At'),
+                  Obx(
+                    () => bikeDetailsController
+                            .stationDropdownItems.value.isNotEmpty
+                        ? CustomText(text: 'Available At')
+                        : SizedBox(),
+                  ),
                   SizedBox(
                     height: 5,
                   ),
                   Obx(
-                    () => SizedBox(
-                      height: 40,
-                      child: DropdownButtonFormField<String>(
-                        value: bikeDetailsController.selectedValue.value,
-                        style: TextStyle(color: Colors.black),
-                        onChanged:
-                            bikeDetailsController.onChangeAvailableDropdown,
-                        padding: EdgeInsets.all(0),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(8),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        items: bikeDetailsController.dropdownItems.map((item) {
-                          return DropdownMenuItem(
-                            value: item,
-                            child: Text(item),
-                          );
-                        }).toList(),
-                      ),
-                    ),
+                    () => bikeDetailsController
+                            .stationDropdownItems.value.isNotEmpty
+                        ? SizedBox(
+                            height: 40,
+                            child: DropdownButtonFormField<Stations>(
+                              value:
+                                  bikeDetailsController.selectedStation.value,
+                              style: TextStyle(color: Colors.black),
+                              onChanged: bikeDetailsController
+                                  .onChangeAvailableDropdown,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(8),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                disabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              items: bikeDetailsController.dropdownItems,
+                            ),
+                          )
+                        : SizedBox(),
                   ),
+                  // Obx(
+                  //   () => SizedBox(
+                  //     height: 40,
+                  //     child: DropdownButtonFormField<String>(
+                  //       value: bikeDetailsController.selectedValue.value,
+                  //       style: TextStyle(color: Colors.black),
+                  //       onChanged:
+                  //           bikeDetailsController.onChangeAvailableDropdown,
+                  //       padding: EdgeInsets.all(0),
+                  //       decoration: InputDecoration(
+                  //         contentPadding: EdgeInsets.all(8),
+                  //         border: OutlineInputBorder(
+                  //           borderRadius: BorderRadius.circular(10),
+                  //         ),
+                  //         enabledBorder: OutlineInputBorder(
+                  //           borderRadius: BorderRadius.circular(10),
+                  //         ),
+                  //         disabledBorder: OutlineInputBorder(
+                  //           borderRadius: BorderRadius.circular(10),
+                  //         ),
+                  //         focusedBorder: OutlineInputBorder(
+                  //           borderRadius: BorderRadius.circular(10),
+                  //         ),
+                  //       ),
+                  //       items: bikeDetailsController.stationDropdownItems.map((item) {
+                  //         return DropdownMenuItem(
+                  //           value: item,
+                  //           child: Text(item),
+                  //         );
+                  //       }).toList(),
+                  //     ),
+                  //   ),
+                  // ),
                   SizedBox(
                     height: 30,
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      print("called onTAP");
+                      Get.to(
+                            () => CheckoutPage(
+                          imageUrl: bikeDetailsController.imageFile.value,
+                          startTime: bikeDetailsController.startDateTime.value,
+                          endTime: bikeDetailsController.endDateTime.value,
+                          station: bikeDetailsController.selectedStation.value!.name!,
+                          totalPayableAmount: bikeDetailsController.price.toString(),
+                          lat: bikeDetailsController.selectedStation.value!.lat!,
+                          long: bikeDetailsController.selectedStation.value!.lon!,
+                          name: bikeDetailsController.bikeTitle.value,
+                        ),
+                      );
+
+                    },
                     child: Container(
                       width: screenWidth,
                       height: 40,

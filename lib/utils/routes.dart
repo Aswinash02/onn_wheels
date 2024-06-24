@@ -1,5 +1,9 @@
 import 'package:get/get.dart';
+import 'package:onnwheels/binding/home_binding.dart';
 import 'package:onnwheels/views/bikedetails/bike_details.dart';
+import 'package:onnwheels/views/home/home_page.dart';
+import 'package:onnwheels/views/main_page/main_page.dart';
+import 'package:onnwheels/views/payment/checkout_page.dart';
 import 'package:onnwheels/views/verification/verification_page.dart';
 import 'package:onnwheels/views/zone_areas/zone_list.dart';
 
@@ -9,6 +13,7 @@ class Routes {
   static String zonePage = '/zonePage';
   static String bikeDetails = '/bikeDetails';
   static String subCategory = '/subcategory';
+  static String home = '/home';
   static String wishlist = '/wishlist';
   static String orders = '/orders';
   static String address = '/address';
@@ -35,11 +40,14 @@ class Routes {
 }
 
 List<GetPage<dynamic>>? getPages = [
-
   GetPage(
     name: Routes.zonePage,
     page: () => const ZoneAreasPage(),
   ),
+  // GetPage(
+  //   name: Routes.checkout,
+  //   // page: () => CheckoutPage(),
+  // ),
   GetPage(
     name: Routes.verification,
     page: () => const VerificationFlowPage(),

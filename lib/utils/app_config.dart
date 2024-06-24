@@ -5,8 +5,8 @@ class AppConfig {
       "@OnnWheels.com " + this_year; //this shows in the splash screen
   static String app_name = "OnnWheels";
 
-  static String razorPayKey = '';
-  static String razorPaySecret = '';
+  static String razorPayKey = 'rzp_test_zc8jGjJQG6oyYw';
+  static String razorPaySecret = 'mXL8TIhBaTCYv0NNevMAPm3U';
 
   static String purchase_code =
       ""; //enter your purchase code for the app from codecanyon

@@ -107,15 +107,16 @@ class AuthRepository {
           "Content-Type": "application/json",
         },
         body: post_body);
-    // if (response.statusCode == 200) {
-    //   print("status 200");
-    //   SharedPreference().setLogin(true);
-    //   Get.offAll(() => MainPage());
-    //   return loginResponseFromJson(response.body);
-    // } else if (response.statusCode == 401) {
-    //   print("status 401");
-    //   ToastComponent.showDialog('Unauthorized',
-    //       gravity: Toast.center, duration: Toast.lengthLong);
-    // }
+    if (response.statusCode == 200) {
+      print("status 200");
+      print("response body phone otp======>${response.body}");
+      // SharedPreference().setLogin(true);
+      // Get.offAll(() => MainPage());
+      return loginResponseFromJson(response.body);
+    } else if (response.statusCode == 401) {
+      print("status 401");
+      ToastComponent.showDialog('Unauthorized',
+          gravity: Toast.center, duration: Toast.lengthLong);
+    }
   }
 }
