@@ -54,6 +54,9 @@ dependencies:
   carousel_slider:
   flutter_staggered_grid_view:
   flutter_datetime_picker_plus:
+  flutter_datetime_picker: ^1.5.1
+  syncfusion_flutter_datepicker: ^20.1.55
+  toggle_switch: ^2.3.0
   flutter_localizations:
     sdk: flutter
 

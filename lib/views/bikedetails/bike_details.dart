@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:onnwheels/controllers/bike_details_controller.dart';
 import 'package:onnwheels/mytheme.dart';
 import 'package:onnwheels/views/bikedetails/components/bike_details_widgets.dart';
+import 'package:onnwheels/views/bikedetails/components/date_time_picker.dart';
+import 'package:onnwheels/views/bikedetails/components/toggle_switch.dart';
 import 'package:onnwheels/views/main_page/components/custom_appbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -26,6 +30,110 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
     // TODO: implement initState
     bikeDetailsController.fetchProductDetailsData(id: widget.id);
     super.initState();
+  }
+
+  // Future<void> dateTimeRangeBottomSheet(BuildContext context) {
+  //   DateTime? _startDateTime;
+  //   DateTime? _endDateTime;
+  //   return showModalBottomSheet(
+  //     context: context,
+  //     isScrollControlled: true,
+  //     builder: (BuildContext context) {
+  //       return Padding(
+  //         padding: const EdgeInsets.all(16.0),
+  //         child: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             SfDateRangePicker(
+  //               onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
+  //                 setState(() {
+  //                   if (args.value is PickerDateRange) {
+  //
+  //                     _startDateTime = args.value.startDate;
+  //                     _endDateTime = args.value.endDate;
+  //                     print('_startDateTime $_startDateTime');
+  //                     print('_endDateTime $_endDateTime');
+  //                   }
+  //                 });
+  //               },
+  //               selectionMode: DateRangePickerSelectionMode.range,
+  //             ),
+  //             SizedBox(height: 20),
+  //             ElevatedButton(
+  //               onPressed: _startDateTime == null
+  //                   ? null
+  //                   : () {
+  //                       DatePicker.showTimePicker(
+  //                         context,
+  //                         showTitleActions: true,
+  //                         onConfirm: (time) {
+  //                           setState(() {
+  //                             _startDateTime = DateTime(
+  //                               _startDateTime!.year,
+  //                               _startDateTime!.month,
+  //                               _startDateTime!.day,
+  //                               time.hour,
+  //                               time.minute,
+  //                             );
+  //                           });
+  //                         },
+  //                         currentTime: DateTime.now(),
+  //                       );
+  //                     },
+  //               child: Text('Select Start Time'),
+  //             ),
+  //             SizedBox(height: 10),
+  //             ElevatedButton(
+  //               onPressed: _endDateTime == null
+  //                   ? null
+  //                   : () {
+  //                       DatePicker.showTimePicker(
+  //                         context,
+  //                         showTitleActions: true,
+  //                         onConfirm: (time) {
+  //                           setState(() {
+  //                             _endDateTime = DateTime(
+  //                               _endDateTime!.year,
+  //                               _endDateTime!.month,
+  //                               _endDateTime!.day,
+  //                               time.hour,
+  //                               time.minute,
+  //                             );
+  //                           });
+  //                         },
+  //                         currentTime: DateTime.now(),
+  //                       );
+  //                     },
+  //               child: Text('Select End Time'),
+  //             ),
+  //             SizedBox(height: 20),
+  //             Text(
+  //               'Selected Start DateTime: ${_startDateTime?.toString() ?? 'Not selected'}',
+  //             ),
+  //             Text(
+  //               'Selected End DateTime: ${_endDateTime?.toString() ?? 'Not selected'}',
+  //             ),
+  //             SizedBox(height: 20),
+  //             ElevatedButton(
+  //               onPressed: () {
+  //                 Navigator.pop(context);
+  //               },
+  //               child: Text('Done'),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
+  Future<void> dateTimeRangeBottomSheet(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return DateTimeRangePicker();
+      },
+    );
   }
 
   @override
@@ -114,11 +222,31 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                   SizedBox(
                     height: 10,
                   ),
+                  toggleSwitch(),
+                  SizedBox(
+                    height: 10,
+                  ),
                   InkWell(
                     onTap: () {
-                      setState(() async {
-                        await bikeDetailsController.dateTimePicker(context);
-                      });
+                      dateTimeRangeBottomSheet(context);
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => DateTimeRangePicker()));
+
+                      // DatePicker.showDateTimePicker(
+                      //   context,
+                      //   showTitleActions: true,
+                      //   onConfirm: (date) {
+                      //     setState(() {
+                      //       print('date  $date');
+                      //     });
+                      //   },
+                      //   currentTime: DateTime.now(),
+                      // );
+                      // setState(() async {
+                      //   await bikeDetailsController.dateTimePicker(context);
+                      // });
                     },
                     child: Container(
                       height: 40,
@@ -128,8 +256,54 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: Center(
-                        child:
-                            Text(bikeDetailsController.dateTimeCon.text ?? ''),
+                        child: Obx(
+                          () => CustomText(
+                            text: bikeDetailsController.startDateTime == ''
+                                ? "Select Date And Time"
+                                : "${bikeDetailsController.startDateTime} - ${bikeDetailsController.endDateTime}",
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  CustomText(text: 'Available At'),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Obx(
+                    () => SizedBox(
+                      height: 40,
+                      child: DropdownButtonFormField<String>(
+                        value: bikeDetailsController.selectedValue.value,
+                        style: TextStyle(color: Colors.black),
+                        onChanged:
+                            bikeDetailsController.onChangeAvailableDropdown,
+                        padding: EdgeInsets.all(0),
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(8),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          disabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        items: bikeDetailsController.dropdownItems.map((item) {
+                          return DropdownMenuItem(
+                            value: item,
+                            child: Text(item),
+                          );
+                        }).toList(),
                       ),
                     ),
                   ),
@@ -152,7 +326,7 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             )
