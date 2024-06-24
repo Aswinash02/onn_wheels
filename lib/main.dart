@@ -7,6 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:onnwheels/utils/routes.dart';
 import 'package:onnwheels/utils/themes.dart';
 import 'package:onnwheels/views/auth/signin.dart';
+import 'package:onnwheels/views/auth/splash_screen.dart';
 import 'package:shared_value/shared_value.dart';
 
 void main() {
@@ -52,7 +53,7 @@ class MyApp extends StatelessWidget {
       ],
       initialRoute: Routes.mainPage,
       getPages: getPages,
-      home: Login(),
+      home: SplashScreen(),
     );
   }
 }
