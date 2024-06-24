@@ -17,44 +17,76 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    getSharedValueHelperData().then(
-      (value) {
-        Future.delayed(const Duration(seconds: 3)).then(
-          (value) async {
-            final isLogged = await SharedPreference().getLogin();
-            if (isLogged) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MainPage(),
-                ),
-              );
-            } else {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return Login();
-                  },
-                ),
-                (route) => false,
-              );
-            }
-          },
+    Future.delayed(Duration(seconds: 2), () async {
+      bool isLoggedIn = await SharedPreference().getLogin();
+      if (isLoggedIn) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MainPage(),
+          ),
         );
-      },
-    );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return Login();
+            },
+          ),
+        );
+      }
+    });
+
+    // getSharedValueHelperData().then(
+    //   (value) {
+    //     Future.delayed(const Duration(seconds: 3)).then(
+    //       (value) async {
+    //         final isLogged = await SharedPreference().getLogin();
+    //         if (isLogged) {
+    //           Navigator.pushReplacement(
+    //             context,
+    //             MaterialPageRoute(
+    //               builder: (context) => MainPage(),
+    //             ),
+    //           );
+    //         } else {
+    //           Navigator.pushAndRemoveUntil(
+    //             context,
+    //             MaterialPageRoute(
+    //               builder: (context) {
+    //                 return Login();
+    //               },
+    //             ),
+    //             (route) => false,
+    //           );
+    //         }
+    //       },
+    //     );
+    //   },
+    // );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Image(
-            image: AssetImage('assets/image/app_logo.png'),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0XFFACA6F3),
+              Color(0XFFD25858),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Image(
+              image: AssetImage('assets/app_logo.png'),
+            ),
           ),
         ),
       ),

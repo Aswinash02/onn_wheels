@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:onnwheels/controllers/all_orders_controller.dart';
 import 'package:onnwheels/utils/image_directory.dart';
+import 'package:onnwheels/utils/shared_preference.dart';
+import 'package:onnwheels/views/order_details/order_details_screen.dart';
+import 'package:onnwheels/views/profile/components/logout_dailog.dart';
 import 'package:onnwheels/views/verification/verification_page.dart';
 
 import '../../mytheme.dart';
@@ -16,7 +21,45 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
+
 class _ProfilePageState extends State<ProfilePage> {
+  void showLogoutConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          title: Text('Logout Confirmation'),
+          content: Text('Are you sure you want to logout?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                onTapLogout();
+                Navigator.of(context).pop();
+              },
+              child: Text('Logout'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> onTapLogout() async {
+    SharedPreference().setLogin(false);
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      return Login();
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -27,8 +70,8 @@ class _ProfilePageState extends State<ProfilePage> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: Container(
-                  width: 165,
-                  height: 165,
+                  width: 120,
+                  height: 120,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(100),
@@ -68,7 +111,12 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Image.asset(ImageDirectory.my_booking),
                   ),
                 ),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => OrderDetailsScreen()));
+                },
                 heading: const Text("My Bookings"),
               ),
               const Divider(
@@ -168,7 +216,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
                 onTap: () {
-                  Get.to(()=>VerificationFlowPage());
+                  Get.to(() => VerificationFlowPage());
                 },
                 heading: const Text("Verification Details"),
               ),
@@ -192,12 +240,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
                 onTap: () {
-                  if (is_logged_in.$) {
-                    onTapLogout(context);
-                  } else {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Login()));
-                  }
+                  showLogoutConfirmationDialog(context);
                 },
                 heading: const Text("Log Out"),
               ),
@@ -212,19 +255,9 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  onTapLogout(context) async {
-    // AuthHelper().clearUserData();
-
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) {
-      return Login();
-    }), (route) => false);
-  }
-
   Widget buildUserInfo() {
     return is_logged_in.$
         ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 "${user_name.$}",

@@ -10,6 +10,7 @@ import 'package:onnwheels/models/login_response_model.dart';
 import 'package:onnwheels/views/auth/password_forgot.dart';
 import 'package:onnwheels/views/auth/phone_login.dart';
 import 'package:onnwheels/views/auth/signup.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../customs/auth_ui.dart';
 import '../../helpers/validator_helper.dart';
 import '../../mytheme.dart';
@@ -69,7 +70,9 @@ class _LoginState extends State<Login> {
     var email = _emailController.text.toString();
     var password = _passwordController.text.toString();
     LoginResponse loginResponse = await AuthRepository().getLoginResponse(
-        _login_by == 'email' ? email : _phone, password,);
+      _login_by == 'email' ? email : _phone,
+      password,
+    );
     Loading.close();
     AuthHelper().setUserData(loginResponse);
   }
@@ -245,8 +248,8 @@ class _LoginState extends State<Login> {
                         onTap: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
-                                return PasswordForget();
-                              }));
+                            return PasswordForget();
+                          }));
                         },
                         child: Text(
                           AppLocalizations.of(context)!
@@ -285,8 +288,8 @@ class _LoginState extends State<Login> {
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           onPressedLogin();
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(content: Text('Processing Data')));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Processing Data')));
                         }
                       },
                     ),
@@ -298,16 +301,16 @@ class _LoginState extends State<Login> {
                     height: 45,
                     decoration: BoxDecoration(
                         border:
-                        Border.all(color: MyTheme.textfield_grey, width: 1),
+                            Border.all(color: MyTheme.textfield_grey, width: 1),
                         borderRadius:
-                        const BorderRadius.all(Radius.circular(12.0))),
+                            const BorderRadius.all(Radius.circular(12.0))),
                     child: Btn.minWidthFixHeight(
                       minWidth: MediaQuery.of(context).size.width,
                       height: 50,
                       color: MyTheme.white,
                       shape: RoundedRectangleBorder(
                           borderRadius:
-                          const BorderRadius.all(Radius.circular(6.0))),
+                              const BorderRadius.all(Radius.circular(6.0))),
                       child: Text(
                         AppLocalizations.of(context)!.or_login_with_otp,
                         style: TextStyle(
@@ -427,7 +430,7 @@ class _LoginState extends State<Login> {
                   Get.to(() => Registration());
                 },
                 style: TextButton.styleFrom(
-                  primary: Colors.white,
+                  foregroundColor: Colors.white,
                   textStyle: const TextStyle(
                     fontSize: 12.0,
                     fontWeight: FontWeight.bold,
