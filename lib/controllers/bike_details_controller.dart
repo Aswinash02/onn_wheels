@@ -18,6 +18,7 @@ class BikeDetailsController extends GetxController {
   var imageFile = ''.obs;
   var ratingCount = 0.obs;
   var price = 0.obs;
+  var storeId = 0.obs;
   TextEditingController dateTimeCon = TextEditingController();
   TextEditingController availableAtCon = TextEditingController();
   RxString selectedValue = 'Item 1'.obs;
@@ -56,6 +57,7 @@ class BikeDetailsController extends GetxController {
     ratingCount.value = bikeDetailsResponse.ratingCount!;
     price.value = bikeDetailsResponse.price!;
     stationDropdownItems.value = bikeDetailsResponse.stations!;
+    storeId.value = bikeDetailsResponse.storeId!;
     setDropdownItems(bikeDetailsResponse.stations ?? []);
   }
 

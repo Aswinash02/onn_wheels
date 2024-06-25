@@ -338,19 +338,33 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                   InkWell(
                     onTap: () {
                       print("called onTAP");
+                      if (bikeDetailsController.startDateTime.value == "" ||
+                          bikeDetailsController.endDateTime.value == '') {
+                        print("Please select date and time");
+                        return;
+                      }
+                      if (bikeDetailsController.selectedStation.value == "" ||
+                          bikeDetailsController.selectedStation.value == null) {
+                        print("Please select station");
+                        return;
+                      }
                       Get.to(
-                            () => CheckoutPage(
+                        () => CheckoutPage(
                           imageUrl: bikeDetailsController.imageFile.value,
                           startTime: bikeDetailsController.startDateTime.value,
                           endTime: bikeDetailsController.endDateTime.value,
-                          station: bikeDetailsController.selectedStation.value!.name!,
-                          totalPayableAmount: bikeDetailsController.price.toString(),
-                          lat: bikeDetailsController.selectedStation.value!.lat!,
-                          long: bikeDetailsController.selectedStation.value!.lon!,
+                          station: bikeDetailsController
+                              .selectedStation.value!.name!,
+                          totalPayableAmount:
+                              bikeDetailsController.price.toString(),
+                          lat:
+                              bikeDetailsController.selectedStation.value!.lat!,
+                          long:
+                              bikeDetailsController.selectedStation.value!.lon!,
                           name: bikeDetailsController.bikeTitle.value,
+                          id: widget.id,
                         ),
                       );
-
                     },
                     child: Container(
                       width: screenWidth,

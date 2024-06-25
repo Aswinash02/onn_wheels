@@ -8,6 +8,11 @@ class HomeController extends GetxController{
 
   var allBikeProducts = <Product>[].obs;
 
+  var userName = "".obs;
+  var userEmail = "".obs;
+  var userPhone = "".obs;
+  var userId = "".obs;
+
   @override
   void onInit() {
     // TODO: implement onInit
@@ -41,7 +46,6 @@ class HomeController extends GetxController{
 
   getAllProductsHome({int page=1}) async {
     var allProductsResponse = await ProductRepository().getAllProducts(page: page);
-    print("All Product Response=======${allProductsResponse.product![0].name}");
     allBikeProducts.addAll(allProductsResponse.product!);
     update();
   }

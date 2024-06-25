@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:onnwheels/utils/image_directory.dart';
+import 'package:onnwheels/utils/shared_preference.dart';
 import 'package:onnwheels/views/home/components/custom_gridview.dart';
 import 'package:onnwheels/views/zone_areas/zone_list.dart';
 import '../../controllers/home_controller.dart';
@@ -16,6 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   HomeController homeController = Get.put(HomeController());
+
   // final HomeController homeController = Get.find();
   TextEditingController dateCtl1 = TextEditingController();
   TextEditingController dateCtl2 = TextEditingController();
@@ -68,8 +70,20 @@ class _HomePageState extends State<HomePage> {
         homeController.getAllProductsHome(page: _page);
       }
     });
+    fetchUserName();
     super.initState();
   }
+  fetchUserName() async {
+    SharedPreference sharedPreference = SharedPreference();
+    homeController.userName.value = await sharedPreference.getUserName();
+    homeController.userId.value = await sharedPreference.getUserId();
+    homeController.userEmail.value = await sharedPreference.getUserEmail();
+    homeController.userPhone.value = await sharedPreference.getUserPhoneNo();
+    print(
+        "fetching User Details=======>${homeController.userName.value},${homeController.userId.value}, ${homeController.userEmail.value} ${homeController.userPhone.value}");
+  }
+
+
 
   @override
   Widget build(BuildContext context) {

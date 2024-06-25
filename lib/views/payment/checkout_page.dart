@@ -2,25 +2,29 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:onnwheels/controllers/bike_details_controller.dart';
+import 'package:onnwheels/controllers/checkout_controller.dart';
 import 'package:onnwheels/mytheme.dart';
+import 'package:onnwheels/repositories/checkout_repository.dart';
 import 'package:onnwheels/utils/app_config.dart';
 import 'package:onnwheels/views/bikedetails/components/text_widget.dart';
 import 'package:onnwheels/views/main_page/components/custom_appbar.dart';
+import 'package:onnwheels/views/main_page/main_page.dart';
+import 'package:onnwheels/views/order_details/order_details_screen.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'components/google_map_widget.dart';
 
 class CheckoutPage extends StatefulWidget {
-  const CheckoutPage(
-      {super.key,
-      required this.imageUrl,
-      required this.startTime,
-      required this.endTime,
-      required this.station,
-      required this.totalPayableAmount,
-      required this.lat,
-      required this.long,
-      required this.name});
+  const CheckoutPage({super.key,
+    required this.imageUrl,
+    required this.startTime,
+    required this.endTime,
+    required this.station,
+    required this.totalPayableAmount,
+    required this.lat,
+    required this.long,
+    required this.name, required this.id});
 
   final String imageUrl;
   final String startTime;
@@ -30,6 +34,7 @@ class CheckoutPage extends StatefulWidget {
   final String lat;
   final String long;
   final String name;
+  final int id;
 
   @override
   State<CheckoutPage> createState() => _CheckoutPageState();
@@ -40,9 +45,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
   late Map<String, dynamic> paymentData;
   String apiKey = AppConfig.razorPayKey;
   String apiSecret = AppConfig.razorPaySecret;
+  final CheckoutController checkoutController = Get.put(CheckoutController());
+  final BikeDetailsController bikeDetailsController = Get.put(
+      BikeDetailsController());
 
   @override
   void initState() {
+    checkoutController.fetchUserName();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWallet);
@@ -86,11 +95,15 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   color: Colors.grey[200],
                   image: DecorationImage(
                     image: NetworkImage(
-                        "https://onnwheels.com/storage/app/public/product/${widget.imageUrl}"),
+                        "https://onnwheels.com/storage/app/public/product/${widget
+                            .imageUrl}"),
                   ),
                 ),
               ),
-              Text(widget.name,style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+              Text(
+                widget.name,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -99,7 +112,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   Text(widget.endTime),
                 ],
               ),
-              Text(widget.station,style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+              Text(
+                widget.station,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
               MyMapWidget(
                 latitude: double.tryParse(widget.lat)!, // Example latitude
                 longitude: double.tryParse(widget.long)!, // Example longitude
@@ -137,7 +153,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         onTap: () {
                           paymentData = {
                             'amount':
-                                int.parse(widget.totalPayableAmount) * 100,
+                            int.parse(widget.totalPayableAmount) * 100,
                             'currency': 'INR',
                             'receipt': 'order_receipt',
                             'payment_capture': '1',
@@ -145,7 +161,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           initiatePayment();
                         },
                         child: Container(
-                          width: MediaQuery.of(context).size.width,
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width,
                           height: 40,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
@@ -154,7 +173,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             child: CustomText(
                               text: "Make Payment",
                               color: MyTheme.black,
-                              fontSize: MediaQuery.of(context).size.width / 20,
+                              fontSize: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width / 20,
                             ),
                           ),
                         ),
@@ -170,13 +192,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
     );
   }
 
-  Widget keyValueWidget(
-      {String? firstText,
-      String? lastText,
-      FontWeight? fontWeight,
-      FontWeight? fontWeight2,
-      double? fontSize,
-      double? fontSize2}) {
+  Widget keyValueWidget({String? firstText,
+    String? lastText,
+    FontWeight? fontWeight,
+    FontWeight? fontWeight2,
+    double? fontSize,
+    double? fontSize2}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -198,17 +219,35 @@ class _CheckoutPageState extends State<CheckoutPage> {
     );
   }
 
+  createOrder(String status) {
+    var getOrderResponse = CheckoutRepository().getCheckoutResponse(
+        checkoutController.userId.value,
+        checkoutController.userName.value,
+        checkoutController.userPhone.value,
+        checkoutController.userEmail.value,
+        widget.station,
+        widget.long,
+        widget.lat,
+        bikeDetailsController.storeId.value,
+        int.parse(widget.totalPayableAmount),
+        status,
+        checkoutController.orderId.value,
+        widget.id,
+        0.0,
+        widget.startTime,
+        widget.endTime);
+  }
+
   void handlePaymentSuccess(PaymentSuccessResponse response) {
-    // createOrder();
-    // Get.off(
-    //       () => OrderList(
-    //     from_checkout: false,
-    //   ),
-    // );
+    createOrder("paid");
+    Get.off(
+          () => OrderDetailsScreen(),
+    );
   }
 
   void handlePaymentError(PaymentFailureResponse response) {
-    // Get.offAll(() => MainPage());
+    createOrder("unpaid");
+    Get.offAll(() => MainPage());
   }
 
   void handleExternalWallet(ExternalWalletResponse response) {
@@ -224,7 +263,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       headers: {
         'Content-Type': 'application/json',
         'Authorization':
-            'Basic ${base64Encode(utf8.encode('$apiKey:$apiSecret'))}',
+        'Basic ${base64Encode(utf8.encode('$apiKey:$apiSecret'))}',
       },
       body: jsonEncode(paymentData),
     );
@@ -233,13 +272,14 @@ class _CheckoutPageState extends State<CheckoutPage> {
     if (response.statusCode == 200) {
       // Parse the response to get the order ID
       var responseData = jsonDecode(response.body);
-      String orderId = responseData['id'];
+      print("response Razorpay=========>${response.body}");
+      checkoutController.orderId.value = responseData['id'];
       // Set up the payment options
       var options = {
         'key': apiKey,
         'amount': paymentData['amount'],
         'name': AppConfig.app_name,
-        'order_id': orderId,
+        'order_id': checkoutController.orderId.value,
         'retry': {'enabled': true, 'max_count': 1},
         'send_sms_hash': true,
         'prefill': {
