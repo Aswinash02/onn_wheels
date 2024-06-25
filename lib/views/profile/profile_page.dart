@@ -5,7 +5,6 @@ import 'package:onnwheels/controllers/all_orders_controller.dart';
 import 'package:onnwheels/utils/image_directory.dart';
 import 'package:onnwheels/utils/shared_preference.dart';
 import 'package:onnwheels/views/order_details/order_details_screen.dart';
-import 'package:onnwheels/views/profile/components/logout_dailog.dart';
 import 'package:onnwheels/views/verification/verification_page.dart';
 
 import '../../mytheme.dart';

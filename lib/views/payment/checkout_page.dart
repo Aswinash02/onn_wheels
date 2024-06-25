@@ -90,7 +90,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   ),
                 ),
               ),
-              Text(widget.name),
+              Text(widget.name,style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -99,7 +99,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   Text(widget.endTime),
                 ],
               ),
-              Text(widget.station),
+              Text(widget.station,style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
               MyMapWidget(
                 latitude: double.tryParse(widget.lat)!, // Example latitude
                 longitude: double.tryParse(widget.long)!, // Example longitude
@@ -132,7 +132,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       fontSize2: 16,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 80),
+                      padding: const EdgeInsets.only(top: 85),
                       child: InkWell(
                         onTap: () {
                           paymentData = {
