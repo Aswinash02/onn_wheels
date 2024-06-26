@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:onnwheels/controllers/all_orders_controller.dart';
 import 'package:onnwheels/utils/image_directory.dart';
 import 'package:onnwheels/utils/shared_preference.dart';
 import 'package:onnwheels/views/order_details/order_details_screen.dart';
-import 'package:onnwheels/views/profile/components/logout_dailog.dart';
 import 'package:onnwheels/views/verification/verification_page.dart';
 
 import '../../mytheme.dart';
 import '../../utils/shared_value.dart';
 import '../auth/signin.dart';
-import '../main_page/main_page.dart';
 import 'components/profile_list_widgets.dart';
 
 class ProfilePage extends StatefulWidget {

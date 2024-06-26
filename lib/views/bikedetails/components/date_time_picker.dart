@@ -138,7 +138,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
                       args.value.endDate.year,
                       args.value.endDate.month,
                       args.value.endDate.day,
-                      DateTime.now().hour + 24,
+                      DateTime.now().hour,
                       DateTime.now().minute,
                     );
                     String endDateTime =
