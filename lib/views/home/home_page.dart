@@ -58,21 +58,19 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     _scrollController.addListener(() {
-      //print("position: " + _xcrollController.position.pixels.toString());
-      //print("max: " + _xcrollController.position.maxScrollExtent.toString());
-
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
         setState(() {
           _page++;
         });
         _showLoadingContainer = true;
-        homeController.getAllProductsHome(page: _page);
+        homeController.getAllProductsHome();
       }
     });
     fetchUserName();
     super.initState();
   }
+
   fetchUserName() async {
     SharedPreference sharedPreference = SharedPreference();
     homeController.userName.value = await sharedPreference.getUserName();
@@ -83,50 +81,54 @@ class _HomePageState extends State<HomePage> {
         "fetching User Details=======>${homeController.userName.value},${homeController.userId.value}, ${homeController.userEmail.value} ${homeController.userPhone.value}");
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: MyTheme.white,
-        title: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: Row(
-            children: [
-              // Obx(
-              //   () => DropdownButton<String>(
-              //     // Value will hold the selected city
-              //     value: homeController.selectedCity.value.isEmpty
-              //         ? null
-              //         : homeController.selectedCity.value,
-              //     // Called when the user selects an item
-              //     onChanged: (String? newValue) {
-              //       if (newValue != null) {
-              //         homeController.selectCity(newValue);
-              //       }
-              //     },
-              //     // Map each city to a DropdownMenuItem
-              //     items: homeController.tamilNaduCities
-              //         .map<DropdownMenuItem<String>>((String value) {
-              //       return DropdownMenuItem<String>(
-              //         value: value,
-              //         child: Text(value),
-              //       );
-              //     }).toList(),
-              //   ),
-              // ),
-              TextButton(
-                onPressed: () {
-                  Get.to(
-                    () => ZoneAreasPage(),
-                  );
-                },
-                child: Text("Select Zone"),
-              ),
-            ],
-          ),
+        title: Text(
+          "ONN WHEELS",
+          style: TextStyle(color: Colors.black),
         ),
+        // centerTitle: true,
+        // title: Padding(
+        //   padding: const EdgeInsets.only(left: 8.0),
+        // child: Row(
+        //   children: [
+        //     // Obx(
+        //     //   () => DropdownButton<String>(
+        //     //     // Value will hold the selected city
+        //     //     value: homeController.selectedCity.value.isEmpty
+        //     //         ? null
+        //     //         : homeController.selectedCity.value,
+        //     //     // Called when the user selects an item
+        //     //     onChanged: (String? newValue) {
+        //     //       if (newValue != null) {
+        //     //         homeController.selectCity(newValue);
+        //     //       }
+        //     //     },
+        //     //     // Map each city to a DropdownMenuItem
+        //     //     items: homeController.tamilNaduCities
+        //     //         .map<DropdownMenuItem<String>>((String value) {
+        //     //       return DropdownMenuItem<String>(
+        //     //         value: value,
+        //     //         child: Text(value),
+        //     //       );
+        //     //     }).toList(),
+        //     //   ),
+        //     // ),
+        //     // TextButton(
+        //     //   onPressed: () {
+        //     //     Get.to(
+        //     //       () => ZoneAreasPage(),
+        //     //     );
+        //     //   },
+        //     //   child: Text("Select Zone"),
+        //     // ),
+        //     Text("ONN WHEELS")
+        //   ],
+        // ),
+        // ),
         actions: [
           Container(
             height: 60,

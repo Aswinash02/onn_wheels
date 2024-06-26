@@ -23,10 +23,29 @@ class _VerificationFlowPageState extends State<VerificationFlowPage> {
   final VerificationController verifyController =
       Get.put(VerificationController());
 
+  // void stepContinue() {
+  //   if (verifyController.activeCurrentStep.value < (StepperHelper.stepList(verifyController).length - 1)) {
+  //     verifyController.activeCurrentStep += 1;
+  //     print("Active Current Step==========>${verifyController.activeCurrentStep}");
+  //     setState(() {});
+  //     if(StepperHelper.stepList(verifyController).length < 2){
+  //       print("confirmed");
+  //     }
+  //   }
+  // }
   void stepContinue() {
-    if (verifyController.activeCurrentStep.value < (StepperHelper.stepList(verifyController).length - 1)) {
-      verifyController.activeCurrentStep += 1;
+    int currentStep = verifyController.activeCurrentStep.value;
+    int lastStep = StepperHelper.stepList(verifyController).length - 1;
+
+    if (currentStep < lastStep) {
+      // Move to the next step
+      verifyController.activeCurrentStep.value += 1;
+      print("Active Current Step==========>${verifyController.activeCurrentStep.value}");
       setState(() {});
+    } else if (currentStep == lastStep) {
+      // Final step, call the API
+      print("Final Step Reached, calling API...");
+      // callFinalStepAPI();
     }
   }
 

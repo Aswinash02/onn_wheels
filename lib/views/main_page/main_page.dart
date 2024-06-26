@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:one_context/one_context.dart';
 import 'package:onnwheels/views/categories/categories.dart';
+import 'package:onnwheels/views/contact_us/contact_us.dart';
 import '../../mytheme.dart';
 import '../../utils/image_directory.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -30,7 +31,7 @@ class _MainPageState extends State<MainPage> {
   var bottomPages = [
     const HomePage(),
     const CategoriesPage(),
-    const WishListPage(),
+    const ContactUsPage(),
     const ProfilePage()
   ];
 
@@ -161,14 +162,14 @@ class _MainPageState extends State<MainPage> {
                     icon: Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Image.asset(
-                        ImageDirectory.wishListImg,
+                        ImageDirectory.helps,
                         color: _currentIndex == 2
                             ? MyTheme.accent_color
                             : MyTheme.black,
                         height: 16,
                       ),
                     ),
-                    label: AppLocalizations.of(context)!.my_wishlist_ucf),
+                    label: AppLocalizations.of(context)!.contact_us_ucf),
                 BottomNavigationBarItem(
                   icon: Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),

@@ -33,44 +33,44 @@ class StepperHelper {
               const SizedBox(
                 height: 8,
               ),
-              TextField(
-                controller: verifyController.phone,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'phone',
-                ),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextField(
-                controller: verifyController.city,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'City',
-                ),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextField(
-                controller: verifyController.address,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Full House Address',
-                ),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextField(
-                controller: verifyController.pincode,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Pin Code',
-                ),
-              ),
+              // TextField(
+              //   controller: verifyController.phone,
+              //   decoration: const InputDecoration(
+              //     border: OutlineInputBorder(),
+              //     labelText: 'phone',
+              //   ),
+              // ),
+              // const SizedBox(
+              //   height: 8,
+              // ),
+              // TextField(
+              //   controller: verifyController.city,
+              //   obscureText: true,
+              //   decoration: const InputDecoration(
+              //     border: OutlineInputBorder(),
+              //     labelText: 'City',
+              //   ),
+              // ),
+              // const SizedBox(
+              //   height: 8,
+              // ),
+              // TextField(
+              //   controller: verifyController.address,
+              //   decoration: const InputDecoration(
+              //     border: OutlineInputBorder(),
+              //     labelText: 'Full House Address',
+              //   ),
+              // ),
+              // const SizedBox(
+              //   height: 8,
+              // ),
+              // TextField(
+              //   controller: verifyController.pincode,
+              //   decoration: const InputDecoration(
+              //     border: OutlineInputBorder(),
+              //     labelText: 'Pin Code',
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -93,7 +93,7 @@ class StepperHelper {
               TextField(
                 controller: verifyController.aadharData,
                 decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
+                  // border: OutlineInputBorder(),
                   labelText: 'Aadhar Number',
                 ),
               ),
@@ -201,7 +201,8 @@ class StepperHelper {
                               height: 140,
                               width: 140,
                               color: MyTheme.white,
-                              child: verifyController.selectedImagePathFront.value !=
+                              child: verifyController
+                                          .selectedImagePathFront.value !=
                                       ''
                                   ? Obx(
                                       () => Image.file(
@@ -235,8 +236,9 @@ class StepperHelper {
                               height: 140,
                               width: 140,
                               color: MyTheme.white,
-                              child: verifyController.selectedImagePathBack.value !=
-                                    ''
+                              child: verifyController
+                                          .selectedImagePathBack.value !=
+                                      ''
                                   ? Obx(
                                       () => Image.file(
                                           File(verifyController
@@ -278,10 +280,12 @@ class StepperHelper {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text('Name: ${verifyController.name.text}'),
-              Text('Phone: ${verifyController.phone.text}'),
-              Text('City: ${verifyController.city.text}'),
-              Text('Address : ${verifyController.address.text}'),
-              Text('PinCode : ${verifyController.pincode.text}'),
+              Text("Aadhar: ${verifyController.aadharData.text}"),
+              Text("Pan: ${verifyController.panData.text}")
+              // Text('Phone: ${verifyController.phone.text}'),
+              // Text('City: ${verifyController.city.text}'),
+              // Text('Address : ${verifyController.address.text}'),
+              // Text('PinCode : ${verifyController.pincode.text}'),
             ],
           )))
     ];

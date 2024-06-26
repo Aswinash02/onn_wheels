@@ -206,7 +206,9 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                   ),
                   Obx(
                     () => CustomText(
-                      text: "\u20B9 ${bikeDetailsController.price.value}",
+                      text: bikeDetailsController.total.value == 0
+                          ? "\u20B9 ${bikeDetailsController.price.value}"
+                          : "\u20B9 ${bikeDetailsController.total.value}",
                       fontWeight: FontWeight.w600,
                       fontSize: screenWidth / 18,
                       color: MyTheme.orange,
@@ -224,7 +226,10 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                   SizedBox(
                     height: 10,
                   ),
-                  toggleSwitch(),
+                  toggleSwitch(toggle: (index) {
+                    print("called Toggling");
+                    bikeDetailsController.calculatePrice(index!);
+                  }),
                   SizedBox(
                     height: 10,
                   ),
@@ -340,7 +345,6 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                       print("called onTAP");
                       if (bikeDetailsController.startDateTime.value == "" ||
                           bikeDetailsController.endDateTime.value == '') {
-                        print("Please select date and time");
                         const snackdemo = SnackBar(
                           content: Text('Please select date and time'),
                           backgroundColor: MyTheme.accent_color,
@@ -353,7 +357,6 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                       }
                       if (bikeDetailsController.selectedStation.value == "" ||
                           bikeDetailsController.selectedStation.value == null) {
-                        print("Please select station");
                         const snackdemo = SnackBar(
                           content: Text('Please select station'),
                           backgroundColor: MyTheme.accent_color,

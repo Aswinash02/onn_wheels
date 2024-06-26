@@ -26,65 +26,6 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // SfDateRangePicker(
-          //   cellBuilder:
-          //       (BuildContext context, DateRangePickerCellDetails details) {
-          //     return Container(
-          //         margin: EdgeInsets.all(0),
-          //         decoration: BoxDecoration(
-          //           shape: BoxShape.circle,
-          //         ),
-          //         child: Padding(
-          //           padding: const EdgeInsets.symmetric(
-          //               horizontal: 15.0, vertical: 8),
-          //           child: Container(
-          //             child: Center(
-          //               child: Text(
-          //                 details.date.day.toString(),
-          //                 style: TextStyle(
-          //                   color: Colors.black,
-          //                   fontWeight: FontWeight.normal,
-          //                 ),
-          //               ),
-          //             ),
-          //           ),
-          //         ));
-          //   },
-          //
-          //   // This highlights today's date with a circle
-          //
-          //   onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
-          //     setState(() {
-          //       if (args.value is PickerDateRange) {
-          //         // bikeDetailsController.startDateTime =
-          //         _startDateTime = DateTime(
-          //           args.value.startDate.year,
-          //           args.value.startDate.month,
-          //           args.value.startDate.day,
-          //           DateTime.now().hour,
-          //           DateTime.now().minute,
-          //         );
-          //         String startDateTime =
-          //             DateFormat('MMMM d, yyyy h:mm a').format(_startDateTime!);
-          //         bikeDetailsController.startDateTime.value = startDateTime;
-          //         if (args.value.endDate != null) {
-          //           _endDateTime = DateTime(
-          //             args.value.endDate.year,
-          //             args.value.endDate.month,
-          //             args.value.endDate.day,
-          //             DateTime.now().hour + 24,
-          //             DateTime.now().minute,
-          //           );
-          //           String endDateTime =
-          //               DateFormat('MMMM d, yyyy h:mm a').format(_endDateTime!);
-          //           bikeDetailsController.endDateTime.value = endDateTime;
-          //         }
-          //       }
-          //     });
-          //   },
-          //   selectionMode: DateRangePickerSelectionMode.range,
-          //   minDate: DateTime.now(),
-          // ),
           SfDateRangePicker(
             cellBuilder:
                 (BuildContext context, DateRangePickerCellDetails details) {
