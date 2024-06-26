@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class MyTheme {
   /*configurable colors stars*/
   // static const Color accent_color = Color.fromRGBO(230, 46, 4, 1);
-  static const Color accent_color = Color(0xFFF5CF46);
+  static const Color accent_color = Color(0xFFF89520);
   // static const Color accent_color_shadow =
   //     Color.fromRGBO(229, 65, 28, .40);
   static const Color accent_color_shadow = Color(0xFF529b47); // this color is a dropshadow of

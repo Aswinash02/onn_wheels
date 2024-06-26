@@ -341,11 +341,27 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                       if (bikeDetailsController.startDateTime.value == "" ||
                           bikeDetailsController.endDateTime.value == '') {
                         print("Please select date and time");
+                        const snackdemo = SnackBar(
+                          content: Text('Please select date and time'),
+                          backgroundColor: MyTheme.accent_color,
+                          elevation: 10,
+                          behavior: SnackBarBehavior.floating,
+                          margin: EdgeInsets.all(5),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackdemo);
                         return;
                       }
                       if (bikeDetailsController.selectedStation.value == "" ||
                           bikeDetailsController.selectedStation.value == null) {
                         print("Please select station");
+                        const snackdemo = SnackBar(
+                          content: Text('Please select station'),
+                          backgroundColor: MyTheme.accent_color,
+                          elevation: 10,
+                          behavior: SnackBarBehavior.floating,
+                          margin: EdgeInsets.all(5),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackdemo);
                         return;
                       }
                       Get.to(

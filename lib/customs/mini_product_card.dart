@@ -80,19 +80,25 @@ class _MiniProductCardState extends State<MiniProductCard> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                      child: Text(
-                        widget.product.tax!.toString(),
-                        maxLines: 1,
-                        style: TextStyle(
-                            color: MyTheme.medium_grey_50,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700),
+                      child: Row(
+                        children: [
+                          Icon(Icons.star,size: 12,color: MyTheme.medium_grey,),
+                          SizedBox(width: 5,),
+                          Text(
+                            widget.product.ratingCount!.toString(),
+                            maxLines: 1,
+                            style: TextStyle(
+                                color: MyTheme.medium_grey_50,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700),
+                          ),
+                        ],
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                       child: Text(
-                        "${widget.product.price!} / day",
+                        "\u{20B9} ${widget.product.price!}",
                         maxLines: 1,
                         style: const TextStyle(
                             color: MyTheme.accent_color,
@@ -125,7 +131,13 @@ class _MiniProductCardState extends State<MiniProductCard> {
                             ),
                           ),
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          Get.to(
+                            () => BikeDetailsPage(
+                              id: widget.product.id!,
+                            ),
+                          );
+                        },
                       )
                     ],
                   ),
