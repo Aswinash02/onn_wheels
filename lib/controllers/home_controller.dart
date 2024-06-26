@@ -44,8 +44,8 @@ class HomeController extends GetxController{
     selectedCity.value = city;
   }
 
-  getAllProductsHome({int page=1}) async {
-    var allProductsResponse = await ProductRepository().getAllProducts(page: page);
+  getAllProductsHome() async {
+    var allProductsResponse = await ProductRepository().getAllProducts();
     allBikeProducts.addAll(allProductsResponse.product!);
     update();
   }

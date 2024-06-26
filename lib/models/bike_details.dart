@@ -1,8 +1,10 @@
 import 'dart:convert';
 
-BikeDetailsResponse bikeDetailsResponseFromJson(String str) => BikeDetailsResponse.fromJson(json.decode(str));
+BikeDetailsResponse bikeDetailsResponseFromJson(String str) =>
+    BikeDetailsResponse.fromJson(json.decode(str));
 
-String bikeDetailsResponseToJson(BikeDetailsResponse data) => json.encode(data.toJson());
+String bikeDetailsResponseToJson(BikeDetailsResponse data) =>
+    json.encode(data.toJson());
 
 class BikeDetailsResponse {
   int? id;
@@ -25,9 +27,9 @@ class BikeDetailsResponse {
   String? createdAt;
   String? updatedAt;
   int? orderCount;
-  int? avgRating;
+  double? avgRating;
   int? ratingCount;
-  int? rating;
+  double? rating;
   int? moduleId;
   int? stock;
   int? unitId;
@@ -38,55 +40,64 @@ class BikeDetailsResponse {
   int? organic;
   int? maximumCartQuantity;
   int? isApproved;
-  String? hoursPrice;
-  String? distancePrice;
+  PriceDetail? hoursPrice;
+  PriceDetail? distancePrice;
+  PriceDetail? monthPrice;
+  PriceDetail? weekPrice;
+  PriceDetail? daysPrice;
   String? unitType;
   List<Stations>? stations;
   List<Translations>? translations;
   int? unit;
 
-  BikeDetailsResponse(
-      {this.id,
-        this.name,
-        this.description,
-        this.image,
-        this.categoryId,
-        this.categoryIds,
-        this.variations,
-        this.price,
-        this.tax,
-        this.taxType,
-        this.discount,
-        this.discountType,
-        this.availableTimeStarts,
-        this.availableTimeEnds,
-        this.veg,
-        this.status,
-        this.storeId,
-        this.createdAt,
-        this.updatedAt,
-        this.orderCount,
-        this.avgRating,
-        this.ratingCount,
-        this.rating,
-        this.moduleId,
-        this.stock,
-        this.unitId,
-        this.images,
-        this.foodVariations,
-        this.slug,
-        this.recommended,
-        this.organic,
-        this.maximumCartQuantity,
-        this.isApproved,
-        this.hoursPrice,
-        this.distancePrice,
-        this.unitType,
-        this.stations,
-        this.translations,
-        this.unit});
+  BikeDetailsResponse({
+    this.id,
+    this.name,
+    this.description,
+    this.image,
+    this.categoryId,
+    this.categoryIds,
+    this.variations,
+    this.price,
+    this.tax,
+    this.taxType,
+    this.discount,
+    this.discountType,
+    this.availableTimeStarts,
+    this.availableTimeEnds,
+    this.veg,
+    this.status,
+    this.storeId,
+    this.createdAt,
+    this.updatedAt,
+    this.orderCount,
+    this.avgRating,
+    this.ratingCount,
+    this.rating,
+    this.moduleId,
+    this.stock,
+    this.unitId,
+    this.images,
+    this.foodVariations,
+    this.slug,
+    this.recommended,
+    this.organic,
+    this.maximumCartQuantity,
+    this.isApproved,
+    this.hoursPrice,
+    this.distancePrice,
+    this.monthPrice,
+    this.weekPrice,
+    this.daysPrice,
+    this.unitType,
+    this.stations,
+    this.translations,
+    this.unit,
+  });
 
   BikeDetailsResponse.fromJson(Map<String, dynamic> json) {
+
+    print('=========================== +++++++++= ${json['hours_price']}');
     id = json['id'];
     name = json['name'];
     description = json['description'];
@@ -95,7 +106,7 @@ class BikeDetailsResponse {
     if (json['category_ids'] != null) {
       categoryIds = <CategoryIds>[];
       json['category_ids'].forEach((v) {
-        categoryIds!.add(new CategoryIds.fromJson(v));
+        categoryIds!.add(CategoryIds.fromJson(v));
       });
     }
     variations = json['variations'];
@@ -112,9 +123,10 @@ class BikeDetailsResponse {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     orderCount = json['order_count'];
-    avgRating = json['avg_rating'];
+    avgRating =
+        (json['avg_rating'] != null) ? json['avg_rating'].toDouble() : null;
     ratingCount = json['rating_count'];
-    rating = json['rating'];
+    rating = (json['rating'] != null) ? json['rating'].toDouble() : null;
     moduleId = json['module_id'];
     stock = json['stock'];
     unitId = json['unit_id'];
@@ -125,71 +137,92 @@ class BikeDetailsResponse {
     organic = json['organic'];
     maximumCartQuantity = json['maximum_cart_quantity'];
     isApproved = json['is_approved'];
-    hoursPrice = json['hours_price'];
-    distancePrice = json['distance_price'];
+    hoursPrice = json['hours_price'] != null
+        ? PriceDetail.fromJson(jsonDecode(json['hours_price']))
+        : null;
+    distancePrice = json['distance_price'] != null
+        ? PriceDetail.fromJson(jsonDecode(json['distance_price']))
+        : null;
+    monthPrice = json['month_price'] != null
+        ? PriceDetail.fromJson(jsonDecode(json['month_price']))
+        : null;
+    weekPrice = json['week_price'] != null
+        ? PriceDetail.fromJson(jsonDecode(json['week_price']))
+        : null;
+    daysPrice = json['days_price'] != null
+        ? PriceDetail.fromJson(jsonDecode(json['days_price']))
+        : null;
     unitType = json['unit_type'];
     if (json['stations'] != null) {
       stations = <Stations>[];
       json['stations'].forEach((v) {
-        stations!.add(new Stations.fromJson(v));
+        stations!.add(Stations.fromJson(v));
       });
     }
     if (json['translations'] != null) {
       translations = <Translations>[];
       json['translations'].forEach((v) {
-        translations!.add(new Translations.fromJson(v));
+        translations!.add(Translations.fromJson(v));
       });
     }
     unit = json['unit'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['description'] = this.description;
-    data['image'] = this.image;
-    data['category_id'] = this.categoryId;
-    if (this.categoryIds != null) {
-      data['category_ids'] = this.categoryIds!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['description'] = description;
+    data['image'] = image;
+    data['category_id'] = categoryId;
+    if (categoryIds != null) {
+      data['category_ids'] = categoryIds!.map((v) => v.toJson()).toList();
     }
-    data['variations'] = this.variations;
-    data['price'] = this.price;
-    data['tax'] = this.tax;
-    data['tax_type'] = this.taxType;
-    data['discount'] = this.discount;
-    data['discount_type'] = this.discountType;
-    data['available_time_starts'] = this.availableTimeStarts;
-    data['available_time_ends'] = this.availableTimeEnds;
-    data['veg'] = this.veg;
-    data['status'] = this.status;
-    data['store_id'] = this.storeId;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    data['order_count'] = this.orderCount;
-    data['avg_rating'] = this.avgRating;
-    data['rating_count'] = this.ratingCount;
-    data['rating'] = this.rating;
-    data['module_id'] = this.moduleId;
-    data['stock'] = this.stock;
-    data['unit_id'] = this.unitId;
-    data['images'] = this.images;
-    data['food_variations'] = this.foodVariations;
-    data['slug'] = this.slug;
-    data['recommended'] = this.recommended;
-    data['organic'] = this.organic;
-    data['maximum_cart_quantity'] = this.maximumCartQuantity;
-    data['is_approved'] = this.isApproved;
-    data['hours_price'] = this.hoursPrice;
-    data['distance_price'] = this.distancePrice;
-    data['unit_type'] = this.unitType;
-    if (this.stations != null) {
-      data['stations'] = this.stations!.map((v) => v.toJson()).toList();
+    data['variations'] = variations;
+    data['price'] = price;
+    data['tax'] = tax;
+    data['tax_type'] = taxType;
+    data['discount'] = discount;
+    data['discount_type'] = discountType;
+    data['available_time_starts'] = availableTimeStarts;
+    data['available_time_ends'] = availableTimeEnds;
+    data['veg'] = veg;
+    data['status'] = status;
+    data['store_id'] = storeId;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    data['order_count'] = orderCount;
+    data['avg_rating'] = avgRating;
+    data['rating_count'] = ratingCount;
+    data['rating'] = rating;
+    data['module_id'] = moduleId;
+    data['stock'] = stock;
+    data['unit_id'] = unitId;
+    data['images'] = images;
+    data['food_variations'] = foodVariations;
+    data['slug'] = slug;
+    data['recommended'] = recommended;
+    data['organic'] = organic;
+    data['maximum_cart_quantity'] = maximumCartQuantity;
+    data['is_approved'] = isApproved;
+    data['hours_price'] =
+        hoursPrice != null ? jsonEncode(hoursPrice!.toJson()) : null;
+    data['distance_price'] =
+        distancePrice != null ? jsonEncode(distancePrice!.toJson()) : null;
+    data['month_price'] =
+        monthPrice != null ? jsonEncode(monthPrice!.toJson()) : null;
+    data['week_price'] =
+        weekPrice != null ? jsonEncode(weekPrice!.toJson()) : null;
+    data['days_price'] =
+        daysPrice != null ? jsonEncode(daysPrice!.toJson()) : null;
+    data['unit_type'] = unitType;
+    if (stations != null) {
+      data['stations'] = stations!.map((v) => v.toJson()).toList();
     }
-    if (this.translations != null) {
-      data['translations'] = this.translations!.map((v) => v.toJson()).toList();
+    if (translations != null) {
+      data['translations'] = translations!.map((v) => v.toJson()).toList();
     }
-    data['unit'] = this.unit;
+    data['unit'] = unit;
     return data;
   }
 }
@@ -208,10 +241,10 @@ class CategoryIds {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['position'] = this.position;
-    data['name'] = this.name;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['position'] = position;
+    data['name'] = name;
     return data;
   }
 }
@@ -227,16 +260,17 @@ class Stations {
   String? updatedAt;
   Pivot? pivot;
 
-  Stations(
-      {this.id,
-        this.name,
-        this.address,
-        this.zoneId,
-        this.lat,
-        this.lon,
-        this.createdAt,
-        this.updatedAt,
-        this.pivot});
+  Stations({
+    this.id,
+    this.name,
+    this.address,
+    this.zoneId,
+    this.lat,
+    this.lon,
+    this.createdAt,
+    this.updatedAt,
+    this.pivot,
+  });
 
   Stations.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -247,21 +281,21 @@ class Stations {
     lon = json['lon'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    pivot = json['pivot'] != null ? new Pivot.fromJson(json['pivot']) : null;
+    pivot = json['pivot'] != null ? Pivot.fromJson(json['pivot']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['address'] = this.address;
-    data['zone_id'] = this.zoneId;
-    data['lat'] = this.lat;
-    data['lon'] = this.lon;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    if (this.pivot != null) {
-      data['pivot'] = this.pivot!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['address'] = address;
+    data['zone_id'] = zoneId;
+    data['lat'] = lat;
+    data['lon'] = lon;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    if (pivot != null) {
+      data['pivot'] = pivot!.toJson();
     }
     return data;
   }
@@ -279,9 +313,9 @@ class Pivot {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['item_id'] = this.itemId;
-    data['station_id'] = this.stationId;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['item_id'] = itemId;
+    data['station_id'] = stationId;
     return data;
   }
 }
@@ -296,15 +330,16 @@ class Translations {
   String? createdAt;
   String? updatedAt;
 
-  Translations(
-      {this.id,
-        this.translationableType,
-        this.translationableId,
-        this.locale,
-        this.key,
-        this.value,
-        this.createdAt,
-        this.updatedAt});
+  Translations({
+    this.id,
+    this.translationableType,
+    this.translationableId,
+    this.locale,
+    this.key,
+    this.value,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Translations.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -318,15 +353,41 @@ class Translations {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['translationable_type'] = this.translationableType;
-    data['translationable_id'] = this.translationableId;
-    data['locale'] = this.locale;
-    data['key'] = this.key;
-    data['value'] = this.value;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['translationable_type'] = translationableType;
+    data['translationable_id'] = translationableId;
+    data['locale'] = locale;
+    data['key'] = key;
+    data['value'] = value;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
 }
+
+class PriceDetail {
+  String? hour;
+  String? price;
+  String? kmLimit;
+  String? kmCharges;
+
+  PriceDetail({this.hour, this.price, this.kmLimit, this.kmCharges});
+
+  PriceDetail.fromJson(Map<String, dynamic> json) {
+    hour = json['hour'];
+    price = json['price'];
+    kmLimit = json['km_limit'];
+    kmCharges = json['km_charges'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['hour'] = this.hour;
+    data['price'] = this.price;
+    data['km_limit'] = this.kmLimit;
+    data['km_charges'] = this.kmCharges;
+    return data;
+  }
+}
+

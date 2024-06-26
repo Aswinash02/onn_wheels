@@ -84,6 +84,9 @@ class VerificationController extends GetxController {
 
   void stepTapped(index) {
     activeCurrentStep.value = index;
+    if(index==2){
+      print("2");
+    }
     update();
   }
 
