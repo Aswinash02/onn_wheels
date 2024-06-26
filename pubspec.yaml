@@ -43,7 +43,7 @@ dependencies:
   intl:
   crypto:
   webview_flutter:
-  shimmer:
+  shimmer: ^2.0.0
   flip_card:
   flutter_typeahead:
   geolocator:
@@ -61,6 +61,7 @@ dependencies:
   razorpay_flutter:
   flutter_localizations:
     sdk: flutter
+
 
 dev_dependencies:
   flutter_test:

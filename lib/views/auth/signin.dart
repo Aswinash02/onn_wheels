@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:onnwheels/controllers/auth_controller.dart';
 import 'package:onnwheels/customs/loading_class.dart';
 import 'package:onnwheels/helpers/auth_helper.dart';
 import 'package:onnwheels/models/login_response_model.dart';
+import 'package:onnwheels/models/user_info_model.dart';
 import 'package:onnwheels/utils/shared_preference.dart';
 import 'package:onnwheels/views/auth/password_forgot.dart';
 import 'package:onnwheels/views/auth/phone_login.dart';
@@ -74,9 +76,18 @@ class _LoginState extends State<Login> {
       _login_by == 'email' ? email : _phone,
       password,
     );
+    print('image ==== ${loginResponse.user?.image}');
+    UserInfo userInfo = UserInfo(
+      id: loginResponse.user?.id,
+      name: loginResponse.user?.fName,
+      email: loginResponse.user?.email,
+      phone: loginResponse.user?.phone,
+      image: loginResponse.user?.image,
+    );
+    Get.find<AuthController>().saveUserInfo(userInfo);
+    SharedPreference().setLogin(true);
     Loading.close();
     // AuthHelper().setUserData(loginResponse);
-    SharedPreference().setUserData(loginResponse: loginResponse);
   }
 
   // onPressedFacebookLogin() async {

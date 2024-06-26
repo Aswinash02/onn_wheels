@@ -10,6 +10,7 @@ import 'package:onnwheels/utils/app_config.dart';
 import 'package:onnwheels/views/bikedetails/components/text_widget.dart';
 import 'package:onnwheels/views/main_page/components/custom_appbar.dart';
 import 'package:onnwheels/views/main_page/main_page.dart';
+import 'package:onnwheels/views/order_details/components/order_page_card.dart';
 import 'package:onnwheels/views/order_details/order_details_screen.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -241,7 +242,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   void handlePaymentSuccess(PaymentSuccessResponse response) {
     createOrder("paid");
     Get.off(
-          () => OrderDetailsScreen(),
+          () => OrderCardListView(),
     );
   }
 

@@ -6,6 +6,7 @@ import 'package:onnwheels/customs/toastcomponent.dart';
 import 'package:onnwheels/helpers/api_helpers.dart';
 import 'package:onnwheels/models/checkout_model.dart';
 import 'package:onnwheels/utils/shared_value.dart';
+import 'package:onnwheels/views/order_details/components/order_page_card.dart';
 import 'package:onnwheels/views/order_details/order_details_screen.dart';
 import 'package:toast/toast.dart';
 
@@ -59,7 +60,7 @@ class CheckoutRepository {
     print("order response=======>${response.body}");
     if (response.statusCode == 200) {
       Get.to(
-        () => OrderDetailsScreen(),
+        () => OrderCardListView(),
       );
       return checkoutResponseFromJson(response.body);
     } else if (response.statusCode == 403) {

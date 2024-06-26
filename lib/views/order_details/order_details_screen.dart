@@ -1,14 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:onnwheels/controllers/all_orders_controller.dart';
+import 'package:onnwheels/controllers/order_controller.dart';
 import 'package:onnwheels/mytheme.dart';
 import 'package:onnwheels/views/bikedetails/components/text_widget.dart';
 
-class OrderDetailsScreen extends StatelessWidget {
-  OrderDetailsScreen({super.key});
+class OrderDetailsScreen extends StatefulWidget {
+  final int orderId;
 
-  final AllOrdersController allOrdersController =
-      Get.put(AllOrdersController());
+  const OrderDetailsScreen({super.key, required this.orderId});
+
+  @override
+  State<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
+}
+
+class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
+  final OrderController orderController = Get.find<OrderController>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    orderController.getOrderDetails(orderId: widget.orderId);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +30,10 @@ class OrderDetailsScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         title: CustomText(
-          text: "Order Details",
+          text: '${widget.orderId}',
           color: MyTheme.black,
         ),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20),
@@ -29,13 +43,16 @@ class OrderDetailsScreen extends StatelessWidget {
             children: [
               Container(
                 height: 200,
-                color: Colors.red,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: NetworkImage(
+                            'https://onnwheels.com/storage/app/public/product/${orderController.order.value.items?.first.image}'))),
               ),
               SizedBox(
                 height: 15,
               ),
               CustomText(
-                text: 'KTM Duke 390',
+                text: orderController.order.value.items!.first.itemName ?? '',
                 fontWeight: FontWeight.w600,
                 fontSize: 20,
               ),
@@ -43,7 +60,7 @@ class OrderDetailsScreen extends StatelessWidget {
                 height: 10,
               ),
               CustomText(
-                text: '₹1500',
+                text: "\u20B9 ${orderController.order.value.orderAmount}",
                 fontWeight: FontWeight.w600,
                 fontSize: 18,
                 color: Colors.grey,
@@ -51,94 +68,110 @@ class OrderDetailsScreen extends StatelessWidget {
               SizedBox(
                 height: 10,
               ),
-              Row(
-                children: [
-                  CustomText(
-                    text: 'Scheduled',
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                  ),
-                  Spacer(),
-                  CustomText(
-                    text: '6:30 pm',
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                    color: Colors.red,
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  SizedBox(
-                    height: 40,
-                    width: 40,
-                    child: Image(
-                      image: AssetImage('assets/calendar.png'),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  CustomText(
-                    text: 'June 24, 2024',
-                    fontWeight: FontWeight.w500,
-                    fontSize: 32,
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Divider(
-                thickness: 2,
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              CustomText(
-                text: 'Store : sai',
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-                color: Colors.grey,
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              mapButton(),
-              SizedBox(
-                height: 15,
-              ),
-              invoiceButton(),
-              SizedBox(
-                height: 10,
-              ),
+              // Row(
+              //   children: [
+              //     CustomText(
+              //       text: 'Scheduled',
+              //       fontWeight: FontWeight.w500,
+              //       fontSize: 16,
+              //     ),
+              //     Spacer(),
+              //     CustomText(
+              //       text: '6:30 pm',
+              //       fontWeight: FontWeight.w500,
+              //       fontSize: 16,
+              //       color: Colors.red,
+              //     ),
+              //   ],
+              // ),
+              // SizedBox(
+              //   height: 10,
+              // ),
+              // Row(
+              //   children: [
+              //     SizedBox(
+              //       height: 40,
+              //       width: 40,
+              //       child: Image(
+              //         image: AssetImage('assets/calendar.png'),
+              //       ),
+              //     ),
+              //     SizedBox(
+              //       width: 10,
+              //     ),
+              //     CustomText(
+              //       text: 'June 24, 2024',
+              //       fontWeight: FontWeight.w500,
+              //       fontSize: 32,
+              //     ),
+              //   ],
+              // ),
+              // SizedBox(
+              //   height: 10,
+              // ),
+              // Divider(
+              //   thickness: 2,
+              // ),
+              // SizedBox(
+              //   height: 10,
+              // ),
+              // CustomText(
+              //   text: 'Store : sai',
+              //   fontWeight: FontWeight.w500,
+              //   fontSize: 16,
+              //   color: Colors.grey,
+              // ),
+              // SizedBox(
+              //   height: 10,
+              // ),
+              // mapButton(),
+              // SizedBox(
+              //   height: 15,
+              // ),
+              // invoiceButton(),
+              // SizedBox(
+              //   height: 10,
+              // ),
+              detailsRow(
+                  title: 'Quantity',
+                  value:
+                      "${orderController.order.value.items?.first.quantity}"),
               detailsRow1(
-                  title: 'Status', value: 'Pending', color: Colors.teal.shade100),
-              detailsRow(title: 'Payment Menthod', value: 'asdfghbvcdfg'),
-              detailsRow(title: 'Reference Code', value: '₹26'),
+                  title: 'Order Status',
+                  value: orderController.order.value.orderStatus ?? '',
+                  color: Colors.teal.shade100),
               detailsRow1(
-                  title: 'Order Type', value: 'Delivered', color: Colors.teal.shade100),
-              detailsRow1(
-                  title: 'Payment Status', value: 'Paid', color: Colors.green.shade200),
-              Divider(
-                thickness: 2,
-              ),
-              detailsRow(title: 'Item Price', value: '₹26'),
-              detailsRow(title: 'Subtotal', value: '₹26'),
-              detailsRow(title: 'Discount', value: '₹26'),
-              detailsRow(title: 'Coupon Discount', value: '₹26'),
-              detailsRow(title: 'Vat / Tax', value: '₹26'),
-              detailsRow(title: 'Delivery Fee', value: '₹26'),
-              Divider(
-                thickness: 2,
-              ),
-              detailsRow(title: 'Delivery Man Tips', value: '₹26'),
-              detailsRow(title: 'Additional Charge', value: '₹26'),
-              detailsRow(title: 'Total', value: '₹26'),
-              detailsRow(title: 'Due Amount ', value: '₹26'),
+                  title: 'Payment Status',
+                  value: "${orderController.order.value.paymentStatus}",
+                  color: Colors.green.shade200),
+              detailsRow(
+                  title: 'CreatedAt',
+                  value: "${orderController.order.value.createdAt}"),
+              detailsRow(
+                  title: 'GST (${orderController.order.value.gst}%) ',
+                  value:
+                      "\u20B9 ${orderController.order.value.items?.first.gstAmount}"),
+              detailsRow(
+                  title: 'SGST (${orderController.order.value.sgst}%) ',
+                  value:
+                      "\u20B9 ${orderController.order.value.items?.first.sgstAmount}"),
+
+              detailsRow(
+                  title: 'Unit Price',
+                  value:
+                      "\u20B9 ${orderController.order.value.items?.first.unitPrice}"),
+              detailsRow(
+                  title: 'Subtotal',
+                  value:
+                      "\u20B9 ${orderController.order.value.items?.first.subtotal}"),
+              detailsRow(
+                  title: 'WeekEnd Price ',
+                  value:
+                      "\u20B9 ${orderController.order.value.items?.first.weekendPrice}"),
+              detailsRow(
+                  title: 'Price',
+                  value:
+                      "\u20B9 ${orderController.order.value.items?.first.price}"),
             ],
           ),
         ),

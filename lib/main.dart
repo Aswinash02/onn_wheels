@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:one_context/one_context.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:onnwheels/controllers/auth_controller.dart';
 import 'package:onnwheels/utils/routes.dart';
 import 'package:onnwheels/utils/themes.dart';
 import 'package:onnwheels/views/auth/signin.dart';
@@ -12,6 +13,7 @@ import 'package:shared_value/shared_value.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  Get.lazyPut(() => AuthController());
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,

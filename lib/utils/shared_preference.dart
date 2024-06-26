@@ -63,9 +63,16 @@ class SharedPreference {
   Future<void> clearUserData() async {
     final prefs = await SharedPreferences.getInstance();
     await setLogin(false);
-    await prefs.remove("user_name");
-    await prefs.remove("user_id");
-    await prefs.remove("user_email");
-    await prefs.remove("user_phone");
+    await prefs.remove("user_info");
+  }
+
+  Future<void> saveUserInfo(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("user_info", value);
+  }
+
+  Future<String> getUserInfo() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString("user_info") ?? "";
   }
 }
