@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:onnwheels/customs/loading_class.dart';
 import 'package:onnwheels/helpers/auth_helper.dart';
 import 'package:onnwheels/models/login_response_model.dart';
+import 'package:onnwheels/utils/shared_preference.dart';
 import 'package:onnwheels/views/auth/password_forgot.dart';
 import 'package:onnwheels/views/auth/phone_login.dart';
 import 'package:onnwheels/views/auth/signup.dart';
@@ -74,7 +75,8 @@ class _LoginState extends State<Login> {
       password,
     );
     Loading.close();
-    AuthHelper().setUserData(loginResponse);
+    // AuthHelper().setUserData(loginResponse);
+    SharedPreference().setUserData(loginResponse: loginResponse);
   }
 
   // onPressedFacebookLogin() async {

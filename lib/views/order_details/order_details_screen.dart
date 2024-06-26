@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:onnwheels/controllers/all_orders_controller.dart';
+import 'package:onnwheels/mytheme.dart';
 import 'package:onnwheels/views/bikedetails/components/text_widget.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
@@ -17,6 +18,7 @@ class OrderDetailsScreen extends StatelessWidget {
         elevation: 0,
         title: CustomText(
           text: "Order Details",
+          color: MyTheme.black,
         ),
       ),
       body: Padding(

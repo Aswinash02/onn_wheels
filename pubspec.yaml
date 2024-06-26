@@ -57,6 +57,8 @@ dependencies:
   flutter_datetime_picker: ^1.5.1
   syncfusion_flutter_datepicker: ^20.1.55
   toggle_switch: ^2.3.0
+  google_maps_flutter: ^2.5.2
+  razorpay_flutter:
   flutter_localizations:
     sdk: flutter
 
