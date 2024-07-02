@@ -9,7 +9,7 @@ class OrderController extends GetxController {
 
   Rx<OrderDetailModel> order = OrderDetailModel().obs;
   RxBool loading = false.obs;
-  RxBool orderDetailLoading = false.obs;
+  RxBool loadingState = false.obs;
 
   Future<void> getAllOrders() async {
     loading.value = true;
@@ -21,9 +21,9 @@ class OrderController extends GetxController {
   }
 
   Future<void> getOrderDetails({required int orderId}) async {
-    orderDetailLoading.value = true;
+    loadingState.value = true;
     order.value = await OrderRepository().getOrderDetails(orderId);
-    orderDetailLoading.value = false;
+    loadingState.value = false;
     update();
   }
 

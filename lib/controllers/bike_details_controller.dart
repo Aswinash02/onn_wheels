@@ -37,6 +37,7 @@ class BikeDetailsController extends GetxController {
   RxList stationDropdownItems = [].obs;
   RxString startDateTime = ''.obs;
   RxString endDateTime = ''.obs;
+  RxBool loadingState = false.obs;
 
   // RxList to hold the dropdown items
   RxList<DropdownMenuItem<Stations>> dropdownItems =
@@ -60,14 +61,15 @@ class BikeDetailsController extends GetxController {
   }
 
   fetchProductDetailsData({int? id}) async {
+    loadingState.value = true;
     var bikeDetailsResponse =
         await ProductRepository().getProductDetails(id: id);
 
     // Log the rates after fetching
-    print("Fetched Hourly Rate: ${bikeDetailsResponse.hoursPrice!.price}");
-    print("Fetched Daily Rate: ${bikeDetailsResponse.daysPrice!.price}");
-    print("Fetched Weekly Rate: ${bikeDetailsResponse.weekPrice!.price}");
-    print("Fetched Monthly Rate: ${bikeDetailsResponse.monthPrice!.price}");
+    // print("Fetched Hourly Rate: ${bikeDetailsResponse.hoursPrice!.price}");
+    // print("Fetched Daily Rate: ${bikeDetailsResponse.daysPrice!.price}");
+    // print("Fetched Weekly Rate: ${bikeDetailsResponse.weekPrice!.price}");
+    // print("Fetched Monthly Rate: ${bikeDetailsResponse.monthPrice!.price}");
     // print("Fetched Hourly Rate: ${bikeDetailsResponse.hoursPrice!.value}");
     // print("Fetched Daily Rate: ${bikeDetailsResponse.daysPrice!.value}");
     // print("Fetched Weekly Rate: ${bikeDetailsResponse.weekPrice!.value}");
@@ -86,6 +88,7 @@ class BikeDetailsController extends GetxController {
     weeklyRate.value = bikeDetailsResponse.weekPrice?.price ?? '0';
     monthlyRate.value = bikeDetailsResponse.monthPrice?.price ?? '0';
     setDropdownItems(bikeDetailsResponse.stations ?? []);
+    loadingState.value = false;
   }
 
   Future dateTimePicker(BuildContext context) async {
@@ -161,10 +164,11 @@ class BikeDetailsController extends GetxController {
       print("Calculated Price: $calculatedPrice");
 
       // Update total price
-      total.value = (price.value + calculatedPrice).toInt();
+      total.value = (calculatedPrice).toInt();
       print("Total Price value==================>${total.value}");
       print(
           "Calculated Additional Price==================>${calculatedPrice.toInt()}");
+      update();
     }
   }
 

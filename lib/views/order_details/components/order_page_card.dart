@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:onnwheels/controllers/order_controller.dart';
+import 'package:onnwheels/mytheme.dart';
 import 'package:onnwheels/simmer/order_card_list_view_simmer.dart';
 import 'package:onnwheels/views/bikedetails/components/text_widget.dart';
 import 'package:onnwheels/views/order_details/order_details_screen.dart';
@@ -14,8 +15,11 @@ class OrderCardListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: MyTheme.white,
+          foregroundColor: Colors.black,
           title: CustomText(
             text: 'My Orders',
+            color: Colors.black,
           ),
           centerTitle: true,
         ),

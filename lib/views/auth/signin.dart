@@ -78,13 +78,15 @@ class _LoginState extends State<Login> {
     );
     print('image ==== ${loginResponse.user?.image}');
     UserInfo userInfo = UserInfo(
-      id: loginResponse.user?.id,
-      name: loginResponse.user?.fName,
-      email: loginResponse.user?.email,
-      phone: loginResponse.user?.phone,
-      image: loginResponse.user?.image,
-    );
+        id: loginResponse.user?.id,
+        name: loginResponse.user?.fName,
+        email: loginResponse.user?.email,
+        phone: loginResponse.user?.phone,
+        image: loginResponse.user?.image,
+        isVerifiedKyc: loginResponse.user?.userKyc?.isVerified);
     Get.find<AuthController>().saveUserInfo(userInfo);
+    SharedPreference().setUserToken(loginResponse.token!);
+    SharedPreference().setKycVerified(loginResponse.user!.userKyc!.isVerified!);
     SharedPreference().setLogin(true);
     Loading.close();
     // AuthHelper().setUserData(loginResponse);

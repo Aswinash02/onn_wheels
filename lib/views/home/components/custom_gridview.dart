@@ -53,4 +53,23 @@ class CustomWidget {
       );
     }
   }
+
+  static buildSearchListProduct(context, productList) {
+    return Container(
+      height: productList.length > 0 ? 270 : 0,
+      padding: EdgeInsets.all(5),
+      margin: EdgeInsets.all(2),
+      child: ListView.separated(
+        itemCount: productList.length,
+        scrollDirection: Axis.horizontal,
+        separatorBuilder: (context, index) =>SizedBox(width: 10,),
+        itemBuilder: (context, index) {
+          final product = productList[index];
+          return MiniProductCard(
+            product: product,
+          );
+        },
+      ),
+    );
+  }
 }

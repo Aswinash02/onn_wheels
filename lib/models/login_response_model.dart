@@ -8,13 +8,17 @@ class LoginResponse {
   String? token;
   int? isPhoneVerified;
   User? user;
+  UserKyc? userKyc;
 
-  LoginResponse({this.token, this.isPhoneVerified, this.user});
+  LoginResponse({this.token, this.isPhoneVerified, this.user, this.userKyc});
 
   LoginResponse.fromJson(Map<String, dynamic> json) {
     token = json['token'];
     isPhoneVerified = json['is_phone_verified'];
     user = json['user'] != null ? new User.fromJson(json['user']) : null;
+    userKyc = json['user_kyc'] != null
+        ? new UserKyc.fromJson(json['user_kyc'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -23,6 +27,9 @@ class LoginResponse {
     data['is_phone_verified'] = this.isPhoneVerified;
     if (this.user != null) {
       data['user'] = this.user!.toJson();
+    }
+    if (this.userKyc != null) {
+      data['user_kyc'] = this.userKyc!.toJson();
     }
     return data;
   }
@@ -36,7 +43,7 @@ class User {
   String? email;
   String? image;
   int? isPhoneVerified;
-  String? emailVerifiedAt;
+  int? emailVerifiedAt;
   String? createdAt;
   String? updatedAt;
   String? cmFirebaseToken;
@@ -51,8 +58,9 @@ class User {
   String? currentLanguageKey;
   String? refBy;
   String? tempToken;
-  double? latitude;
-  double? longitude;
+  String? latitude;
+  String? longitude;
+  UserKyc? userKyc;
 
   User(
       {this.id,
@@ -78,7 +86,8 @@ class User {
         this.refBy,
         this.tempToken,
         this.latitude,
-        this.longitude});
+        this.longitude,
+        this.userKyc});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -105,6 +114,9 @@ class User {
     tempToken = json['temp_token'];
     latitude = json['latitude'];
     longitude = json['longitude'];
+    userKyc = json['user_kyc'] != null
+        ? new UserKyc.fromJson(json['user_kyc'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -133,6 +145,66 @@ class User {
     data['temp_token'] = this.tempToken;
     data['latitude'] = this.latitude;
     data['longitude'] = this.longitude;
+    if (this.userKyc != null) {
+      data['user_kyc'] = this.userKyc!.toJson();
+    }
+    return data;
+  }
+}
+
+class UserKyc {
+  int? id;
+  int? userId;
+  String? aadhar;
+  String? pan;
+  String? licenseFront;
+  String? licenseBack;
+  int? isVerified;
+  int? isReject;
+  String? status;
+  String? createdAt;
+  String? updatedAt;
+
+  UserKyc(
+      {this.id,
+        this.userId,
+        this.aadhar,
+        this.pan,
+        this.licenseFront,
+        this.licenseBack,
+        this.isVerified,
+        this.isReject,
+        this.status,
+        this.createdAt,
+        this.updatedAt});
+
+  UserKyc.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    userId = json['user_id'];
+    aadhar = json['aadhar'];
+    pan = json['pan'];
+    licenseFront = json['license_front'];
+    licenseBack = json['license_back'];
+    isVerified = json['is_verified'];
+    isReject = json['is_reject'];
+    status = json['status'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['user_id'] = this.userId;
+    data['aadhar'] = this.aadhar;
+    data['pan'] = this.pan;
+    data['license_front'] = this.licenseFront;
+    data['license_back'] = this.licenseBack;
+    data['is_verified'] = this.isVerified;
+    data['is_reject'] = this.isReject;
+    data['status'] = this.status;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
     return data;
   }
 }

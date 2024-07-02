@@ -5,12 +5,13 @@ import 'package:get/get.dart';
 import 'package:onnwheels/controllers/bike_details_controller.dart';
 import 'package:onnwheels/models/bike_details.dart';
 import 'package:onnwheels/mytheme.dart';
+import 'package:onnwheels/simmer/bike_details_simmer.dart';
 import 'package:onnwheels/views/bikedetails/components/bike_details_widgets.dart';
 import 'package:onnwheels/views/bikedetails/components/date_time_picker.dart';
 import 'package:onnwheels/views/bikedetails/components/toggle_switch.dart';
+import 'package:onnwheels/views/checkout/checkout_page.dart';
 import 'package:onnwheels/views/main_page/components/custom_appbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:onnwheels/views/payment/checkout_page.dart';
 
 import 'components/text_widget.dart';
 
@@ -152,259 +153,290 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
             icon: Icon(Icons.arrow_back, color: MyTheme.black),
           ),
           textColor: MyTheme.black),
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Obx(
-              () => BikeDetailWidgets.buildProductSliderImageSection(
-                productImageList: bikeDetailsController.bikeImageResponse,
-                carouselController: bikeDetailsController.carouselController,
-                currentImage: bikeDetailsController.currentImage.value,
-                controller: bikeDetailsController,
-              ),
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Obx(
-                        () => CustomText(
-                          text: bikeDetailsController.bikeTitle.value,
-                          fontWeight: FontWeight.w600,
-                          fontSize: screenWidth / 18,
-                        ),
+      body: Obx(
+        () => bikeDetailsController.loadingState.value
+            ? CustomSimmer()
+            : SingleChildScrollView(
+                physics: BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Obx(
+                      () => BikeDetailWidgets.buildProductSliderImageSection(
+                        productImageList:
+                            bikeDetailsController.bikeImageResponse,
+                        carouselController:
+                            bikeDetailsController.carouselController,
+                        currentImage: bikeDetailsController.currentImage.value,
+                        controller: bikeDetailsController,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15.0, vertical: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
-                            Icons.star,
-                          ),
-                          SizedBox(
-                            width: 2,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Obx(
+                                () => CustomText(
+                                  text: bikeDetailsController.bikeTitle.value,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: screenWidth / 18,
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Icon(
+                                    Icons.star,
+                                  ),
+                                  SizedBox(
+                                    width: 2,
+                                  ),
+                                  Obx(
+                                    () => CustomText(
+                                      text: bikeDetailsController
+                                          .ratingCount.value
+                                          .toString(),
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: screenWidth / 20,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                           Obx(
                             () => CustomText(
-                              text: bikeDetailsController.ratingCount.value
-                                  .toString(),
+                              text: bikeDetailsController.total.value == 0
+                                  ? ""
+                                  : "\u20B9 ${bikeDetailsController.total.value}",
                               fontWeight: FontWeight.w600,
-                              fontSize: screenWidth / 20,
+                              fontSize: screenWidth / 18,
+                              color: MyTheme.orange,
+                            ),
+                          ),
+                          Obx(
+                            () => CustomText(
+                              text: bikeDetailsController
+                                  .productDescription.value,
+                              fontWeight: FontWeight.w600,
+                              fontSize: screenWidth / 36,
+                              maxLines: 6,
+                              textAlign: TextAlign.justify,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          InkWell(
+                            onTap: () {
+                              dateTimeRangeBottomSheet(context);
+                            },
+                            child: Container(
+                              height: 40,
+                              width: screenWidth,
+                              decoration: BoxDecoration(
+                                color: MyTheme.orange,
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Center(
+                                child: Obx(
+                                  () => CustomText(
+                                    text: bikeDetailsController.startDateTime ==
+                                            ''
+                                        ? "Select Date And Time"
+                                        : "${bikeDetailsController.startDateTime} - ${bikeDetailsController.endDateTime}",
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Align(
+                            alignment: Alignment.center,
+                            child: toggleSwitch(toggle: (index) {
+                              bikeDetailsController.calculatePrice(index!);
+                            }),
+                          ),
+
+                          Obx(
+                            () => bikeDetailsController
+                                    .stationDropdownItems.isNotEmpty
+                                ? SizedBox(
+                                    height: 20,
+                                  )
+                                : SizedBox(),
+                          ),
+                          Obx(
+                            () => bikeDetailsController
+                                    .stationDropdownItems.isNotEmpty
+                                ? CustomText(text: 'Available At')
+                                : SizedBox(),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Obx(
+                            () => bikeDetailsController
+                                    .stationDropdownItems.isNotEmpty
+                                ? SizedBox(
+                                    height: 40,
+                                    child: DropdownButtonFormField<Stations>(
+                                      value: bikeDetailsController
+                                          .selectedStation.value,
+                                      style: TextStyle(color: Colors.black),
+                                      hint: Text("Select Zone"),
+                                      onChanged: bikeDetailsController
+                                          .onChangeAvailableDropdown,
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.all(8),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        disabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      items:
+                                          bikeDetailsController.dropdownItems,
+                                    ),
+                                  )
+                                : SizedBox(),
+                          ),
+                          // Obx(
+                          //   () => SizedBox(
+                          //     height: 40,
+                          //     child: DropdownButtonFormField<String>(
+                          //       value: bikeDetailsController.selectedValue.value,
+                          //       style: TextStyle(color: Colors.black),
+                          //       onChanged:
+                          //           bikeDetailsController.onChangeAvailableDropdown,
+                          //       padding: EdgeInsets.all(0),
+                          //       decoration: InputDecoration(
+                          //         contentPadding: EdgeInsets.all(8),
+                          //         border: OutlineInputBorder(
+                          //           borderRadius: BorderRadius.circular(10),
+                          //         ),
+                          //         enabledBorder: OutlineInputBorder(
+                          //           borderRadius: BorderRadius.circular(10),
+                          //         ),
+                          //         disabledBorder: OutlineInputBorder(
+                          //           borderRadius: BorderRadius.circular(10),
+                          //         ),
+                          //         focusedBorder: OutlineInputBorder(
+                          //           borderRadius: BorderRadius.circular(10),
+                          //         ),
+                          //       ),
+                          //       items: bikeDetailsController.stationDropdownItems.map((item) {
+                          //         return DropdownMenuItem(
+                          //           value: item,
+                          //           child: Text(item),
+                          //         );
+                          //       }).toList(),
+                          //     ),
+                          //   ),
+                          // ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          InkWell(
+                            onTap: () {
+                              if (bikeDetailsController.startDateTime.value ==
+                                      "" ||
+                                  bikeDetailsController.endDateTime.value ==
+                                      '') {
+                                const snackBar = SnackBar(
+                                  content: Text('Please select date and time'),
+                                  backgroundColor: MyTheme.accent_color,
+                                  elevation: 10,
+                                  behavior: SnackBarBehavior.floating,
+                                  margin: EdgeInsets.all(5),
+                                );
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                                return;
+                              }
+                              if (bikeDetailsController.selectedStation.value ==
+                                      "" ||
+                                  bikeDetailsController.selectedStation.value ==
+                                      null) {
+                                const snackdemo = SnackBar(
+                                  content: Text('Please select station'),
+                                  backgroundColor: MyTheme.accent_color,
+                                  elevation: 10,
+                                  behavior: SnackBarBehavior.floating,
+                                  margin: EdgeInsets.all(5),
+                                );
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackdemo);
+                                return;
+                              }
+                              Get.to(
+                                () => CheckoutPage(
+                                  imageUrl:
+                                      bikeDetailsController.imageFile.value,
+                                  startTime:
+                                      bikeDetailsController.startDateTime.value,
+                                  endTime:
+                                      bikeDetailsController.endDateTime.value,
+                                  station: bikeDetailsController
+                                      .selectedStation.value!.name!,
+                                  totalPayableAmount:
+                                      bikeDetailsController.total.value == 0
+                                          ? bikeDetailsController.price.value
+                                              .toString()
+                                          : bikeDetailsController.total.value
+                                              .toString(),
+                                  lat: bikeDetailsController
+                                      .selectedStation.value!.lat!,
+                                  long: bikeDetailsController
+                                      .selectedStation.value!.lon!,
+                                  name: bikeDetailsController.bikeTitle.value,
+                                  id: widget.id,
+                                ),
+                              );
+                            },
+                            child: Container(
+                              width: screenWidth,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: Color(0XFF000080),
+                              ),
+                              child: Center(
+                                child: CustomText(
+                                  text: "Book Now",
+                                  color: MyTheme.white,
+                                  fontSize: screenWidth / 20,
+                                ),
+                              ),
                             ),
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                  Obx(
-                    () => CustomText(
-                      text: bikeDetailsController.total.value == 0
-                          ? "\u20B9 ${bikeDetailsController.price.value}"
-                          : "\u20B9 ${bikeDetailsController.total.value}",
-                      fontWeight: FontWeight.w600,
-                      fontSize: screenWidth / 18,
-                      color: MyTheme.orange,
-                    ),
-                  ),
-                  Obx(
-                    () => CustomText(
-                      text: bikeDetailsController.productDescription.value,
-                      fontWeight: FontWeight.w600,
-                      fontSize: screenWidth / 36,
-                      maxLines: 6,
-                      textAlign: TextAlign.justify,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  toggleSwitch(toggle: (index) {
-                    print("called Toggling");
-                    bikeDetailsController.calculatePrice(index!);
-                  }),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      dateTimeRangeBottomSheet(context);
-                    },
-                    child: Container(
-                      height: 40,
-                      width: screenWidth,
-                      decoration: BoxDecoration(
-                        color: MyTheme.orange,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Center(
-                        child: Obx(
-                          () => CustomText(
-                            text: bikeDetailsController.startDateTime == ''
-                                ? "Select Date And Time"
-                                : "${bikeDetailsController.startDateTime} - ${bikeDetailsController.endDateTime}",
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Obx(
-                    () => bikeDetailsController
-                            .stationDropdownItems.value.isNotEmpty
-                        ? SizedBox(
-                            height: 20,
-                          )
-                        : SizedBox(),
-                  ),
-                  Obx(
-                    () => bikeDetailsController
-                            .stationDropdownItems.value.isNotEmpty
-                        ? CustomText(text: 'Available At')
-                        : SizedBox(),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Obx(
-                    () => bikeDetailsController
-                            .stationDropdownItems.value.isNotEmpty
-                        ? SizedBox(
-                            height: 40,
-                            child: DropdownButtonFormField<Stations>(
-                              value:
-                                  bikeDetailsController.selectedStation.value,
-                              style: TextStyle(color: Colors.black),
-                              onChanged: bikeDetailsController
-                                  .onChangeAvailableDropdown,
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.all(8),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                disabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              items: bikeDetailsController.dropdownItems,
-                            ),
-                          )
-                        : SizedBox(),
-                  ),
-                  // Obx(
-                  //   () => SizedBox(
-                  //     height: 40,
-                  //     child: DropdownButtonFormField<String>(
-                  //       value: bikeDetailsController.selectedValue.value,
-                  //       style: TextStyle(color: Colors.black),
-                  //       onChanged:
-                  //           bikeDetailsController.onChangeAvailableDropdown,
-                  //       padding: EdgeInsets.all(0),
-                  //       decoration: InputDecoration(
-                  //         contentPadding: EdgeInsets.all(8),
-                  //         border: OutlineInputBorder(
-                  //           borderRadius: BorderRadius.circular(10),
-                  //         ),
-                  //         enabledBorder: OutlineInputBorder(
-                  //           borderRadius: BorderRadius.circular(10),
-                  //         ),
-                  //         disabledBorder: OutlineInputBorder(
-                  //           borderRadius: BorderRadius.circular(10),
-                  //         ),
-                  //         focusedBorder: OutlineInputBorder(
-                  //           borderRadius: BorderRadius.circular(10),
-                  //         ),
-                  //       ),
-                  //       items: bikeDetailsController.stationDropdownItems.map((item) {
-                  //         return DropdownMenuItem(
-                  //           value: item,
-                  //           child: Text(item),
-                  //         );
-                  //       }).toList(),
-                  //     ),
-                  //   ),
-                  // ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      print("called onTAP");
-                      if (bikeDetailsController.startDateTime.value == "" ||
-                          bikeDetailsController.endDateTime.value == '') {
-                        const snackdemo = SnackBar(
-                          content: Text('Please select date and time'),
-                          backgroundColor: MyTheme.accent_color,
-                          elevation: 10,
-                          behavior: SnackBarBehavior.floating,
-                          margin: EdgeInsets.all(5),
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(snackdemo);
-                        return;
-                      }
-                      if (bikeDetailsController.selectedStation.value == "" ||
-                          bikeDetailsController.selectedStation.value == null) {
-                        const snackdemo = SnackBar(
-                          content: Text('Please select station'),
-                          backgroundColor: MyTheme.accent_color,
-                          elevation: 10,
-                          behavior: SnackBarBehavior.floating,
-                          margin: EdgeInsets.all(5),
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(snackdemo);
-                        return;
-                      }
-                      Get.to(
-                        () => CheckoutPage(
-                          imageUrl: bikeDetailsController.imageFile.value,
-                          startTime: bikeDetailsController.startDateTime.value,
-                          endTime: bikeDetailsController.endDateTime.value,
-                          station: bikeDetailsController
-                              .selectedStation.value!.name!,
-                          totalPayableAmount:
-                              bikeDetailsController.price.toString(),
-                          lat:
-                              bikeDetailsController.selectedStation.value!.lat!,
-                          long:
-                              bikeDetailsController.selectedStation.value!.lon!,
-                          name: bikeDetailsController.bikeTitle.value,
-                          id: widget.id,
-                        ),
-                      );
-                    },
-                    child: Container(
-                      width: screenWidth,
-                      height: 40,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: Color(0XFF000080)),
-                      child: Center(
-                        child: CustomText(
-                          text: "Book Now",
-                          color: MyTheme.white,
-                          fontSize: screenWidth / 20,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                    )
+                  ],
+                ),
               ),
-            )
-          ],
-        ),
       ),
     );
   }

@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:onnwheels/customs/box_decorations.dart';
+import 'package:onnwheels/mytheme.dart';
 import 'package:onnwheels/views/bikedetails/bike_details.dart';
-import '../models/all_bike_response.dart';
-import '../mytheme.dart';
-import 'box_decorations.dart';
 
-class MiniProductCard extends StatefulWidget {
+import '../../../models/category_product_models.dart';
+
+class MiniProductCardCategory extends StatefulWidget {
   Product product;
 
-  MiniProductCard({
+  MiniProductCardCategory({
     Key? key,
     required this.product,
   }) : super(key: key);
 
   @override
-  _MiniProductCardState createState() => _MiniProductCardState();
+  _MiniProductCardCategoryState createState() => _MiniProductCardCategoryState();
 }
 
-class _MiniProductCardState extends State<MiniProductCard> {
+class _MiniProductCardCategoryState extends State<MiniProductCardCategory> {
   @override
   void initState() {
     // TODO: implement initState
@@ -29,7 +30,7 @@ class _MiniProductCardState extends State<MiniProductCard> {
     return InkWell(
       onTap: () {
         Get.to(
-          () => BikeDetailsPage(
+              () => BikeDetailsPage(
             id: widget.product.id!,
           ),
         );
@@ -109,16 +110,16 @@ class _MiniProductCardState extends State<MiniProductCard> {
                 ),
                 Padding(
                   padding:
-                      const EdgeInsets.only(right: 10.0, top: 2, bottom: 5),
+                  const EdgeInsets.only(right: 10.0, top: 2, bottom: 5),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       InkWell(
                         child: Container(
                           height: 30,
                           width: 80,
                           decoration: const BoxDecoration(
-                            color: Color(0XFF000080),
+                            color: MyTheme.accent_color,
                             borderRadius: BorderRadius.all(
                               Radius.circular(10),
                             ),
@@ -132,7 +133,7 @@ class _MiniProductCardState extends State<MiniProductCard> {
                         ),
                         onTap: () {
                           Get.to(
-                            () => BikeDetailsPage(
+                                () => BikeDetailsPage(
                               id: widget.product.id!,
                             ),
                           );

@@ -7,6 +7,7 @@ class AppBars{
     return AppBar(
       leading: setLeading,
       backgroundColor: backgroundColor,
+      centerTitle: true,
       title: Text(
         title,
         style: TextStyle(color: textColor),

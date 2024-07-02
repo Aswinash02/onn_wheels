@@ -178,6 +178,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
           SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
+              bikeDetailsController.calculatePrice(0);
               Navigator.pop(context);
             },
             child: Text('Done'),

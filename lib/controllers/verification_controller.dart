@@ -2,11 +2,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:onnwheels/models/user_info_model.dart';
 import 'package:onnwheels/mytheme.dart';
 import 'package:toast/toast.dart';
 import 'package:dotted_border/dotted_border.dart';
 import '../customs/toastcomponent.dart';
 import '../repositories/verification_repositories.dart';
+import 'auth_controller.dart';
 
 class VerificationController extends GetxController {
   var activeCurrentStep = 0.obs;
@@ -22,8 +24,32 @@ class VerificationController extends GetxController {
   var selectedImagePathFront = ''.obs;
   var selectedImagePathBack = ''.obs;
   bool isFront = false;
+  var panValue = ''.obs;
+  var aadharValue = ''.obs;
+  var licenseFront = ''.obs;
+  var licenseBack = ''.obs;
 
+  Rx<UserInfo> user = UserInfo().obs;
 
+  Future<void> initCall() async {
+    user.value = (await Get.find<AuthController>().getUserInfo())!;
+  }
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    initCall();
+    getUserKycDetails();
+  }
+
+  getUserKycDetails() async {
+    var getKycDetails = await VerificationRepository().getKycDetails();
+    panValue.value = getKycDetails.data!.pan!;
+    aadharValue.value = getKycDetails.data!.aadhar!;
+    licenseFront.value = getKycDetails.data!.licenseFront!;
+    licenseBack.value = getKycDetails.data!.licenseBack!;
+  }
 
   Future<void> chooseAndUploadFile(BuildContext context) async {
     // Show dialog to choose between camera and gallery
@@ -84,11 +110,9 @@ class VerificationController extends GetxController {
 
   void stepTapped(index) {
     activeCurrentStep.value = index;
-    if(index==2){
+    if (index == 2) {
       print("2");
     }
     update();
   }
-
-
 }

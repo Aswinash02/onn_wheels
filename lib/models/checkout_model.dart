@@ -16,6 +16,7 @@ class CheckoutResponse {
   String? lat;
   int? storeId;
   int? orderAmount;
+  int? unitPrice;
   String? paymentStatus;
   String? transactionReference;
   int? itemId;
@@ -33,6 +34,7 @@ class CheckoutResponse {
       this.lat,
       this.storeId,
       this.orderAmount,
+        this.unitPrice,
       this.paymentStatus,
       this.transactionReference,
       this.itemId,
@@ -50,6 +52,7 @@ class CheckoutResponse {
     lat = json['lat'];
     storeId = json['store_id'];
     orderAmount = json['order_amount'];
+    unitPrice = json['unit_price'];
     paymentStatus = json['payment_status'];
     transactionReference = json['transaction_reference'];
     itemId = json['item_id'];
@@ -69,6 +72,7 @@ class CheckoutResponse {
     data['lat'] = this.lat;
     data['store_id'] = this.storeId;
     data['order_amount'] = this.orderAmount;
+    data['unit_price'] = this.unitPrice;
     data['payment_status'] = this.paymentStatus;
     data['transaction_reference'] = this.transactionReference;
     data['item_id'] = this.itemId;

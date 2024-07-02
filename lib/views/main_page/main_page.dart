@@ -31,7 +31,7 @@ class _MainPageState extends State<MainPage> {
   var bottomPages = [
     const HomePage(),
     const CategoriesPage(),
-    const ContactUsPage(),
+    ContactUsPage(),
     const ProfilePage()
   ];
 
@@ -133,17 +133,17 @@ class _MainPageState extends State<MainPage> {
                   fontSize: 12),
               items: [
                 BottomNavigationBarItem(
-                    icon: Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Image.asset(
-                        ImageDirectory.homeIconImage,
-                        color: _currentIndex == 0
-                            ? MyTheme.accent_color
-                            : MyTheme.black,
-                        height: 16,
-                      ),
+                  icon: Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Image.asset(
+                      ImageDirectory.homeIconImage,
+                      color: _currentIndex == 0
+                          ? MyTheme.accent_color
+                          : MyTheme.black,
+                      height: 16,
                     ),
-                    label: AppLocalizations.of(context)!.home_ucf,
+                  ),
+                  label: AppLocalizations.of(context)!.home_ucf,
                 ),
                 BottomNavigationBarItem(
                   icon: Padding(

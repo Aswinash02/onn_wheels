@@ -13,7 +13,7 @@ class BikeDetailsResponse {
   String? image;
   int? categoryId;
   List<CategoryIds>? categoryIds;
-  String? variations;
+  // String? variations;
   int? price;
   int? tax;
   String? taxType;
@@ -34,7 +34,7 @@ class BikeDetailsResponse {
   int? stock;
   int? unitId;
   List<String>? images;
-  String? foodVariations;
+  // String? foodVariations;
   String? slug;
   int? recommended;
   int? organic;
@@ -57,7 +57,7 @@ class BikeDetailsResponse {
     this.image,
     this.categoryId,
     this.categoryIds,
-    this.variations,
+    // this.variations,
     this.price,
     this.tax,
     this.taxType,
@@ -78,7 +78,7 @@ class BikeDetailsResponse {
     this.stock,
     this.unitId,
     this.images,
-    this.foodVariations,
+    // this.foodVariations,
     this.slug,
     this.recommended,
     this.organic,
@@ -109,7 +109,7 @@ class BikeDetailsResponse {
         categoryIds!.add(CategoryIds.fromJson(v));
       });
     }
-    variations = json['variations'];
+    // variations = json['variations'];
     price = json['price'];
     tax = json['tax'];
     taxType = json['tax_type'];
@@ -131,7 +131,7 @@ class BikeDetailsResponse {
     stock = json['stock'];
     unitId = json['unit_id'];
     images = json['images'].cast<String>();
-    foodVariations = json['food_variations'];
+    // foodVariations = json['food_variations'];
     slug = json['slug'];
     recommended = json['recommended'];
     organic = json['organic'];
@@ -178,7 +178,7 @@ class BikeDetailsResponse {
     if (categoryIds != null) {
       data['category_ids'] = categoryIds!.map((v) => v.toJson()).toList();
     }
-    data['variations'] = variations;
+    // data['variations'] = variations;
     data['price'] = price;
     data['tax'] = tax;
     data['tax_type'] = taxType;
@@ -199,7 +199,7 @@ class BikeDetailsResponse {
     data['stock'] = stock;
     data['unit_id'] = unitId;
     data['images'] = images;
-    data['food_variations'] = foodVariations;
+    // data['food_variations'] = foodVariations;
     data['slug'] = slug;
     data['recommended'] = recommended;
     data['organic'] = organic;

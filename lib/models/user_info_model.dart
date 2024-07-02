@@ -4,6 +4,7 @@ class UserInfo {
   String? email;
   String? phone;
   String? image;
+  int? isVerifiedKyc;
 
   UserInfo({
     this.id,
@@ -11,6 +12,7 @@ class UserInfo {
     this.email,
     this.phone,
     this.image,
+    this.isVerifiedKyc
   });
 
   UserInfo.fromJson(Map<String, dynamic> json) {
@@ -18,7 +20,9 @@ class UserInfo {
     name = json['name'];
     email = json['email'];
     phone = json['phone'];
-    phone = json['image'];
+    image = json['image'];
+    isVerifiedKyc = json['kycVerified'];
+
   }
 
   Map<String, dynamic> toJson() {
@@ -28,6 +32,7 @@ class UserInfo {
     data['email'] = email;
     data['phone'] = phone;
     data['image'] = image;
+    data['kycVerified'] = isVerifiedKyc;
     return data;
   }
 }

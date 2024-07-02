@@ -3,9 +3,10 @@ import 'package:toggle_switch/toggle_switch.dart';
 
 Widget toggleSwitch({void Function(int?)? toggle}) {
   return Container(
+    width: double.infinity,
     padding: EdgeInsets.all(2),
     child: ToggleSwitch(
-        minWidth: 60.0,
+        minWidth: 90.0,
         minHeight: 25,
         cornerRadius: 20.0,
         activeBgColors: [

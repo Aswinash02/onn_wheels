@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:onnwheels/customs/toastcomponent.dart';
 import 'package:onnwheels/helpers/api_helpers.dart';
 import 'package:onnwheels/models/checkout_model.dart';
+import 'package:onnwheels/models/get_gst_model.dart';
 import 'package:onnwheels/utils/shared_value.dart';
 import 'package:onnwheels/views/order_details/components/order_page_card.dart';
 import 'package:onnwheels/views/order_details/order_details_screen.dart';
@@ -23,6 +24,7 @@ class CheckoutRepository {
     String lat,
     int store_id,
     int amount,
+    int unitAmount,
     String status,
     String transactionReference,
     int item_id,
@@ -40,6 +42,7 @@ class CheckoutRepository {
       "lat": "$lat",
       "store_id": store_id,
       "order_amount": amount,
+      "unit_price" : unitAmount,
       "payment_status": "$status",
       "transaction_reference": "$transactionReference",
       "item_id": item_id,
@@ -66,6 +69,22 @@ class CheckoutRepository {
     } else if (response.statusCode == 403) {
       ToastComponent.showDialog("Not Applicable",
           gravity: Toast.center, duration: Toast.lengthLong);
+    }
+  }
+
+  Future<gstResponse> getGstValue() async {
+    try {
+      String url = ("${AppConfig.BASE_URL}/items/get-gst");
+      var response = await ApiHelper.get(
+        url: url,
+        headers: {"moduleId": '1'},
+      );
+      // List<dynamic> jsonList = jsonDecode(response.body);
+      // return jsonList.map((json) => gstResponse.fromJson(json)).toList();
+      return gstResponseFromJson(response.body);
+    } catch (e) {
+      print(e);
+      throw e;
     }
   }
 }

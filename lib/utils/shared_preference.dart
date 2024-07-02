@@ -52,12 +52,33 @@ class SharedPreference {
     return prefs.getString("user_phone") ?? "";
   }
 
+  Future<void> setUserToken(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("user_token", value);
+  }
+
+  Future<String> getUserToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString("user_token") ?? "";
+  }
+
+  Future<void> setKycVerified(int value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt("kyc_verified", value);
+  }
+
+  Future<Object> getKycVerified() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt("kyc_verified") ?? "";
+  }
+
   Future<void> setUserData({required LoginResponse loginResponse}) async {
     setLogin(true);
     setUserId(loginResponse.user!.id!.toString());
     setUserName(loginResponse.user!.fName!);
     setUserEmail(loginResponse.user!.email!);
     setUserPhoneNo(loginResponse.user!.phone!);
+    setUserToken(loginResponse.token!);
   }
 
   Future<void> clearUserData() async {

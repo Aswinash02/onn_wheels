@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:onnwheels/helpers/api_helpers.dart';
 import 'package:onnwheels/models/category_models.dart';
 import 'package:onnwheels/utils/shared_value.dart';
+import '../models/category_product_models.dart';
 import '../utils/app_config.dart';
 
 class CategoryRepository {
@@ -20,8 +21,51 @@ class CategoryRepository {
     print("get All Category response=======>${response.body}");
 
     List<dynamic> jsonData = json.decode(response.body);
-    List<CategoryResponse> categories = jsonData.map((json) => CategoryResponse.fromJson(json)).toList();
+    List<CategoryResponse> categories =
+        jsonData.map((json) => CategoryResponse.fromJson(json)).toList();
 
     return categories;
   }
+
+  Future<CategoryProductsData> fetchCategoryProducts({
+    int? categoryId,
+  }) async {
+    String url =
+        ("${AppConfig.BASE_URL}/categories/items/list?limit=${10}&offset=${0}&category_ids=[$categoryId]");
+    final response = await ApiHelper.get(
+      url: url,
+      headers: {
+        "Content-Type": "application/json",
+        "moduleId": "1",
+        "zoneId": '[2]'
+      },
+    );
+    print("get All Category Product Data response=======>${response.body}");
+
+    return categoryProductResponseFromJson(response.body);
+  }
+
+// Future<CategoryProductsData> fetchCategoryProducts(
+//     {int? categoryId,
+//   }) async {
+//   String url = ("${AppConfig.BASE_URL}/categories/items/list");
+//   var post_body = jsonEncode({
+//     // "start_date": "June 27, 2024  9:54 AM",
+//     // "end_date": "June 27, 2024  10:54 AM"
+//     "limit": 10,
+//     "offset": 0,
+//     "category_ids": "[7,5]"
+//   });
+//   final response = await ApiHelper.post(
+//       url: url,
+//       headers: {
+//         "Content-Type": "application/json",
+//         "moduleId": "1",
+//         "zoneId": "[2]"
+//       },
+//       body: post_body);
+//   print("get All Category Product Data response=======>${response.body}");
+//
+//   return categoryProductResponseFromJson(response.body);
+// }
 }

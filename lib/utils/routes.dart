@@ -3,7 +3,6 @@ import 'package:onnwheels/binding/home_binding.dart';
 import 'package:onnwheels/views/bikedetails/bike_details.dart';
 import 'package:onnwheels/views/home/home_page.dart';
 import 'package:onnwheels/views/main_page/main_page.dart';
-import 'package:onnwheels/views/payment/checkout_page.dart';
 import 'package:onnwheels/views/verification/verification_page.dart';
 import 'package:onnwheels/views/zone_areas/zone_list.dart';
 

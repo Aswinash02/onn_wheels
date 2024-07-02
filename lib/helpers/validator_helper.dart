@@ -48,4 +48,16 @@ class Validator {
     }
     return null;
   }
+  static String? validateSubject(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Subject cannot be empty';
+    }
+    return null;
+  }
+  static String? validateMessage(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Message cannot be empty';
+    }
+    return null;
+  }
 }
