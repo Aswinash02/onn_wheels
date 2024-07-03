@@ -15,9 +15,69 @@ class DateTimeRangePicker extends StatefulWidget {
 class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
   final BikeDetailsController bikeDetailsController =
       Get.find<BikeDetailsController>();
-  DateTime? _startDateTime;
 
   DateTime? _endDateTime;
+
+  DateTime? _startDateTime;
+
+  void _showCustomTimePicker(String destination) async {
+    final TimeOfDay? picked = await showCustomTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(_startDateTime ?? DateTime.now()),
+    );
+    if (picked != null) {
+      if (destination == 'startTime') {
+        setState(() {
+          int roundedMinute = _roundToNearest15(picked.minute);
+          _startDateTime = DateTime(
+            _startDateTime?.year ?? DateTime.now().year,
+            _startDateTime?.month ?? DateTime.now().month,
+            _startDateTime?.day ?? DateTime.now().day,
+            picked.hour,
+            roundedMinute,
+          );
+          String startDateTime =
+              DateFormat('MMMM d, yyyy h:mm a').format(_startDateTime!);
+          bikeDetailsController.startDateTime.value = startDateTime.toString();
+        });
+      } else {
+        setState(() {
+          int roundedMinute = _roundToNearest15(picked.minute);
+          _endDateTime = DateTime(
+            _endDateTime?.year ?? DateTime.now().year,
+            _endDateTime?.month ?? DateTime.now().month,
+            _endDateTime?.day ?? DateTime.now().day,
+            picked.hour,
+            roundedMinute,
+          );
+          String endDateTime =
+              DateFormat('MMMM d, yyyy h:mm a').format(_endDateTime!);
+
+          bikeDetailsController.endDateTime.value = endDateTime.toString();
+        });
+      }
+    }
+  }
+
+  int _roundToNearest15(int minute) {
+    if (minute == 00) return 00;
+    if (minute <= 15) return 15;
+    if (minute <= 30) return 30;
+    if (minute <= 45) return 45;
+    return 0;
+  }
+
+  Future<TimeOfDay?> showCustomTimePicker({
+    required BuildContext context,
+    required TimeOfDay initialTime,
+  }) {
+    return showDialog<TimeOfDay>(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomTimePickerDialog(initialTime: initialTime);
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,25 +123,23 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
             onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
               setState(() {
                 if (args.value is PickerDateRange) {
-                  // bikeDetailsController.startDateTime =
                   _startDateTime = DateTime(
                     args.value.startDate.year,
                     args.value.startDate.month,
                     args.value.startDate.day,
                     DateTime.now().hour,
-                    DateTime.now().minute,
+                    _roundToNearest15(DateTime.now().minute),
                   );
                   String startDateTime =
                       DateFormat('MMMM d, yyyy h:mm a').format(_startDateTime!);
                   bikeDetailsController.startDateTime.value = startDateTime;
                   if (args.value.endDate != null) {
                     _endDateTime = DateTime(
-                      args.value.endDate.year,
-                      args.value.endDate.month,
-                      args.value.endDate.day,
-                      DateTime.now().hour,
-                      DateTime.now().minute,
-                    );
+                        args.value.endDate.year,
+                        args.value.endDate.month,
+                        args.value.endDate.day,
+                        DateTime.now().hour,
+                        _roundToNearest15(DateTime.now().minute));
                     String endDateTime =
                         DateFormat('MMMM d, yyyy h:mm a').format(_endDateTime!);
                     bikeDetailsController.endDateTime.value = endDateTime;
@@ -101,31 +159,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
             onPressed: _startDateTime == null
                 ? null
                 : () {
-                    DatePicker.showTimePicker(
-                      context,
-                      showTitleActions: true,
-                      onConfirm: (time) {
-                        setState(() {
-                          _startDateTime = DateTime(
-                            _startDateTime!.year,
-                            _startDateTime!.month,
-                            _startDateTime!.day,
-                            time.hour,
-                            time.minute,
-                          );
-
-                          // String formattedDateTime = DateFormat.yMMMMEEEEd()
-                          //     .add_jm()
-                          //     .format(_startDateTime!);
-                          String startDateTime =
-                              DateFormat('MMMM d, yyyy h:mm a')
-                                  .format(_startDateTime!);
-                          bikeDetailsController.startDateTime.value =
-                              startDateTime.toString();
-                        });
-                      },
-                      currentTime: DateTime.now(),
-                    );
+                    _showCustomTimePicker('startTime');
                   },
             child: Text('Select Start Time'),
           ),
@@ -134,29 +168,7 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
             onPressed: _endDateTime == null
                 ? null
                 : () {
-                    DatePicker.showTimePicker(
-                      context,
-                      showTitleActions: true,
-                      onConfirm: (time) {
-                        setState(() {
-                          _endDateTime = DateTime(
-                            _endDateTime!.year,
-                            _endDateTime!.month,
-                            _endDateTime!.day,
-                            time.hour,
-                            time.minute,
-                          );
-                          // String endDateTime = DateFormat.yMMMMEEEEd()
-                          //     .add_jm()
-                          //     .format(_endDateTime!);
-                          String endDateTime = DateFormat('MMMM d, yyyy h:mm a')
-                              .format(_endDateTime!);
-
-                          bikeDetailsController.endDateTime.value = endDateTime;
-                        });
-                      },
-                      currentTime: DateTime.now(),
-                    );
+                    _showCustomTimePicker('endTime');
                   },
             child: Text('Select End Time'),
           ),
@@ -182,6 +194,208 @@ class _DateTimeRangePickerState extends State<DateTimeRangePicker> {
               Navigator.pop(context);
             },
             child: Text('Done'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// class TimePickerPage extends StatefulWidget {
+//   @override
+//   _TimePickerPageState createState() => _TimePickerPageState();
+// }
+//
+// class _TimePickerPageState extends State<TimePickerPage> {
+//   DateTime? _startDateTime;
+//   final bikeDetailsController = BikeDetailsController();
+//
+//   void _showCustomTimePicker() async {
+//     final TimeOfDay? picked = await showCustomTimePicker(
+//       context: context,
+//       initialTime: TimeOfDay.fromDateTime(_startDateTime ?? DateTime.now()),
+//     );
+//     if (picked != null) {
+//       setState(() {
+//         int roundedMinute = _roundToNearest15(picked.minute);
+//         _startDateTime = DateTime(
+//           _startDateTime?.year ?? DateTime.now().year,
+//           _startDateTime?.month ?? DateTime.now().month,
+//           _startDateTime?.day ?? DateTime.now().day,
+//           picked.hour,
+//           roundedMinute,
+//         );
+//         String startDateTime =
+//             DateFormat('MMMM d, yyyy h:mm a').format(_startDateTime!);
+//         bikeDetailsController.startDateTime.value = startDateTime.toString();
+//       });
+//     }
+//   }
+//
+//   int _roundToNearest15(int minute) {
+//     if (minute < 15) return 15;
+//     if (minute < 30) return 30;
+//     if (minute < 45) return 45;
+//     return 0;
+//   }
+//
+//   Future<TimeOfDay?> showCustomTimePicker({
+//     required BuildContext context,
+//     required TimeOfDay initialTime,
+//   }) {
+//     return showDialog<TimeOfDay>(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return CustomTimePickerDialog(initialTime: initialTime);
+//       },
+//     );
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Custom Time Picker Example'),
+//       ),
+//       body: Center(
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: <Widget>[
+//             Text(
+//               'Selected time: ${_startDateTime != null ? DateFormat('MMMM d, yyyy h:mm a').format(_startDateTime!) : 'None'}',
+//             ),
+//             SizedBox(height: 20),
+//             ElevatedButton(
+//               onPressed: _showCustomTimePicker,
+//               child: Text('Select Time'),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+class CustomTimePickerDialog extends StatefulWidget {
+  final TimeOfDay initialTime;
+
+  CustomTimePickerDialog({required this.initialTime});
+
+  @override
+  _CustomTimePickerDialogState createState() => _CustomTimePickerDialogState();
+}
+
+class _CustomTimePickerDialogState extends State<CustomTimePickerDialog> {
+  late int selectedHour;
+  late int selectedMinute;
+  late String selectedPeriod;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedHour = widget.initialTime.hourOfPeriod == 0
+        ? 12
+        : widget.initialTime.hourOfPeriod;
+    selectedMinute = _roundToNearest15(widget.initialTime.minute);
+    selectedPeriod = widget.initialTime.period == DayPeriod.am ? "AM" : "PM";
+  }
+
+  int _roundToNearest15(int minute) {
+    if (minute < 15) return 15;
+    if (minute < 30) return 30;
+    if (minute < 45) return 45;
+    return 0;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                DropdownButton<int>(
+                  value: selectedHour,
+                  items: List.generate(12, (index) {
+                    int hour = index + 1;
+                    return DropdownMenuItem(
+                      value: hour,
+                      child: Text(hour.toString().padLeft(2, '0')),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      print('value 1============ >  $value');
+                      selectedHour = value!;
+                      // _startDateTime = DateTime(
+                      //     _startDateTime!.year,
+                      //     _startDateTime!.month,
+                      //     _startDateTime!.day,
+                      //     selectedHour,
+                      //     selectedMinute);
+                      // String startDateTime = DateFormat('MMMM d, yyyy h:mm a')
+                      //     .format(_startDateTime!);
+                      // bikeDetailsController.startDateTime.value =
+                      //     startDateTime.toString();
+                    });
+                  },
+                ),
+                DropdownButton<int>(
+                  value: selectedMinute,
+                  items: [0, 15, 30, 45].map((minute) {
+                    return DropdownMenuItem(
+                      value: minute,
+                      child: Text(minute.toString().padLeft(2, '0')),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      print('value ============ >  $value');
+                      selectedMinute = value!;
+                    });
+                    // _startDateTime = DateTime(
+                    //     _startDateTime!.year,
+                    //     _startDateTime!.month,
+                    //     _startDateTime!.day,
+                    //     selectedHour,
+                    //     selectedMinute);
+                    // String startDateTime = DateFormat('MMMM d, yyyy h:mm a')
+                    //     .format(_startDateTime!);
+                    // bikeDetailsController.startDateTime.value =
+                    //     startDateTime.toString();
+                  },
+                ),
+                DropdownButton<String>(
+                  value: selectedPeriod,
+                  items: ["AM", "PM"].map((period) {
+                    return DropdownMenuItem(
+                      value: period,
+                      child: Text(period),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedPeriod = value!;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              int hour = selectedHour % 12;
+              if (selectedPeriod == "PM") {
+                hour += 12;
+              }
+              Navigator.pop(
+                  context, TimeOfDay(hour: hour, minute: selectedMinute));
+            },
+            child: Text('Confirm'),
           ),
         ],
       ),

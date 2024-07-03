@@ -39,13 +39,11 @@ class BikeDetailsController extends GetxController {
   RxString endDateTime = ''.obs;
   RxBool loadingState = false.obs;
 
-  // RxList to hold the dropdown items
   RxList<DropdownMenuItem<Stations>> dropdownItems =
       <DropdownMenuItem<Stations>>[].obs;
 
   Rx<Stations?> selectedStation = Rx<Stations?>(null);
 
-  // Method to update the dropdown items
   void setDropdownItems(List<Stations> stations) {
     dropdownItems.value = stations.map((station) {
       return DropdownMenuItem<Stations>(

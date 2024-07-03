@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:onnwheels/repositories/product_repositories.dart';
 import 'package:onnwheels/utils/image_directory.dart';
 import 'package:onnwheels/utils/shared_preference.dart';
+import 'package:onnwheels/views/bikedetails/components/date_time_picker.dart';
 import 'package:onnwheels/views/home/components/custom_gridview.dart';
 import '../../controllers/home_controller.dart';
 import '../../mytheme.dart';
@@ -28,14 +29,30 @@ class _HomePageState extends State<HomePage> {
   bool _showLoadingContainer = false;
   ScrollController _scrollController = ScrollController();
 
-  Future displayTimePicker(BuildContext context, timeData) async {
-    var time = await showTimePicker(context: context, initialTime: timeOfDay);
-    if (time != null) {
+  TimeOfDay selectedTime = TimeOfDay(hour: 0, minute: 0);
+
+  Future<void> _selectTime(BuildContext context, timeData) async {
+    final TimeOfDay? picked = await showCustomTimePicker(
+      context: context,
+      initialTime: selectedTime,
+    );
+    if (picked != null)
       setState(() {
-        timeData.text = "${time.format(context)}";
-        print("time data======>${timeData}");
+        selectedTime = picked;
+        timeData.text = "${picked.format(context)}";
       });
-    }
+  }
+
+  Future<TimeOfDay?> showCustomTimePicker({
+    required BuildContext context,
+    required TimeOfDay initialTime,
+  }) {
+    return showDialog<TimeOfDay>(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomTimePickerDialog(initialTime: initialTime);
+      },
+    );
   }
 
   Future displayDatePicker(
@@ -45,7 +62,7 @@ class _HomePageState extends State<HomePage> {
     date = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
-        firstDate: DateTime(1900),
+        firstDate: DateTime.now(),
         lastDate: DateTime(2100)) as DateTime;
 
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
@@ -91,45 +108,6 @@ class _HomePageState extends State<HomePage> {
           "ONN WHEELS",
           style: TextStyle(color: Colors.black),
         ),
-        // centerTitle: true,
-        // title: Padding(
-        //   padding: const EdgeInsets.only(left: 8.0),
-        // child: Row(
-        //   children: [
-        //     // Obx(
-        //     //   () => DropdownButton<String>(
-        //     //     // Value will hold the selected city
-        //     //     value: homeController.selectedCity.value.isEmpty
-        //     //         ? null
-        //     //         : homeController.selectedCity.value,
-        //     //     // Called when the user selects an item
-        //     //     onChanged: (String? newValue) {
-        //     //       if (newValue != null) {
-        //     //         homeController.selectCity(newValue);
-        //     //       }
-        //     //     },
-        //     //     // Map each city to a DropdownMenuItem
-        //     //     items: homeController.tamilNaduCities
-        //     //         .map<DropdownMenuItem<String>>((String value) {
-        //     //       return DropdownMenuItem<String>(
-        //     //         value: value,
-        //     //         child: Text(value),
-        //     //       );
-        //     //     }).toList(),
-        //     //   ),
-        //     // ),
-        //     // TextButton(
-        //     //   onPressed: () {
-        //     //     Get.to(
-        //     //       () => ZoneAreasPage(),
-        //     //     );
-        //     //   },
-        //     //   child: Text("Select Zone"),
-        //     // ),
-        //     Text("ONN WHEELS")
-        //   ],
-        // ),
-        // ),
         actions: [
           Container(
             height: 60,
@@ -212,75 +190,75 @@ class _HomePageState extends State<HomePage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Container(
-                                  width: 160,
-                                  height: 35,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: MyTheme.white),
-                                  child: TextFormField(
-                                    controller: dateCtl1,
-                                    textAlign: TextAlign.start,
-                                    decoration: const InputDecoration(
-                                      prefixIcon: Icon(Icons.date_range),
-                                      hintText: "Select Date",
-                                      hintStyle: TextStyle(
-                                          color: MyTheme.grey_153,
-                                          fontSize: 14),
-                                      contentPadding: EdgeInsets.symmetric(
-                                          vertical: 1, horizontal: 10),
-                                      border: InputBorder.none,
-                                      // This removes the border
-                                      enabledBorder: InputBorder.none,
-                                      // Optional: removes the border when enabled
-                                      focusedBorder: InputBorder.none,
-                                      // Optional: removes the border when focused
-                                      errorBorder: InputBorder.none,
-                                      // Optional: removes the border when an error is displayed
-                                      disabledBorder: InputBorder.none,
-                                      // Optional: removes the border when disabled
-                                      focusedErrorBorder: InputBorder.none,
+                                Expanded(
+                                  child: Container(
+                                    // width: 160,
+                                    height: 35,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: MyTheme.white),
+                                    child: TextFormField(
+                                      controller: dateCtl1,
+                                      textAlign: TextAlign.start,
+                                      readOnly: true,
+                                      decoration: const InputDecoration(
+                                        prefixIcon: Icon(Icons.date_range),
+                                        hintText: "Select Date",
+                                        hintStyle: TextStyle(
+                                            color: MyTheme.grey_153,
+                                            fontSize: 14),
+                                        contentPadding: EdgeInsets.symmetric(
+                                            vertical: 1, horizontal: 10),
+                                        border: InputBorder.none,
+                                        enabledBorder: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
+                                        errorBorder: InputBorder.none,
+                                        disabledBorder: InputBorder.none,
+                                        focusedErrorBorder: InputBorder.none,
+                                      ),
+                                      onTap: () async {
+                                        await displayDatePicker(
+                                            context,
+                                            dateCtl1,
+                                            homeController.dateValue1);
+                                      },
                                     ),
-                                    onTap: () async {
-                                      await displayDatePicker(context, dateCtl1,
-                                          homeController.dateValue1);
-                                    },
                                   ),
                                 ),
-                                Container(
-                                  width: 160,
-                                  height: 35,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: MyTheme.white),
-                                  child: TextFormField(
-                                    controller: timeCtl1,
-                                    textAlign: TextAlign.start,
-                                    decoration: const InputDecoration(
-                                      prefixIcon: Icon(Icons.access_time),
-                                      hintText: "Select time",
-                                      hintStyle: TextStyle(
-                                          color: MyTheme.grey_153,
-                                          fontSize: 14),
-                                      contentPadding: EdgeInsets.symmetric(
-                                          vertical: 1, horizontal: 10),
-                                      border: InputBorder.none,
-                                      // This removes the border
-                                      enabledBorder: InputBorder.none,
-                                      // Optional: removes the border when enabled
-                                      focusedBorder: InputBorder.none,
-                                      // Optional: removes the border when focused
-                                      errorBorder: InputBorder.none,
-                                      // Optional: removes the border when an error is displayed
-                                      disabledBorder: InputBorder.none,
-                                      // Optional: removes the border when disabled
-                                      focusedErrorBorder: InputBorder.none,
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    height: 35,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: MyTheme.white),
+                                    child: TextFormField(
+                                      controller: timeCtl1,
+                                      readOnly: true,
+                                      textAlign: TextAlign.start,
+                                      decoration: const InputDecoration(
+                                        prefixIcon: Icon(Icons.access_time),
+                                        hintText: "Select time",
+                                        hintStyle: TextStyle(
+                                            color: MyTheme.grey_153,
+                                            fontSize: 14),
+                                        contentPadding: EdgeInsets.symmetric(
+                                            vertical: 1, horizontal: 10),
+                                        border: InputBorder.none,
+                                        enabledBorder: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
+                                        errorBorder: InputBorder.none,
+                                        disabledBorder: InputBorder.none,
+                                        focusedErrorBorder: InputBorder.none,
+                                      ),
+                                      onTap: () async {
+                                        _selectTime(context, timeCtl1);
+                                        // await displayTimePicker(
+                                        //     context, timeCtl1);
+                                      },
                                     ),
-                                    onTap: () async {
-                                      // This might be optional if dateCtl1's text update triggers a rebuild
-                                      await displayTimePicker(
-                                          context, timeCtl1);
-                                    },
                                   ),
                                 ),
                               ],
@@ -302,76 +280,72 @@ class _HomePageState extends State<HomePage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Container(
-                                  width: 160,
-                                  height: 35,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: MyTheme.white),
-                                  child: TextFormField(
-                                    controller: dateCtl2,
-                                    textAlign: TextAlign.start,
-                                    decoration: const InputDecoration(
-                                      prefixIcon: Icon(Icons.date_range),
-                                      hintText: "Select Date",
-                                      hintStyle: TextStyle(
-                                          color: MyTheme.grey_153,
-                                          fontSize: 14),
-                                      contentPadding: EdgeInsets.symmetric(
-                                          vertical: 1, horizontal: 10),
-                                      border: InputBorder.none,
-                                      // This removes the border
-                                      enabledBorder: InputBorder.none,
-                                      // Optional: removes the border when enabled
-                                      focusedBorder: InputBorder.none,
-                                      // Optional: removes the border when focused
-                                      errorBorder: InputBorder.none,
-                                      // Optional: removes the border when an error is displayed
-                                      disabledBorder: InputBorder.none,
-                                      // Optional: removes the border when disabled
-                                      focusedErrorBorder: InputBorder.none,
+                                Expanded(
+                                  child: Container(
+                                    height: 35,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: MyTheme.white),
+                                    child: TextFormField(
+                                      controller: dateCtl2,
+                                      textAlign: TextAlign.start,
+                                      readOnly: true,
+                                      decoration: const InputDecoration(
+                                        prefixIcon: Icon(Icons.date_range),
+                                        hintText: "Select Date",
+                                        hintStyle: TextStyle(
+                                            color: MyTheme.grey_153,
+                                            fontSize: 14),
+                                        contentPadding: EdgeInsets.symmetric(
+                                            vertical: 1, horizontal: 10),
+                                        border: InputBorder.none,
+                                        enabledBorder: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
+                                        errorBorder: InputBorder.none,
+                                        disabledBorder: InputBorder.none,
+                                        focusedErrorBorder: InputBorder.none,
+                                      ),
+                                      onTap: () async {
+                                        await displayDatePicker(
+                                            context,
+                                            dateCtl2,
+                                            homeController.dateValue2);
+                                      },
                                     ),
-                                    onTap: () async {
-                                      await displayDatePicker(context, dateCtl2,
-                                          homeController.dateValue2);
-                                    },
                                   ),
                                 ),
-                                Container(
-                                  width: 160,
-                                  height: 35,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: MyTheme.white),
-                                  child: TextFormField(
-                                    controller: timeCtl2,
-                                    textAlign: TextAlign.start,
-                                    decoration: const InputDecoration(
-                                      prefixIcon: Icon(Icons.access_time),
-                                      hintText: "Select time",
-                                      hintStyle: TextStyle(
-                                          color: MyTheme.grey_153,
-                                          fontSize: 14),
-                                      contentPadding: EdgeInsets.symmetric(
-                                          vertical: 1, horizontal: 10),
-                                      border: InputBorder.none,
-                                      // This removes the border
-                                      enabledBorder: InputBorder.none,
-                                      // Optional: removes the border when enabled
-                                      focusedBorder: InputBorder.none,
-                                      // Optional: removes the border when focused
-                                      errorBorder: InputBorder.none,
-                                      // Optional: removes the border when an error is displayed
-                                      disabledBorder: InputBorder.none,
-                                      // Optional: removes the border when disabled
-                                      focusedErrorBorder: InputBorder.none,
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    height: 35,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: MyTheme.white),
+                                    child: TextFormField(
+                                      controller: timeCtl2,
+                                      readOnly: true,
+                                      textAlign: TextAlign.start,
+                                      decoration: const InputDecoration(
+                                        prefixIcon: Icon(Icons.access_time),
+                                        hintText: "Select time",
+                                        hintStyle: TextStyle(
+                                            color: MyTheme.grey_153,
+                                            fontSize: 14),
+                                        contentPadding: EdgeInsets.symmetric(
+                                            vertical: 1, horizontal: 10),
+                                        border: InputBorder.none,
+                                        enabledBorder: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
+                                        errorBorder: InputBorder.none,
+                                        disabledBorder: InputBorder.none,
+                                        focusedErrorBorder: InputBorder.none,
+                                      ),
+                                      onTap: () async {
+                                        _selectTime(context, timeCtl2);
+                                      },
                                     ),
-                                    onTap: () async {
-                                      // This might be optional if dateCtl1's text update triggers a rebuild
-                                      await displayTimePicker(
-                                          context, timeCtl2);
-                                      // dateCtl.text = date.toString();
-                                    },
                                   ),
                                 ),
                               ],
@@ -495,3 +469,146 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
+Future<void> displayTimePicker(
+    BuildContext context, TextEditingController timeData) async {
+  var time = await showDialog<TimeOfDay>(
+    context: context,
+    builder: (BuildContext context) {
+      return CustomTimePickerDialog(
+        initialTime: TimeOfDay.now(),
+      );
+    },
+  );
+
+  if (time != null) {
+    timeData.text = "${time.format(context)}";
+  }
+}
+
+// class CustomTimePickerDialog extends StatefulWidget {
+//   final TimeOfDay initialTime;
+//
+//   CustomTimePickerDialog({required this.initialTime});
+//
+//   @override
+//   _CustomTimePickerDialogState createState() => _CustomTimePickerDialogState();
+// }
+//
+// class _CustomTimePickerDialogState extends State<CustomTimePickerDialog> {
+//   late int selectedHour;
+//   late int selectedMinute;
+//   late String selectedPeriod;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     selectedHour = widget.initialTime.hourOfPeriod == 0
+//         ? 12
+//         : widget.initialTime.hourOfPeriod;
+//     selectedMinute = _roundToNearest15(widget.initialTime.minute);
+//     selectedPeriod = widget.initialTime.period == DayPeriod.am ? "AM" : "PM";
+//   }
+//
+//   int _roundToNearest15(int minute) {
+//     if (minute < 15) return 15;
+//     if (minute < 30) return 30;
+//     if (minute < 45) return 45;
+//     return 0;
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Dialog(
+//       child: Column(
+//         mainAxisSize: MainAxisSize.min,
+//         children: [
+//           Padding(
+//             padding: const EdgeInsets.symmetric(vertical: 10.0),
+//             child: Row(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               children: [
+//                 DropdownButton<int>(
+//                   value: selectedHour,
+//                   items: List.generate(12, (index) {
+//                     int hour = index + 1;
+//                     return DropdownMenuItem(
+//                       value: hour,
+//                       child: Text(hour.toString().padLeft(2, '0')),
+//                     );
+//                   }).toList(),
+//                   onChanged: (value) {
+//                     setState(() {
+//                       print('value 1============ >  $value');
+//                       selectedHour = value!;
+//                       // _startDateTime = DateTime(
+//                       //     _startDateTime!.year,
+//                       //     _startDateTime!.month,
+//                       //     _startDateTime!.day,
+//                       //     selectedHour,
+//                       //     selectedMinute);
+//                       // String startDateTime = DateFormat('MMMM d, yyyy h:mm a')
+//                       //     .format(_startDateTime!);
+//                       // bikeDetailsController.startDateTime.value =
+//                       //     startDateTime.toString();
+//                     });
+//                   },
+//                 ),
+//                 DropdownButton<int>(
+//                   value: selectedMinute,
+//                   items: [0, 15, 30, 45].map((minute) {
+//                     return DropdownMenuItem(
+//                       value: minute,
+//                       child: Text(minute.toString().padLeft(2, '0')),
+//                     );
+//                   }).toList(),
+//                   onChanged: (value) {
+//                     setState(() {
+//                       print('value ============ >  $value');
+//                       selectedMinute = value!;
+//                     });
+//                     // _startDateTime = DateTime(
+//                     //     _startDateTime!.year,
+//                     //     _startDateTime!.month,
+//                     //     _startDateTime!.day,
+//                     //     selectedHour,
+//                     //     selectedMinute);
+//                     // String startDateTime = DateFormat('MMMM d, yyyy h:mm a')
+//                     //     .format(_startDateTime!);
+//                     // bikeDetailsController.startDateTime.value =
+//                     //     startDateTime.toString();
+//                   },
+//                 ),
+//                 DropdownButton<String>(
+//                   value: selectedPeriod,
+//                   items: ["AM", "PM"].map((period) {
+//                     return DropdownMenuItem(
+//                       value: period,
+//                       child: Text(period),
+//                     );
+//                   }).toList(),
+//                   onChanged: (value) {
+//                     setState(() {
+//                       selectedPeriod = value!;
+//                     });
+//                   },
+//                 ),
+//               ],
+//             ),
+//           ),
+//           ElevatedButton(
+//             onPressed: () {
+//               int hour = selectedHour % 12;
+//               if (selectedPeriod == "PM") {
+//                 hour += 12;
+//               }
+//               Navigator.pop(
+//                   context, TimeOfDay(hour: hour, minute: selectedMinute));
+//             },
+//             child: Text('Confirm'),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
