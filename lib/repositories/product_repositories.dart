@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:onnwheels/models/bike_details.dart';
+import 'package:onnwheels/models/bike_details_model.dart';
 import '../helpers/api_helpers.dart';
 import '../models/all_bike_response.dart';
 import '../utils/app_config.dart';
@@ -23,6 +23,8 @@ class ProductRepository {
 
   Future<BikeDetailsResponse> getProductDetails({int? id}) async {
     String url = ("${AppConfig.BASE_URL}/items/details/$id");
+    print("id ----------- > $id");
+
     final response = await ApiHelper.get(
       url: url,
       headers: {

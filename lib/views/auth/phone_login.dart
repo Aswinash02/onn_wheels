@@ -1,26 +1,23 @@
-import 'dart:convert';
-import 'dart:io' show Platform;
-import 'dart:math';
-import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get/get.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:onnwheels/controllers/auth_controller.dart';
+import 'package:onnwheels/customs/auth_ui.dart';
+import 'package:onnwheels/customs/loading_class.dart';
+import 'package:onnwheels/customs/toastcomponent.dart';
+import 'package:onnwheels/helpers/validator_helper.dart';
+import 'package:onnwheels/models/user_info_model.dart';
+import 'package:onnwheels/mytheme.dart';
+import 'package:onnwheels/repositories/auth_repositories.dart';
+import 'package:onnwheels/utils/app_config.dart';
+import 'package:onnwheels/utils/btn_elements.dart';
+import 'package:onnwheels/utils/shared_preference.dart';
 import 'package:onnwheels/views/auth/signin.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
 import 'package:toast/toast.dart';
-import '../../customs/auth_ui.dart';
-import '../../customs/intl_phone_input.dart';
-import '../../customs/toastcomponent.dart';
-import '../../helpers/auth_helper.dart';
-import '../../helpers/validator_helper.dart';
-import '../../mytheme.dart';
-import '../../repositories/auth_repositories.dart';
-import '../../utils/app_config.dart';
-import '../../utils/btn_elements.dart';
-import '../main_page/main_page.dart';
+
 import 'components/input_decorations.dart';
 
 class PhoneLogin extends StatefulWidget {
@@ -42,35 +39,8 @@ class _PhoneLoginState extends State<PhoneLogin> {
   TextEditingController _phoneNumberController = TextEditingController();
   OtpFieldController _verificationController = OtpFieldController();
 
-  // TextEditingController _emailController = TextEditingController();
-  // TextEditingController _passwordController = TextEditingController();
-
-  @override
-  void initState() {
-    fetch_country();
-    //on Splash Screen hide statusbar
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.bottom]);
-    super.initState();
-  }
-
-  fetch_country() async {
-    // var data = await AddressRepository().getCountryList();
-    // data.countries.forEach((c) => countries_code.add(c.code));
-    // setState(() {});
-  }
-
-  @override
-  void dispose() {
-    //before going to other screen show statusbar
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
-    super.dispose();
-  }
-
   onPressConfirm() async {
     var code = otpPin;
-
     if (code == "") {
       ToastComponent.showDialog(
           AppLocalizations.of(context)!.enter_verification_code,
@@ -78,39 +48,65 @@ class _PhoneLoginState extends State<PhoneLogin> {
           duration: Toast.lengthLong);
       return;
     }
-    var confirmCodeResponse = await AuthRepository()
-        .getConfirmCodeResponse(_phoneNumberController.text.toString(), code);
+    try {
+      Loading.show(context);
 
-    if (!(confirmCodeResponse.result)) {
-      ToastComponent.showDialog(confirmCodeResponse.message,
-          gravity: Toast.center, duration: Toast.lengthLong);
-    } else {
-      ToastComponent.showDialog(confirmCodeResponse.message,
-          gravity: Toast.center, duration: Toast.lengthLong);
+      var response = await AuthRepository()
+          .getConfirmCodeResponse(code, _phoneNumberController.text);
 
-      // Navigator.push(context, MaterialPageRoute(builder: (context) {
-      //   return Login();
-      // }));
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => MainPage()),
-        (Route<dynamic> route) => false,
+      if (response != null) {
+        UserInfo userInfo = UserInfo(
+          id: response.user?.id,
+          name: response.user?.fName,
+          email: response.user?.email,
+          phone: response.user?.phone,
+        );
+
+        Get.find<AuthController>().saveUserInfo(userInfo);
+        SharedPreference().setUserData(loginResponse: response);
+        Navigator.of(context).pop();
+      }
+
+      Loading.close();
+    } catch (e) {
+      Loading.close();
+      print("Error occurred during login: $e");
+      ToastComponent.showDialog(
+        e.toString(),
+        gravity: Toast.center,
+        duration: Toast.lengthLong,
       );
-
-      //Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>Main()), (route) => false);
     }
   }
 
-  onPressedLogin() async {
-    // Loading.show(context);
-    _phone = _phoneNumberController.text.toString();
-    if (_login_by == 'phone' && _phone == "") {
-      ToastComponent.showDialog(
-          AppLocalizations.of(context)!.enter_phone_number,
-          gravity: Toast.center,
-          duration: Toast.lengthLong);
-      return;
+  onPressedSendOTP() async {
+    if (_phoneNumberController.text.isEmpty) {
+      ToastComponent.showDialog("Enter Phone Number",
+          gravity: Toast.center, duration: Toast.lengthLong);
+    } else if (_phoneNumberController.text.length < 10) {
+      ToastComponent.showDialog("Enter Valid Phone Number",
+          gravity: Toast.center, duration: Toast.lengthLong);
     } else {
-      sendOtp();
+      try {
+        Loading.show(context);
+
+        var response = await AuthRepository().getLoginResponsePhone(
+          _phoneNumberController.text.trim().toString(),
+        );
+        print('response ------- ${response}');
+        Loading.close();
+        if (response != null) {
+          sendOtp();
+        }
+      } catch (e) {
+        Loading.close();
+        print("Error occurred during login: $e");
+        ToastComponent.showDialog(
+          e.toString(),
+          gravity: Toast.center,
+          duration: Toast.lengthLong,
+        );
+      }
     }
   }
 
@@ -120,8 +116,6 @@ class _PhoneLoginState extends State<PhoneLogin> {
       useSafeArea: true,
       context: context,
       builder: (_) => AlertDialog(
-        // contentPadding: EdgeInsets.only(
-        //     top: 16.0, left: 2.0, right: 2.0, bottom: 2.0),
         title: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
           child: Text(
@@ -170,11 +164,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () async {
-              print("otp cehvk ${_verificationController}");
-              Navigator.of(_).pop();
               onPressConfirm();
-
-              // onConfirmMarkDelivered(order_id);
             },
           ),
         ],
@@ -221,6 +211,12 @@ class _PhoneLoginState extends State<PhoneLogin> {
                       child: TextFormField(
                         controller: _phoneNumberController,
                         autofocus: false,
+                        onChanged: (String str) {
+                          if (str.length == 10) {
+                            FocusScope.of(context).unfocus();
+                          }
+                        },
+                        inputFormatters: [LengthLimitingTextInputFormatter(10)],
                         decoration: InputDecorations.buildInputDecoration_1(
                             hint_text: "01XXX XXX XXX"),
                         keyboardType: const TextInputType.numberWithOptions(
@@ -231,57 +227,10 @@ class _PhoneLoginState extends State<PhoneLogin> {
                   ],
                 ),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.only(bottom: 8.0),
-              //   child: Column(
-              //     crossAxisAlignment: CrossAxisAlignment.end,
-              //     children: [
-              //       Container(
-              //         height: 36,
-              //         child: CustomInternationalPhoneNumberInput(
-              //           countries: countries_code,
-              //           onInputChanged: (PhoneNumber number) {
-              //             print(number.phoneNumber);
-              //             setState(() {
-              //               _phone = number.phoneNumber;
-              //             });
-              //           },
-              //           onInputValidated: (bool value) {
-              //             print(value);
-              //           },
-              //           selectorConfig: SelectorConfig(
-              //             selectorType: PhoneInputSelectorType.DIALOG,
-              //           ),
-              //           ignoreBlank: false,
-              //           autoValidateMode: AutovalidateMode.disabled,
-              //           selectorTextStyle: TextStyle(color: MyTheme.font_grey),
-              //           textStyle: TextStyle(color: MyTheme.font_grey),
-              //           initialValue:
-              //           PhoneNumber(isoCode: countries_code[0].toString()),
-              //           textFieldController: _phoneNumberController,
-              //           formatInput: true,
-              //           keyboardType: TextInputType.numberWithOptions(
-              //               signed: true, decimal: true),
-              //           inputDecoration:
-              //           InputDecorations.buildInputDecoration_phone(
-              //               hint_text: "01XXX XXX XXX"),
-              //           onSaved: (PhoneNumber number) {
-              //             print('On Saved: $number');
-              //           },
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
               Padding(
                 padding: const EdgeInsets.only(top: 30.0),
                 child: Container(
                   height: 45,
-                  decoration: BoxDecoration(
-                      border:
-                          Border.all(color: MyTheme.textfield_grey, width: 1),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(12.0))),
                   child: Btn.minWidthFixHeight(
                     minWidth: MediaQuery.of(context).size.width,
                     height: 50,
@@ -297,18 +246,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
                           fontWeight: FontWeight.w600),
                     ),
                     onPressed: () async {
-                      if (_phoneNumberController.text.isEmpty) {
-                        ToastComponent.showDialog(
-                            "Need to fill the Mobile Number",
-                            gravity: Toast.center,
-                            duration: Toast.lengthLong);
-                      } else {
-                        var optResponseData =
-                        await AuthRepository().getLoginResponsePhone(
-                          _phoneNumberController.text.trim().toString(),
-                        );
-                        Future.delayed(Duration(seconds: 2), sendOtp());
-                      }
+                      onPressedSendOTP();
                     },
                   ),
                 ),
@@ -323,8 +261,10 @@ class _PhoneLoginState extends State<PhoneLogin> {
                   height: 50,
                   color: MyTheme.amber,
                   shape: RoundedRectangleBorder(
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(6.0),),),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(6.0),
+                    ),
+                  ),
                   child: Text(
                     AppLocalizations.of(context)!.or_login_with_an_email,
                     style: TextStyle(

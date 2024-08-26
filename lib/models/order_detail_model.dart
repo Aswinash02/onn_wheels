@@ -63,8 +63,8 @@ class Items {
   String? itemName;
   int? quantity;
   String? unitPrice;
-  int? gstAmount;
-  int? sgstAmount;
+  double? gstAmount;
+  double? sgstAmount;
   int? price;
   int? subtotal;
   String? weekendPrice;
@@ -87,8 +87,12 @@ class Items {
     itemName = json['item_name'];
     quantity = json['quantity'];
     unitPrice = json['unit_price'];
-    gstAmount = json['gst_amount'];
-    sgstAmount = json['sgst_amount'];
+    gstAmount = (json['gst_amount'] is int)
+        ? (json['gst_amount'] as int).toDouble()
+        : json['gst_amount'] as double?;
+    sgstAmount = (json['sgst_amount'] is int)
+        ? (json['sgst_amount'] as int).toDouble()
+        : json['sgst_amount'] as double?;
     price = json['price'];
     subtotal = json['subtotal'];
     weekendPrice = json['weekend_price'];

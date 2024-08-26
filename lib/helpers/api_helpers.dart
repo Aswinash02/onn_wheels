@@ -19,6 +19,8 @@ class ApiHelper {
     if (headers != null) {
       headerMap.addAll(headers);
     }
+    print("headerMap ----------- > $headerMap");
+    print("uri ----------- > $uri");
 
     var response = await http.get(uri, headers: headerMap);
     return AIZApiResponse.check(response);

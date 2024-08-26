@@ -19,7 +19,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   HomeController homeController = Get.put(HomeController());
 
-  // final HomeController homeController = Get.find();
   TextEditingController dateCtl1 = TextEditingController();
   TextEditingController dateCtl2 = TextEditingController();
   TextEditingController timeCtl1 = TextEditingController();
@@ -30,17 +29,45 @@ class _HomePageState extends State<HomePage> {
   ScrollController _scrollController = ScrollController();
 
   TimeOfDay selectedTime = TimeOfDay(hour: 0, minute: 0);
+  DateTime? _endDateTime;
 
-  Future<void> _selectTime(BuildContext context, timeData) async {
+  DateTime? _startDateTime;
+
+  Future<void> _selectTime(
+      BuildContext context, TextEditingController timeData, String des) async {
     final TimeOfDay? picked = await showCustomTimePicker(
       context: context,
       initialTime: selectedTime,
     );
-    if (picked != null)
+
+    if (picked != null) {
+      final now = DateTime.now();
+      final pickedDateTime = DateTime(
+          _startDateTime!.year,
+          _startDateTime!.month,
+          _startDateTime!.day,
+          picked.hour,
+          picked.minute);
+      print('pickedDateTime ${pickedDateTime}');
+      print(' picked.hour, ${picked.hour}');
+      print('picked.minute ${picked.minute}');
+      print('now ${now}');
+      if (pickedDateTime.isBefore(now)) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Pick Valid Date & Time'),
+          backgroundColor: MyTheme.accent_color,
+          elevation: 10,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.all(5),
+        ));
+        return;
+      }
+
       setState(() {
         selectedTime = picked;
-        timeData.text = "${picked.format(context)}";
+        timeData.text = picked.format(context);
       });
+    }
   }
 
   Future<TimeOfDay?> showCustomTimePicker({
@@ -55,21 +82,42 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future displayDatePicker(
-      BuildContext context, dateValue, dateValueApi) async {
-    DateTime date = DateTime(1900);
+  Future<void> displayDatePicker(BuildContext context,
+      TextEditingController dateValue, dateValueApi) async {
     FocusScope.of(context).requestFocus(FocusNode());
-    date = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime.now(),
-        lastDate: DateTime(2100)) as DateTime;
 
-    final DateFormat formatter = DateFormat('yyyy-MM-dd');
-    final DateFormat formatDate = DateFormat('MMMM dd, yyyy hh:mm a');
-    dateValue.text = formatter.format(date);
-    dateValueApi = formatDate.format(date);
-    setState(() {});
+    DateTime? date = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            primaryColor: MyTheme.orange,
+            hintColor: MyTheme.orange,
+            colorScheme: ColorScheme.light(
+              primary: MyTheme.orange,
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+            dialogBackgroundColor: Colors.white,
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (date != null) {
+      final DateFormat formatter = DateFormat('MMM dd yyyy');
+      final DateFormat formatDate = DateFormat('MMMM dd, yyyy hh:mm a');
+
+      dateValue.text = formatter.format(date);
+      dateValueApi = formatDate.format(date);
+      _startDateTime = date;
+
+      setState(() {});
+    }
   }
 
   @override
@@ -95,8 +143,6 @@ class _HomePageState extends State<HomePage> {
     homeController.userId.value = await sharedPreference.getUserId();
     homeController.userEmail.value = await sharedPreference.getUserEmail();
     homeController.userPhone.value = await sharedPreference.getUserPhoneNo();
-    print(
-        "fetching User Details=======>${homeController.userName.value},${homeController.userId.value}, ${homeController.userEmail.value} ${homeController.userPhone.value}");
   }
 
   @override
@@ -200,15 +246,19 @@ class _HomePageState extends State<HomePage> {
                                     child: TextFormField(
                                       controller: dateCtl1,
                                       textAlign: TextAlign.start,
+                                      style: TextStyle(fontSize: 14),
                                       readOnly: true,
-                                      decoration: const InputDecoration(
-                                        prefixIcon: Icon(Icons.date_range),
+                                      decoration: InputDecoration(
+                                        prefixIcon: Icon(
+                                          Icons.date_range,
+                                          color: MyTheme.orange,
+                                        ),
                                         hintText: "Select Date",
                                         hintStyle: TextStyle(
                                             color: MyTheme.grey_153,
                                             fontSize: 14),
                                         contentPadding: EdgeInsets.symmetric(
-                                            vertical: 1, horizontal: 10),
+                                            vertical: 1, horizontal: 6),
                                         border: InputBorder.none,
                                         enabledBorder: InputBorder.none,
                                         focusedBorder: InputBorder.none,
@@ -217,6 +267,9 @@ class _HomePageState extends State<HomePage> {
                                         focusedErrorBorder: InputBorder.none,
                                       ),
                                       onTap: () async {
+                                        dateCtl2.clear();
+                                        timeCtl1.clear();
+                                        timeCtl2.clear();
                                         await displayDatePicker(
                                             context,
                                             dateCtl1,
@@ -238,14 +291,18 @@ class _HomePageState extends State<HomePage> {
                                       controller: timeCtl1,
                                       readOnly: true,
                                       textAlign: TextAlign.start,
-                                      decoration: const InputDecoration(
-                                        prefixIcon: Icon(Icons.access_time),
+                                      style: TextStyle(fontSize: 14),
+                                      decoration: InputDecoration(
+                                        prefixIcon: Icon(
+                                          Icons.access_time,
+                                          color: MyTheme.orange,
+                                        ),
                                         hintText: "Select time",
                                         hintStyle: TextStyle(
                                             color: MyTheme.grey_153,
                                             fontSize: 14),
                                         contentPadding: EdgeInsets.symmetric(
-                                            vertical: 1, horizontal: 10),
+                                            vertical: 1, horizontal: 6),
                                         border: InputBorder.none,
                                         enabledBorder: InputBorder.none,
                                         focusedBorder: InputBorder.none,
@@ -254,9 +311,12 @@ class _HomePageState extends State<HomePage> {
                                         focusedErrorBorder: InputBorder.none,
                                       ),
                                       onTap: () async {
-                                        _selectTime(context, timeCtl1);
-                                        // await displayTimePicker(
-                                        //     context, timeCtl1);
+                                        dateCtl2.clear();
+                                        timeCtl2.clear();
+                                        dateCtl1.text.isEmpty
+                                            ? null
+                                            : _selectTime(
+                                                context, timeCtl1, 'startTime');
                                       },
                                     ),
                                   ),
@@ -286,18 +346,22 @@ class _HomePageState extends State<HomePage> {
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(5),
                                         color: MyTheme.white),
-                                    child: TextFormField(
+                                    child: TextField(
                                       controller: dateCtl2,
                                       textAlign: TextAlign.start,
                                       readOnly: true,
-                                      decoration: const InputDecoration(
-                                        prefixIcon: Icon(Icons.date_range),
+                                      style: TextStyle(fontSize: 14),
+                                      decoration: InputDecoration(
+                                        prefixIcon: Icon(
+                                          Icons.date_range,
+                                          color: MyTheme.orange,
+                                        ),
                                         hintText: "Select Date",
                                         hintStyle: TextStyle(
                                             color: MyTheme.grey_153,
                                             fontSize: 14),
                                         contentPadding: EdgeInsets.symmetric(
-                                            vertical: 1, horizontal: 10),
+                                            vertical: 1, horizontal: 6),
                                         border: InputBorder.none,
                                         enabledBorder: InputBorder.none,
                                         focusedBorder: InputBorder.none,
@@ -306,10 +370,13 @@ class _HomePageState extends State<HomePage> {
                                         focusedErrorBorder: InputBorder.none,
                                       ),
                                       onTap: () async {
-                                        await displayDatePicker(
-                                            context,
-                                            dateCtl2,
-                                            homeController.dateValue2);
+                                        timeCtl2.clear();
+                                        timeCtl1.text.isEmpty
+                                            ? null
+                                            : await displayDatePicker(
+                                                context,
+                                                dateCtl2,
+                                                homeController.dateValue2);
                                       },
                                     ),
                                   ),
@@ -323,18 +390,22 @@ class _HomePageState extends State<HomePage> {
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(5),
                                         color: MyTheme.white),
-                                    child: TextFormField(
+                                    child: TextField(
                                       controller: timeCtl2,
                                       readOnly: true,
+                                      style: TextStyle(fontSize: 14),
                                       textAlign: TextAlign.start,
-                                      decoration: const InputDecoration(
-                                        prefixIcon: Icon(Icons.access_time),
+                                      decoration: InputDecoration(
+                                        prefixIcon: Icon(
+                                          Icons.access_time,
+                                          color: MyTheme.orange,
+                                        ),
                                         hintText: "Select time",
                                         hintStyle: TextStyle(
                                             color: MyTheme.grey_153,
                                             fontSize: 14),
                                         contentPadding: EdgeInsets.symmetric(
-                                            vertical: 1, horizontal: 10),
+                                            vertical: 1, horizontal: 6),
                                         border: InputBorder.none,
                                         enabledBorder: InputBorder.none,
                                         focusedBorder: InputBorder.none,
@@ -343,7 +414,10 @@ class _HomePageState extends State<HomePage> {
                                         focusedErrorBorder: InputBorder.none,
                                       ),
                                       onTap: () async {
-                                        _selectTime(context, timeCtl2);
+                                        dateCtl2.text.isEmpty
+                                            ? null
+                                            : _selectTime(
+                                                context, timeCtl2, 'endTime');
                                       },
                                     ),
                                   ),
@@ -356,83 +430,108 @@ class _HomePageState extends State<HomePage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   InkWell(
-                                    child: Container(
-                                      width: 248,
-                                      height: 37,
-                                      decoration: BoxDecoration(
-                                        color: MyTheme.accent_color,
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: const Center(
-                                        child: Text(
-                                          "Search",
-                                          style: TextStyle(
-                                              color: MyTheme.white,
-                                              fontWeight: FontWeight.w600),
+                                    child: Obx(
+                                      () => Container(
+                                        width: 248,
+                                        height: 37,
+                                        decoration: BoxDecoration(
+                                          color: MyTheme.accent_color,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        child: Center(
+                                          child: homeController.loading.value
+                                              ? SizedBox(
+                                                  height: 18,
+                                                  width: 18,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    color: Colors.white,
+                                                    strokeWidth: 2,
+                                                  ),
+                                                )
+                                              : Text(
+                                                  "Search",
+                                                  style: TextStyle(
+                                                      color: MyTheme.white,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
                                         ),
                                       ),
                                     ),
-                                    onTap: () {
-                                      if (dateCtl1.text.isEmpty) {
-                                        const snackdemo = SnackBar(
-                                          content:
-                                              Text('Please select Pickup Date'),
-                                          backgroundColor: MyTheme.accent_color,
-                                          elevation: 10,
-                                          behavior: SnackBarBehavior.floating,
-                                          margin: EdgeInsets.all(5),
-                                        );
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(snackdemo);
-                                        return;
-                                      }
-                                      if (dateCtl2.text.isEmpty) {
-                                        const snackdemo = SnackBar(
-                                          content:
-                                              Text('Please select Drop Date'),
-                                          backgroundColor: MyTheme.accent_color,
-                                          elevation: 10,
-                                          behavior: SnackBarBehavior.floating,
-                                          margin: EdgeInsets.all(5),
-                                        );
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(snackdemo);
-                                        return;
-                                      }
-                                      if (timeCtl1.text.isEmpty) {
-                                        const snackdemo = SnackBar(
-                                          content:
-                                              Text('Please select Pickup Time'),
-                                          backgroundColor: MyTheme.accent_color,
-                                          elevation: 10,
-                                          behavior: SnackBarBehavior.floating,
-                                          margin: EdgeInsets.all(5),
-                                        );
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(snackdemo);
-                                        return;
-                                      }
-                                      if (timeCtl2.text.isEmpty) {
-                                        const snackdemo = SnackBar(
-                                          content:
-                                              Text('Please select Drop Time'),
-                                          backgroundColor: MyTheme.accent_color,
-                                          elevation: 10,
-                                          behavior: SnackBarBehavior.floating,
-                                          margin: EdgeInsets.all(5),
-                                        );
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(snackdemo);
-                                        return;
-                                      }
-                                      homeController.getSearchProductsHome(
-                                          startDate:
-                                              homeController.dateValue1.value,
-                                          startTime: timeCtl1.text,
-                                          endDate:
-                                              homeController.dateValue2.value,
-                                          endTime: timeCtl2.text);
-                                    },
+                                    onTap: homeController.loading.value
+                                        ? null
+                                        : () {
+                                            if (dateCtl1.text.isEmpty) {
+                                              const snackdemo = SnackBar(
+                                                content: Text(
+                                                    'Please select Pickup Date'),
+                                                backgroundColor:
+                                                    MyTheme.accent_color,
+                                                elevation: 10,
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                                margin: EdgeInsets.all(5),
+                                              );
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(snackdemo);
+                                              return;
+                                            }
+                                            if (dateCtl2.text.isEmpty) {
+                                              const snackdemo = SnackBar(
+                                                content: Text(
+                                                    'Please select Drop Date'),
+                                                backgroundColor:
+                                                    MyTheme.accent_color,
+                                                elevation: 10,
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                                margin: EdgeInsets.all(5),
+                                              );
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(snackdemo);
+                                              return;
+                                            }
+                                            if (timeCtl1.text.isEmpty) {
+                                              const snackdemo = SnackBar(
+                                                content: Text(
+                                                    'Please select Pickup Time'),
+                                                backgroundColor:
+                                                    MyTheme.accent_color,
+                                                elevation: 10,
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                                margin: EdgeInsets.all(5),
+                                              );
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(snackdemo);
+                                              return;
+                                            }
+                                            if (timeCtl2.text.isEmpty) {
+                                              const snackdemo = SnackBar(
+                                                content: Text(
+                                                    'Please select Drop Time'),
+                                                backgroundColor:
+                                                    MyTheme.accent_color,
+                                                elevation: 10,
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                                margin: EdgeInsets.all(5),
+                                              );
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(snackdemo);
+                                              return;
+                                            }
+                                            homeController
+                                                .getSearchProductsHome(
+                                                    startDate: homeController
+                                                        .dateValue1.value,
+                                                    startTime: timeCtl1.text,
+                                                    endDate: homeController
+                                                        .dateValue2.value,
+                                                    endTime: timeCtl2.text);
+                                          },
                                   ),
                                 ],
                               ),
@@ -440,6 +539,18 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                       ),
+                      Obx(() => homeController.searchBikeProducts.length > 0
+                          ? Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: Text(
+                                "Search Vehicles",
+                                style: TextStyle(
+                                    color: Color(0XFF003361),
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            )
+                          : SizedBox()),
                       Obx(
                         () => CustomWidget.buildSearchListProduct(
                             context, homeController.searchBikeProducts),
@@ -447,7 +558,7 @@ class _HomePageState extends State<HomePage> {
                       Padding(
                         padding: const EdgeInsets.only(top: 10.0),
                         child: Text(
-                          "All Products",
+                          "All Vehicles",
                           style: TextStyle(
                               color: Color(0XFF003361),
                               fontSize: 20,

@@ -43,6 +43,7 @@ class VerificationRepository {
   ) async {
     String getToken = await SharedPreference().getUserToken();
     String url = "${AppConfig.BASE_URL}/customer/user-kyc";
+    print('getToken ===== ${getToken}');
 
     // Create a multipart request
     var request = http.MultipartRequest('POST', Uri.parse(url));
@@ -73,7 +74,6 @@ class VerificationRepository {
       "zoneId": "2",
       "Authorization": "Bearer $getToken",
     });
-
     try {
       print(
           "post Datas kyc========>${front.path} ${back.path} ${aadhar} ${pan} ${getToken}");
@@ -136,5 +136,28 @@ class VerificationRepository {
     print("get User Kyc response=======>${response.body}");
 
     return kycResultFromJson(response.body);
+  }
+
+  Future<http.Response> aadhaarVerify(String aadhaarNumber) async {
+    String userToken = await SharedPreference().getUserToken();
+    return await ApiHelper.post(
+      body: jsonEncode({"aadhar": aadhaarNumber}),
+      url: "${AppConfig.BASE_URL}/verification/aadhar-verify",
+      headers: {
+        'Authorization': 'Bearer $userToken',
+      },
+    );
+  }
+
+  Future<http.Response> aadhaarOTPVerify(
+      String referenceNumber, String otp) async {
+    String userToken = await SharedPreference().getUserToken();
+    return await ApiHelper.post(
+      body: jsonEncode({"reference_id": referenceNumber, "otp": otp}),
+      url: "${AppConfig.BASE_URL}/verification/aadhaar-otp-verify",
+      headers: {
+        'Authorization': 'Bearer $userToken',
+      },
+    );
   }
 }

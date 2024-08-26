@@ -1,8 +1,10 @@
 import 'dart:convert';
 
-kycResultResponse kycResultFromJson(String str) => kycResultResponse.fromJson(json.decode(str));
+kycResultResponse kycResultFromJson(String str) =>
+    kycResultResponse.fromJson(json.decode(str));
 
 String kycResultToJson(kycResultResponse data) => json.encode(data.toJson());
+
 class kycResultResponse {
   bool? success;
   Data? data;
@@ -10,8 +12,13 @@ class kycResultResponse {
   kycResultResponse({this.success, this.data});
 
   kycResultResponse.fromJson(Map<String, dynamic> json) {
+    print('json ------  ${json['data']}');
+    print('success ------  ${json['success']}');
     success = json['success'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+
+    data = json['data'] != "User KYC details not found"
+        ? new Data.fromJson(json['data'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -27,7 +34,7 @@ class kycResultResponse {
 class Data {
   int? id;
   int? userId;
-  String? aadhar;
+  String? aadhaar;
   String? pan;
   String? licenseFront;
   String? licenseBack;
@@ -36,24 +43,26 @@ class Data {
   String? status;
   String? createdAt;
   String? updatedAt;
+  String? userName;
 
   Data(
       {this.id,
-        this.userId,
-        this.aadhar,
-        this.pan,
-        this.licenseFront,
-        this.licenseBack,
-        this.isVerified,
-        this.isReject,
-        this.status,
-        this.createdAt,
-        this.updatedAt});
+      this.userId,
+      this.aadhaar,
+      this.pan,
+      this.licenseFront,
+      this.licenseBack,
+      this.isVerified,
+      this.isReject,
+      this.status,
+      this.createdAt,
+      this.updatedAt,
+      this.userName});
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     userId = json['user_id'];
-    aadhar = json['aadhar'];
+    aadhaar = json['aadhar'];
     pan = json['pan'];
     licenseFront = json['license_front'];
     licenseBack = json['license_back'];
@@ -62,13 +71,14 @@ class Data {
     status = json['status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    userName = json['user_name'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['user_id'] = this.userId;
-    data['aadhar'] = this.aadhar;
+    data['aadhar'] = this.aadhaar;
     data['pan'] = this.pan;
     data['license_front'] = this.licenseFront;
     data['license_back'] = this.licenseBack;

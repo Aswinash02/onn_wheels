@@ -7,6 +7,7 @@ import 'package:onnwheels/utils/app_config.dart';
 
 class OrderRepository {
   Future<List<AllOrdersModel>> getAllOrders(int userId) async {
+    print('user id ------------------ ${userId}');
     try {
       String url = ("${AppConfig.BASE_URL}/items/all-orders");
       var response = await ApiHelper.get(
@@ -23,6 +24,7 @@ class OrderRepository {
   }
 
   Future<OrderDetailModel> getOrderDetails(int orderId) async {
+    print('orderId ===== ${orderId}');
     try {
       String url = ("${AppConfig.BASE_URL}/items/get-order");
       var response = await ApiHelper.get(

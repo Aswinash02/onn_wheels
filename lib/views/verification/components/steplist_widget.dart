@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:onnwheels/controllers/verification_controller.dart';
 import 'package:onnwheels/customs/toastcomponent.dart';
@@ -9,7 +10,12 @@ import 'package:onnwheels/repositories/verification_repositories.dart';
 import 'package:toast/toast.dart';
 
 class StepperHelper {
-  static List<Step> stepList(VerificationController verifyController) {
+  static List<Step> stepList(
+      VerificationController verifyController, BuildContext context) {
+    if (verifyController.isUpdate.value) {
+      verifyController.getKycUpdateData();
+    }
+
     return [
       Step(
         state: verifyController.activeCurrentStep.value <= 0
@@ -25,6 +31,7 @@ class StepperHelper {
             children: [
               TextField(
                 controller: verifyController.name,
+                cursorColor: MyTheme.orange,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Full Name',
@@ -33,44 +40,6 @@ class StepperHelper {
               const SizedBox(
                 height: 8,
               ),
-              // TextField(
-              //   controller: verifyController.phone,
-              //   decoration: const InputDecoration(
-              //     border: OutlineInputBorder(),
-              //     labelText: 'phone',
-              //   ),
-              // ),
-              // const SizedBox(
-              //   height: 8,
-              // ),
-              // TextField(
-              //   controller: verifyController.city,
-              //   obscureText: true,
-              //   decoration: const InputDecoration(
-              //     border: OutlineInputBorder(),
-              //     labelText: 'City',
-              //   ),
-              // ),
-              // const SizedBox(
-              //   height: 8,
-              // ),
-              // TextField(
-              //   controller: verifyController.address,
-              //   decoration: const InputDecoration(
-              //     border: OutlineInputBorder(),
-              //     labelText: 'Full House Address',
-              //   ),
-              // ),
-              // const SizedBox(
-              //   height: 8,
-              // ),
-              // TextField(
-              //   controller: verifyController.pincode,
-              //   decoration: const InputDecoration(
-              //     border: OutlineInputBorder(),
-              //     labelText: 'Pin Code',
-              //   ),
-              // ),
             ],
           ),
         ),
@@ -92,9 +61,59 @@ class StepperHelper {
               ),
               TextField(
                 controller: verifyController.aadharData,
+                cursorColor: MyTheme.orange,
+                onChanged: (String value) {
+                  verifyController.aadhaarVerified.value = false;
+                  if (value.length == 12) {
+                    FocusScope.of(context).unfocus();
+                    verifyController.aadhaarVerify();
+                  }
+                },
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(12)
+                ],
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  suffixIcon: verifyController.aadhaarVerifyLoadingState.value
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                                height: 22,
+                                width: 22,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                )),
+                          ],
+                        )
+                      : SizedBox(),
+                  labelText: 'Aadhaar Number',
+                ),
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+              TextField(
+                controller: verifyController.aadharOTP,
+                keyboardType: TextInputType.number,
+                enabled: verifyController.isEnableOTP.value,
+                cursorColor: MyTheme.orange,
+                onChanged: (String str) {
+                  verifyController.aadhaarVerified.value = false;
+
+                  if (str.length == 6) {
+                    FocusScope.of(context).unfocus();
+                  }
+                },
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(6)
+                ],
                 decoration: const InputDecoration(
-                  // border: OutlineInputBorder(),
-                  labelText: 'Aadhar Number',
+                  border: OutlineInputBorder(),
+                  labelText: 'Aadhaar OTP',
                 ),
               ),
               const SizedBox(
@@ -106,28 +125,47 @@ class StepperHelper {
                   width: 100,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: MyTheme.black,
+                    color: MyTheme.orange,
                   ),
                   child: Center(
-                    child: Text(
-                      "Verify",
-                      style: TextStyle(color: MyTheme.white),
-                    ),
+                    child: verifyController.otpLoadingState.value
+                        ? SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : Text(
+                            verifyController.aadhaarVerified.value != true
+                                ? "Verify"
+                                : "Verified",
+                            style: TextStyle(color: MyTheme.white),
+                          ),
                   ),
                 ),
-                onTap: () {},
+                onTap: () {
+                  verifyController.aadhaarOTPVerify();
+                },
               ),
               const SizedBox(
-                height: 8,
+                height: 15,
               ),
               TextField(
                 controller: verifyController.panData,
+                cursorColor: MyTheme.orange,
+                onChanged: (String str) {
+                  verifyController.panSuccess.value = false;
+                  if (str.length == 10) {
+                    FocusScope.of(context).unfocus();
+                  }
+                },
+                inputFormatters: [LengthLimitingTextInputFormatter(10)],
                 decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Pan Number',
-                    enabled: verifyController.panSuccess.value == false
-                        ? true
-                        : false),
+                  border: OutlineInputBorder(),
+                  labelText: 'Pan Number',
+                ),
               ),
               const SizedBox(
                 height: 8,
@@ -139,40 +177,29 @@ class StepperHelper {
                     width: 100,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: verifyController.panSuccess.value != true
-                          ? MyTheme.black
-                          : MyTheme.green,
+                      color: MyTheme.orange,
                     ),
                     child: Center(
-                      child: Text(
-                        verifyController.panSuccess.value != true
-                            ? "Verify"
-                            : "Verified",
-                        style: TextStyle(color: MyTheme.white),
-                      ),
+                      child: verifyController.panLoadingState.value
+                          ? SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : Text(
+                              verifyController.panSuccess.value != true
+                                  ? "Verify"
+                                  : "Verified",
+                              style: TextStyle(color: MyTheme.white),
+                            ),
                     ),
                   ),
                 ),
                 onTap: () async {
-                  if (verifyController.panSuccess.value != true) {
-                    var panVerifyResponse = await VerificationRepository()
-                        .panVerificationPost(
-                            panNumber: verifyController.panData.text);
-                    if (panVerifyResponse.status == 0) {
-                      verifyController.panSuccess.value = true;
-                      print("success");
-                      ToastComponent.showDialog(
-                          panVerifyResponse.message!.toString(),
-                          gravity: Toast.center,
-                          duration: Toast.lengthLong);
-                    } else {
-                      print("failed");
-                      ToastComponent.showDialog(
-                          panVerifyResponse.message!.toString(),
-                          gravity: Toast.center,
-                          duration: Toast.lengthLong);
-                    }
-                  }
+                  verifyController.onTapPanVerify();
                 },
               ),
               SizedBox(

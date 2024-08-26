@@ -1,20 +1,19 @@
-import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:onnwheels/customs/auth_ui.dart';
 import 'package:onnwheels/customs/loading_class.dart';
 import 'package:onnwheels/helpers/validator_helper.dart';
+import 'package:onnwheels/models/signup_model.dart';
+import 'package:onnwheels/mytheme.dart';
+import 'package:onnwheels/repositories/auth_repositories.dart';
+import 'package:onnwheels/utils/app_config.dart';
+import 'package:onnwheels/utils/btn_elements.dart';
+import 'package:onnwheels/utils/shared_value.dart';
 import 'package:onnwheels/views/auth/signin.dart';
-import '../../customs/auth_ui.dart';
-import '../../mytheme.dart';
-import '../../repositories/auth_repositories.dart';
-import '../../utils/app_config.dart';
-import '../../utils/btn_elements.dart';
-import '../../utils/shared_value.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../webview/webview.dart';
+import 'package:onnwheels/views/webview/webview.dart';
 import 'components/input_decorations.dart';
-import 'otp_field.dart';
 
 class Registration extends StatefulWidget {
   @override
@@ -25,62 +24,48 @@ class _RegistrationState extends State<Registration> {
   String _register_by = "email"; //phone or email
   String initialCountry = 'US';
 
-  // PhoneNumber phoneCode = PhoneNumber(isoCode: 'US', dialCode: "+1");
   var countries_code = <String?>[];
 
-  String? _phone = "";
-  bool? _isAgree = false;
-  bool _isCaptchaShowing = false;
+  // bool? _isAgree = false;
   String googleRecaptchaKey = "";
   bool _passwordVisible = false;
-  bool _confirmPasswordVisible = false;
 
   //controllers
   TextEditingController _nameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _phoneNumberController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-  TextEditingController _passwordConfirmController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
-  @override
-  void initState() {
-    //on Splash Screen hide statusbar
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.bottom]);
-    super.initState();
-    fetch_country();
-  }
-
-  fetch_country() async {
-    // var data = await AddressRepository().getCountryList();
-    // data.countries.forEach((c) => countries_code.add(c.code));
-  }
-
-  @override
-  void dispose() {
-    //before going to other screen show statusbar
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
-    super.dispose();
-  }
-
   onPressSignUp() async {
+    FocusScope.of(context).unfocus();
     Loading.show(context);
     var name = _nameController.text.toString();
     var email = _emailController.text.toString();
     var phone = _phoneNumberController.text.toString();
     var password = _passwordController.text.toString();
-
-    var signupResponse = await AuthRepository().getSignupResponse(
+    SignupResponse? res = await AuthRepository().getSignupResponse(
       name,
       email,
       phone,
       password,
-      // googleRecaptchaKey
     );
+
+    if (res?.result == true) {
+      print('otp *********** ${res!.otp}');
+      clearConData();
+    }
+    // SharedPreference().setUserData(loginResponse: signupResponse);
     Loading.close();
+  }
+
+  void clearConData() {
+    _nameController.clear();
+    _emailController.clear();
+    _phoneNumberController.clear();
+    _passwordController.clear();
+    // _isAgree == false;
   }
 
   @override
@@ -118,6 +103,9 @@ class _RegistrationState extends State<Registration> {
                     // height: 45,
                     child: TextFormField(
                       controller: _nameController,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[a-z A-Z]')),
+                      ],
                       autofocus: false,
                       decoration: InputDecorations.buildInputDecoration_1(
                           hint_text: "John Doe"),
@@ -187,6 +175,9 @@ class _RegistrationState extends State<Registration> {
                         // height: 45,
                         child: TextFormField(
                           controller: _phoneNumberController,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(10)
+                          ],
                           autofocus: false,
                           decoration: InputDecorations.buildInputDecoration_1(
                               hint_text: "01XXX XXX XXX"),
@@ -250,149 +241,29 @@ class _RegistrationState extends State<Registration> {
                     ],
                   ),
                 ),
-                // Padding(
-                //   padding: const EdgeInsets.only(bottom: 4.0),
-                //   child: Text(
-                //     AppLocalizations.of(context)!.retype_password_ucf,
-                //     style: const TextStyle(
-                //         color: MyTheme.white, fontWeight: FontWeight.w600),
-                //   ),
-                // ),
-                // Padding(
-                //   padding: const EdgeInsets.only(bottom: 8.0),
-                //   child: SizedBox(
-                //     // height: 45,
-                //     child: TextFormField(
-                //       controller: _passwordConfirmController,
-                //       autofocus: false,
-                //       obscureText: !_confirmPasswordVisible,
-                //       enableSuggestions: false,
-                //       autocorrect: false,
-                //       validator: (value) => Validator.validateConfirmPassword(
-                //           _passwordController.text, value),
-                //       decoration: InputDecorations.buildInputDecoration_1(
-                //         hint_text: "• • • • • • • •",
-                //         suffixIcon: IconButton(
-                //           onPressed: () {
-                //             setState(
-                //               () {
-                //                 _confirmPasswordVisible =
-                //                     !_confirmPasswordVisible;
-                //               },
-                //             );
-                //           },
-                //           icon: Icon(
-                //             _confirmPasswordVisible
-                //                 ? Icons.visibility
-                //                 : Icons.visibility_off,
-                //             color: MyTheme.accent_color,
-                //             size: 20,
-                //           ),
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 15,
-                        width: 15,
-                        child: Checkbox(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(6)),
-                            value: _isAgree,
-                            onChanged: (newValue) {
-                              _isAgree = newValue;
-                              setState(() {});
-                            }),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: SizedBox(
-                          width: MediaQuery.sizeOf(context).width - 130,
-                          child: RichText(
-                              maxLines: 2,
-                              text: TextSpan(
-                                  style: const TextStyle(
-                                      color: MyTheme.font_grey, fontSize: 12),
-                                  children: [
-                                    const TextSpan(
-                                      text: "I agree to the",
-                                    ),
-                                    TextSpan(
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      CommonWebviewScreen(
-                                                        page_name:
-                                                            "Terms Conditions",
-                                                        url:
-                                                            "${AppConfig.RAW_BASE_URL}/mobile-page/terms",
-                                                      )));
-                                        },
-                                      style:
-                                          const TextStyle(color: MyTheme.white),
-                                      text: " Terms Conditions",
-                                    ),
-                                    const TextSpan(
-                                      text: " &",
-                                    ),
-                                    TextSpan(
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      CommonWebviewScreen(
-                                                        page_name:
-                                                            "Privacy Policy",
-                                                        url:
-                                                            "${AppConfig.RAW_BASE_URL}/mobile-page/privacy-policy",
-                                                      )));
-                                        },
-                                      text: " Privacy Policy",
-                                      style:
-                                          const TextStyle(color: MyTheme.white),
-                                    )
-                                  ])),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 30.0),
                   child: SizedBox(
                     height: 45,
                     child: Btn.minWidthFixHeight(
-                      minWidth: MediaQuery.of(context).size.width,
-                      height: 50,
-                      color: MyTheme.black,
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(6.0))),
-                      child: Text(
-                        AppLocalizations.of(context)!.sign_up_ucf,
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600),
-                      ),
-                      onPressed: _isAgree!
-                          ? () {
-                              if (_formKey.currentState!.validate()) {
-                                onPressSignUp();
-                              }
-                            }
-                          : null,
-                    ),
+                        minWidth: MediaQuery.of(context).size.width,
+                        height: 50,
+                        color: MyTheme.black,
+                        shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(6.0))),
+                        child: Text(
+                          AppLocalizations.of(context)!.sign_up_ucf,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            onPressSignUp();
+                          }
+                        }),
                   ),
                 ),
                 Padding(

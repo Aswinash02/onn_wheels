@@ -14,8 +14,18 @@ class OrderController extends GetxController {
   Future<void> getAllOrders() async {
     loading.value = true;
     String userId = await SharedPreference().getUserId();
+    allOrdersList.clear();
     var response = await OrderRepository().getAllOrders(int.parse(userId));
     allOrdersList.addAll(response);
+    // Set<int?> orderIds = allOrdersList.map((order) => order.orderId).toSet();
+    //
+    // for (var order in response) {
+    //   if (!orderIds.contains(order.orderId)) {
+    //     allOrdersList.add(order);
+    //     orderIds.add(order.orderId);
+    //   }
+    // }
+
     loading.value = false;
     update();
   }
@@ -25,18 +35,5 @@ class OrderController extends GetxController {
     order.value = await OrderRepository().getOrderDetails(orderId);
     loadingState.value = false;
     update();
-  }
-
-  @override
-  void onInit() {
-    // TODO: implement onInit
-    super.onInit();
-    getAllOrders();
-  }
-
-  @override
-  void onClose() {
-    // TODO: implement onClose
-    super.onClose();
   }
 }

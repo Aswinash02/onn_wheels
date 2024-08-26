@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:onnwheels/controllers/bike_details_controller.dart';
-import 'package:onnwheels/models/bike_details.dart';
+import 'package:onnwheels/models/bike_details_model.dart';
 import 'package:onnwheels/mytheme.dart';
 import 'package:onnwheels/simmer/bike_details_simmer.dart';
 import 'package:onnwheels/views/bikedetails/components/bike_details_widgets.dart';
@@ -31,112 +31,9 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
   @override
   void initState() {
     // TODO: implement initState
+    print('widget.id --------- ${widget.id}');
     bikeDetailsController.fetchProductDetailsData(id: widget.id);
     super.initState();
-  }
-
-  // Future<void> dateTimeRangeBottomSheet(BuildContext context) {
-  //   DateTime? _startDateTime;
-  //   DateTime? _endDateTime;
-  //   return showModalBottomSheet(
-  //     context: context,
-  //     isScrollControlled: true,
-  //     builder: (BuildContext context) {
-  //       return Padding(
-  //         padding: const EdgeInsets.all(16.0),
-  //         child: Column(
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: [
-  //             SfDateRangePicker(
-  //               onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
-  //                 setState(() {
-  //                   if (args.value is PickerDateRange) {
-  //
-  //                     _startDateTime = args.value.startDate;
-  //                     _endDateTime = args.value.endDate;
-  //                     print('_startDateTime $_startDateTime');
-  //                     print('_endDateTime $_endDateTime');
-  //                   }
-  //                 });
-  //               },
-  //               selectionMode: DateRangePickerSelectionMode.range,
-  //             ),
-  //             SizedBox(height: 20),
-  //             ElevatedButton(
-  //               onPressed: _startDateTime == null
-  //                   ? null
-  //                   : () {
-  //                       DatePicker.showTimePicker(
-  //                         context,
-  //                         showTitleActions: true,
-  //                         onConfirm: (time) {
-  //                           setState(() {
-  //                             _startDateTime = DateTime(
-  //                               _startDateTime!.year,
-  //                               _startDateTime!.month,
-  //                               _startDateTime!.day,
-  //                               time.hour,
-  //                               time.minute,
-  //                             );
-  //                           });
-  //                         },
-  //                         currentTime: DateTime.now(),
-  //                       );
-  //                     },
-  //               child: Text('Select Start Time'),
-  //             ),
-  //             SizedBox(height: 10),
-  //             ElevatedButton(
-  //               onPressed: _endDateTime == null
-  //                   ? null
-  //                   : () {
-  //                       DatePicker.showTimePicker(
-  //                         context,
-  //                         showTitleActions: true,
-  //                         onConfirm: (time) {
-  //                           setState(() {
-  //                             _endDateTime = DateTime(
-  //                               _endDateTime!.year,
-  //                               _endDateTime!.month,
-  //                               _endDateTime!.day,
-  //                               time.hour,
-  //                               time.minute,
-  //                             );
-  //                           });
-  //                         },
-  //                         currentTime: DateTime.now(),
-  //                       );
-  //                     },
-  //               child: Text('Select End Time'),
-  //             ),
-  //             SizedBox(height: 20),
-  //             Text(
-  //               'Selected Start DateTime: ${_startDateTime?.toString() ?? 'Not selected'}',
-  //             ),
-  //             Text(
-  //               'Selected End DateTime: ${_endDateTime?.toString() ?? 'Not selected'}',
-  //             ),
-  //             SizedBox(height: 20),
-  //             ElevatedButton(
-  //               onPressed: () {
-  //                 Navigator.pop(context);
-  //               },
-  //               child: Text('Done'),
-  //             ),
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-  Future<void> dateTimeRangeBottomSheet(BuildContext context) {
-    return showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-        return DateTimeRangePicker();
-      },
-    );
   }
 
   @override
@@ -179,84 +76,21 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Obx(
-                                () => CustomText(
-                                  text: bikeDetailsController.bikeTitle.value,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: screenWidth / 18,
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Icon(
-                                    Icons.star,
-                                  ),
-                                  SizedBox(
-                                    width: 2,
-                                  ),
-                                  Obx(
-                                    () => CustomText(
-                                      text: bikeDetailsController
-                                          .ratingCount.value
-                                          .toString(),
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: screenWidth / 20,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
                           Obx(
                             () => CustomText(
-                              text: bikeDetailsController.total.value == 0
-                                  ? ""
-                                  : "\u20B9 ${bikeDetailsController.total.value}",
+                              text: bikeDetailsController.bikeTitle.value,
                               fontWeight: FontWeight.w600,
                               fontSize: screenWidth / 18,
-                              color: MyTheme.orange,
                             ),
                           ),
-                          Obx(
-                            () => CustomText(
-                              text: bikeDetailsController
-                                  .productDescription.value,
-                              fontWeight: FontWeight.w600,
-                              fontSize: screenWidth / 36,
-                              maxLines: 6,
-                              textAlign: TextAlign.justify,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              dateTimeRangeBottomSheet(context);
-                            },
-                            child: Container(
-                              height: 40,
-                              width: screenWidth,
-                              decoration: BoxDecoration(
-                                color: MyTheme.orange,
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: Center(
-                                child: Obx(
-                                  () => CustomText(
-                                    text: bikeDetailsController.startDateTime ==
-                                            ''
-                                        ? "Select Date And Time"
-                                        : "${bikeDetailsController.startDateTime} - ${bikeDetailsController.endDateTime}",
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
+                          CustomText(
+                            text: bikeDetailsController
+                                    .bikeDetails!.description ??
+                                '',
+                            fontWeight: FontWeight.w600,
+                            fontSize: screenWidth / 36,
+                            maxLines: 100,
+                            textAlign: TextAlign.justify,
                           ),
                           SizedBox(
                             height: 10,
@@ -264,10 +98,22 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                           Align(
                             alignment: Alignment.center,
                             child: toggleSwitch(toggle: (index) {
-                              bikeDetailsController.calculatePrice(index!);
+                              bikeDetailsController.selectedIndex.value =
+                                  index!;
                             }),
                           ),
-
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Obx(
+                            () => selectedDetail(
+                                index:
+                                    bikeDetailsController.selectedIndex.value),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          BikeDetailDateTimeRangePicker(),
                           Obx(
                             () => bikeDetailsController
                                     .stationDropdownItems.isNotEmpty
@@ -275,6 +121,49 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                                     height: 20,
                                   )
                                 : SizedBox(),
+                          ),
+                          bikeDetailsController.total != 0
+                              ? Wrap(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                              color: Color(0XFF000080),
+                                              borderRadius:
+                                                  BorderRadius.circular(6)),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 5),
+                                          child: Obx(
+                                            () => CustomText(
+                                              text:
+                                                  "Total Price : \u20B9 ${bikeDetailsController.total.value}",
+                                              color: Colors.white,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 4,
+                                        ),
+                                        Obx(
+                                          () => CustomText(
+                                            text:
+                                                "${bikeDetailsController.kmLimit} km Limit",
+                                            fontSize: 14,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                )
+                              : SizedBox(),
+                          SizedBox(
+                            height: 10,
                           ),
                           Obx(
                             () => bikeDetailsController
@@ -322,104 +211,19 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                                   )
                                 : SizedBox(),
                           ),
-                          // Obx(
-                          //   () => SizedBox(
-                          //     height: 40,
-                          //     child: DropdownButtonFormField<String>(
-                          //       value: bikeDetailsController.selectedValue.value,
-                          //       style: TextStyle(color: Colors.black),
-                          //       onChanged:
-                          //           bikeDetailsController.onChangeAvailableDropdown,
-                          //       padding: EdgeInsets.all(0),
-                          //       decoration: InputDecoration(
-                          //         contentPadding: EdgeInsets.all(8),
-                          //         border: OutlineInputBorder(
-                          //           borderRadius: BorderRadius.circular(10),
-                          //         ),
-                          //         enabledBorder: OutlineInputBorder(
-                          //           borderRadius: BorderRadius.circular(10),
-                          //         ),
-                          //         disabledBorder: OutlineInputBorder(
-                          //           borderRadius: BorderRadius.circular(10),
-                          //         ),
-                          //         focusedBorder: OutlineInputBorder(
-                          //           borderRadius: BorderRadius.circular(10),
-                          //         ),
-                          //       ),
-                          //       items: bikeDetailsController.stationDropdownItems.map((item) {
-                          //         return DropdownMenuItem(
-                          //           value: item,
-                          //           child: Text(item),
-                          //         );
-                          //       }).toList(),
-                          //     ),
-                          //   ),
-                          // ),
                           SizedBox(
                             height: 30,
                           ),
-                          InkWell(
+                          GestureDetector(
                             onTap: () {
-                              if (bikeDetailsController.startDateTime.value ==
-                                      "" ||
-                                  bikeDetailsController.endDateTime.value ==
-                                      '') {
-                                const snackBar = SnackBar(
-                                  content: Text('Please select date and time'),
-                                  backgroundColor: MyTheme.accent_color,
-                                  elevation: 10,
-                                  behavior: SnackBarBehavior.floating,
-                                  margin: EdgeInsets.all(5),
-                                );
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(snackBar);
-                                return;
-                              }
-                              if (bikeDetailsController.selectedStation.value ==
-                                      "" ||
-                                  bikeDetailsController.selectedStation.value ==
-                                      null) {
-                                const snackdemo = SnackBar(
-                                  content: Text('Please select station'),
-                                  backgroundColor: MyTheme.accent_color,
-                                  elevation: 10,
-                                  behavior: SnackBarBehavior.floating,
-                                  margin: EdgeInsets.all(5),
-                                );
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(snackdemo);
-                                return;
-                              }
-                              Get.to(
-                                () => CheckoutPage(
-                                  imageUrl:
-                                      bikeDetailsController.imageFile.value,
-                                  startTime:
-                                      bikeDetailsController.startDateTime.value,
-                                  endTime:
-                                      bikeDetailsController.endDateTime.value,
-                                  station: bikeDetailsController
-                                      .selectedStation.value!.name!,
-                                  totalPayableAmount:
-                                      bikeDetailsController.total.value == 0
-                                          ? bikeDetailsController.price.value
-                                              .toString()
-                                          : bikeDetailsController.total.value
-                                              .toString(),
-                                  lat: bikeDetailsController
-                                      .selectedStation.value!.lat!,
-                                  long: bikeDetailsController
-                                      .selectedStation.value!.lon!,
-                                  name: bikeDetailsController.bikeTitle.value,
-                                  id: widget.id,
-                                ),
-                              );
+                              bikeDetailsController.onTapBookNow(
+                                  context: context, bikeId: widget.id);
                             },
                             child: Container(
                               width: screenWidth,
                               height: 40,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
+                                borderRadius: BorderRadius.circular(10),
                                 color: Color(0XFF000080),
                               ),
                               child: Center(
@@ -437,6 +241,263 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                   ],
                 ),
               ),
+      ),
+    );
+  }
+
+  selectedDetail({required int index}) {
+    switch (index) {
+      case 0:
+        return referencePriceDetailHour();
+      case 1:
+        return referencePriceDetailDay();
+      case 2:
+        return referencePriceDetailWeek();
+      case 3:
+        return referencePriceDetailMonth();
+    }
+  }
+
+  Widget referencePriceDetailHour() {
+    return GetBuilder<BikeDetailsController>(builder: (controller) {
+      return Container(
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                CustomText(
+                  text: "Mon - Thu",
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+                SizedBox(
+                  width: 2,
+                ),
+                CustomText(
+                  text:
+                      "(Min ${controller.bikeDetails!.hoursPrice!.hourLimit} hrs booking)",
+                  fontSize: 10,
+                  fontWeight: FontWeight.w500,
+                ),
+              ],
+            ),
+            rupeeRow(
+                title: 'Per Hour',
+                rupee:
+                    "\u{20B9} ${controller.bikeDetails!.hoursPrice!.price ?? ''}"),
+            Row(
+              children: [
+                CustomText(
+                  text: "Fri - Sun",
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+                SizedBox(
+                  width: 2,
+                ),
+                CustomText(
+                  text:
+                      "(Min ${controller.bikeDetails!.hoursPrice!.hourWeekendLimit} hrs booking)",
+                  fontSize: 10,
+                  fontWeight: FontWeight.w500,
+                ),
+              ],
+            ),
+            rupeeRow(
+                title: 'Per Hour',
+                rupee:
+                    "\u{20B9} ${int.parse(controller.bikeDetails!.hoursPrice!.price ?? '0')}"),
+            rupeeRow(
+                title: 'WeekEnd Price',
+                rupee:
+                    "\u{20B9} ${controller.bikeDetails!.hoursPrice!.hourWeekendPrice ?? '0'}"),
+            CustomText(
+              text: "Extras",
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+            rupeeRow(
+                title: 'Km limit',
+                rupee:
+                    '\u{20B9} ${controller.bikeDetails!.hoursPrice!.kmLimit ?? ''}/hr'),
+            rupeeRow(
+                title: 'Excess Km charges',
+                rupee:
+                    '\u{20B9} ${controller.bikeDetails!.hoursPrice!.kmCharges ?? ''}/km'),
+            rupeeRow(
+                title: 'Excess hour charges',
+                rupee:
+                    "\u{20B9} ${controller.bikeDetails!.hoursPrice!.extraHours ?? ''}"),
+          ],
+        ),
+      );
+    });
+  }
+
+  Widget referencePriceDetailDay() {
+    return GetBuilder<BikeDetailsController>(builder: (controller) {
+      return Container(
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomText(
+              text: "Mon - Thu",
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+            rupeeRow(
+                title: 'Per Day',
+                rupee:
+                    '\u{20B9} ${controller.bikeDetails!.daysPrice!.price ?? ''}'),
+            CustomText(
+              text: "Fri - Sun",
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+            rupeeRow(
+                title: 'Per Day',
+                rupee:
+                    '\u{20B9} ${int.parse(controller.bikeDetails!.daysPrice!.price ?? '0') + (controller.bikeDetails!.weekendPrice ?? 0)}'),
+            // rupeeRow(
+            //     title: 'WeekEnd Extra Price',
+            //     rupee:
+            //         '\u{20B9} ${controller.bikeDetails!.weekendPrice ?? ''}'),
+            CustomText(
+              text: "Extras",
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+            rupeeRow(
+                title: 'Km limit',
+                rupee:
+                    '\u{20B9} ${controller.bikeDetails!.daysPrice!.kmLimit ?? ''}/day'),
+            rupeeRow(
+                title: 'Excess Km charges',
+                rupee:
+                    '\u{20B9} ${controller.bikeDetails!.daysPrice!.kmCharges ?? ''}/km'),
+            rupeeRow(
+                title: 'Excess hour charges',
+                rupee:
+                    '\u{20B9} ${controller.bikeDetails!.daysPrice!.extraHours ?? ''}'),
+          ],
+        ),
+      );
+    });
+  }
+
+  Widget referencePriceDetailWeek() {
+    return GetBuilder<BikeDetailsController>(builder: (controller) {
+      return Container(
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomText(
+              text: "Weekly",
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+            rupeeRow(
+                title: 'Per Week',
+                rupee:
+                    '\u{20B9} ${controller.bikeDetails!.weekPrice!.price ?? ''}'),
+            CustomText(
+              text: "Extras",
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+            rupeeRow(
+                title: 'Km limit',
+                rupee:
+                    '\u{20B9} ${controller.bikeDetails!.weekPrice!.kmLimit ?? ''}/week'),
+            rupeeRow(
+                title: 'Excess Km charges',
+                rupee:
+                    '\u{20B9} ${controller.bikeDetails!.weekPrice!.kmCharges ?? ''}/km'),
+            rupeeRow(
+                title: 'Excess hour charges',
+                rupee:
+                    '\u{20B9} ${controller.bikeDetails!.weekPrice!.extraHours ?? ''}'),
+          ],
+        ),
+      );
+    });
+  }
+
+  Widget referencePriceDetailMonth() {
+    return GetBuilder<BikeDetailsController>(builder: (controller) {
+      return Container(
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomText(
+              text: "Monthly",
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+            rupeeRow(
+                title: 'Per Month',
+                rupee:
+                    '\u{20B9} ${controller.bikeDetails!.monthPrice!.price ?? ''}'),
+            CustomText(
+              text: "Extras",
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+            rupeeRow(
+                title: 'Km limit',
+                rupee:
+                    '\u{20B9} ${controller.bikeDetails!.monthPrice!.kmLimit ?? ''}/month'),
+            rupeeRow(
+                title: 'Excess Km charges',
+                rupee:
+                    '\u{20B9} ${controller.bikeDetails!.monthPrice!.kmCharges ?? ''}/km'),
+            rupeeRow(
+                title: 'Excess hour charges',
+                rupee:
+                    '\u{20B9} ${controller.bikeDetails!.monthPrice!.extraHours ?? ''}'),
+          ],
+        ),
+      );
+    });
+  }
+
+  Widget rupeeRow({required String title, required String rupee}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: SizedBox(
+              // width: 130,
+              child: CustomText(
+                text: "${title}",
+                fontSize: 12,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: CustomText(
+              text: ":",
+              fontSize: 12,
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 30),
+              child: CustomText(
+                text: "$rupee",
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

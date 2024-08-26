@@ -25,8 +25,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  // final HomeController homeController = Get.put(HomeController());
-  // final CartController cartController = Get.put(CartController());
   int _currentIndex = 0;
   var bottomPages = [
     const HomePage(),
@@ -41,25 +39,15 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-  fetchAll() {
-    // getCartCount();
-  }
-
-  // getCartCount() async {
-  //   await cartController.getCount();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
         if (_currentIndex != 0) {
-          fetchAll();
           setState(() {
             _currentIndex = 0;
           });
         } else {
-          // CommonFunctions(context).appExitDialog();
           final shouldPop = (await OneContext().showDialog<bool>(
             barrierDismissible: false,
             builder: (BuildContext context) {
@@ -69,10 +57,9 @@ class _MainPageState extends State<MainPage> {
                 child: AlertDialog(
                   contentPadding:
                       const EdgeInsets.only(left: 15, right: 15, top: 15),
-                  content: SizedBox(
-                    height: 61,
-                    width: 250,
+                  content: Container(
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Image(
@@ -80,26 +67,24 @@ class _MainPageState extends State<MainPage> {
                           height: 50,
                           width: 50,
                         ),
-                        Row(
-                          children: [
-                            Text(AppLocalizations.of(context)!
-                                .do_you_want_close_the_app),
-                          ],
-                        ),
+                        Text(AppLocalizations.of(context)!
+                            .do_you_want_close_the_app),
                       ],
                     ),
                   ),
                   actions: [
                     TextButton(
-                        onPressed: () {
-                          Platform.isAndroid ? SystemNavigator.pop() : exit(0);
-                        },
-                        child: Text(AppLocalizations.of(context)!.yes_ucf)),
+                      onPressed: () {
+                        Platform.isAndroid ? SystemNavigator.pop() : exit(0);
+                      },
+                      child: Text(AppLocalizations.of(context)!.yes_ucf),
+                    ),
                     TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(AppLocalizations.of(context)!.no_ucf)),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(AppLocalizations.of(context)!.no_ucf),
+                    ),
                   ],
                 ),
               );

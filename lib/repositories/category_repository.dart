@@ -44,28 +44,4 @@ class CategoryRepository {
 
     return categoryProductResponseFromJson(response.body);
   }
-
-// Future<CategoryProductsData> fetchCategoryProducts(
-//     {int? categoryId,
-//   }) async {
-//   String url = ("${AppConfig.BASE_URL}/categories/items/list");
-//   var post_body = jsonEncode({
-//     // "start_date": "June 27, 2024  9:54 AM",
-//     // "end_date": "June 27, 2024  10:54 AM"
-//     "limit": 10,
-//     "offset": 0,
-//     "category_ids": "[7,5]"
-//   });
-//   final response = await ApiHelper.post(
-//       url: url,
-//       headers: {
-//         "Content-Type": "application/json",
-//         "moduleId": "1",
-//         "zoneId": "[2]"
-//       },
-//       body: post_body);
-//   print("get All Category Product Data response=======>${response.body}");
-//
-//   return categoryProductResponseFromJson(response.body);
-// }
 }

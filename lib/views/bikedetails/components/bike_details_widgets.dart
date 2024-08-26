@@ -1,4 +1,3 @@
-import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -47,6 +46,12 @@ class BikeDetailWidgets {
                         placeholder: 'assets/placeholder_rectangle.png',
                         image:
                             "https://onnwheels.com/storage/app/public/product/$i",
+                        imageErrorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            'assets/placeholder_rectangle.png',
+                            fit: BoxFit.fill,
+                          ); // Path to your error image
+                        },
                         fit: BoxFit.fill,
                       ),
                     ),

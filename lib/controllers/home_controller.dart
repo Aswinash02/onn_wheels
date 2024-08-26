@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:onnwheels/repositories/product_repositories.dart';
 
 import '../models/all_bike_response.dart';
 
 class HomeController extends GetxController {
-  var allBikeProducts = <Product>[].obs;
-  var searchBikeProducts = <Product>[].obs;
+  var allBikeProducts = <BikeData>[].obs;
+  Set<int> productIds = {};
+  var searchBikeProducts = <BikeData>[].obs;
   RxBool loadingState = false.obs;
 
   var userName = "".obs;
@@ -52,24 +52,50 @@ class HomeController extends GetxController {
   getAllProductsHome() async {
     loadingState.value = true;
     var allProductsResponse = await ProductRepository().getAllProducts();
-    allBikeProducts.addAll(allProductsResponse.product!);
+
+    for (var product in allProductsResponse.data!) {
+      if (!productIds.contains(product.id)) {
+        allBikeProducts.add(product);
+        productIds.add(product.id!);
+      }
+    }
+
     loadingState.value = false;
     update();
   }
 
-  getSearchProductsHome(
-      {String? startDate,
-      String? endDate,
-      String? startTime,
-      String? endTime}) async {
+  getSearchProductsHome({
+    String? startDate,
+    String? endDate,
+    String? startTime,
+    String? endTime,
+  }) async {
     loading.value = true;
+    searchBikeProducts.clear();
+
     var searchProductResponse = await ProductRepository().filterProductDateTime(
-        startDate: startDate,
-        endDate: endDate,
-        startTime: startTime,
-        endTime: endTime);
-    searchBikeProducts.addAll(searchProductResponse.product!);
-    print("search products Datas---------.${searchBikeProducts[0].name}");
+      startDate: startDate,
+      endDate: endDate,
+      startTime: startTime,
+      endTime: endTime,
+    );
+
+    print('data ===== ${searchProductResponse.data!}');
+
+    Set<int?> productIds =
+        searchBikeProducts.map((product) => product.id).toSet();
+
+    searchProductResponse.data!.forEach((product) {
+      if (!productIds.contains(product.id)) {
+        searchBikeProducts.add(product);
+        productIds.add(product.id);
+      }
+    });
+
+    print('searchBikeProducts ${searchBikeProducts.length}');
+    if (searchBikeProducts.isNotEmpty) {
+      print("search products Datas---------.${searchBikeProducts[0].name}");
+    }
     loading.value = false;
     update();
   }

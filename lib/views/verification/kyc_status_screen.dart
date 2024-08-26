@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:onnwheels/controllers/verification_controller.dart';
 import 'package:onnwheels/mytheme.dart';
 import 'package:onnwheels/views/bikedetails/components/text_widget.dart';
-import 'package:onnwheels/views/main_page/main_page.dart';
 
-class KycSubmitScreen extends StatelessWidget {
-  const KycSubmitScreen({super.key});
+class KycStatusScreen extends StatelessWidget {
+  final bool status;
+  final VerificationController controller;
+
+  const KycStatusScreen(
+      {super.key, required this.status, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -29,21 +34,30 @@ class KycSubmitScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 20),
             child: Column(
               children: [
-                const Image(
-                  image: AssetImage("assets/Successmark.png"),
+                Image(
+                  image: AssetImage(status
+                      ? "assets/Successmark.png"
+                      : "assets/failure_img.png"),
                   height: 120,
                   width: 120,
                 ),
                 const SizedBox(height: 10),
-                const CustomText(
-                  text: "KYC Submitted",
+                CustomText(
+                  text: status ? "KYC Submitted" : "KYC Rejected",
                   fontWeight: FontWeight.w700,
                   fontSize: 17,
                 ),
                 const SizedBox(height: 40),
-                const CustomText(
-                  text: "Thanks for submitting your document we’ll "
-                      "verify it and complete your KYC as soon as possible",
+                CustomText(
+                  text: status
+                      ? "Thanks for submitting your document we’ll "
+                          "verify it and complete your KYC as soon as possible"
+                      : Get.find<VerificationController>()
+                              .kycResponse
+                              .value
+                              .data!
+                              .status ??
+                          '',
                   fontWeight: FontWeight.w500,
                   fontSize: 12,
                   maxLines: 3,
@@ -52,8 +66,13 @@ class KycSubmitScreen extends StatelessWidget {
                 Spacer(),
                 InkWell(
                   onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => MainPage()));
+                    print('yes entered ----------');
+                    if (status) {
+                      Navigator.pop(context);
+                    } else {
+                      print('yes entered 0000000');
+                      controller.isUpdate.value = true;
+                    }
                   },
                   child: Container(
                     width: double.infinity,
@@ -64,7 +83,7 @@ class KycSubmitScreen extends StatelessWidget {
                     ),
                     child: Center(
                       child: CustomText(
-                        text: "Back To Home",
+                        text: status ? "Back" : "Update KYC",
                         color: MyTheme.white,
                         fontSize: 20,
                       ),

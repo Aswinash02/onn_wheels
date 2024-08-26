@@ -1,57 +1,75 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:onnwheels/mytheme.dart';
+import 'package:onnwheels/utils/shared_value.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import '../../mytheme.dart';
-import '../../utils/shared_value.dart';
 
-class CommonWebviewScreen extends StatefulWidget {
-  String url;
-  String page_name;
+class CommonWebViewScreen extends StatefulWidget {
+  final String url;
+  final String page_name;
 
-  CommonWebviewScreen({Key? key, this.url = "", this.page_name = ""})
+  CommonWebViewScreen({Key? key, this.url = "", this.page_name = ""})
       : super(key: key);
 
   @override
-  _CommonWebviewScreenState createState() => _CommonWebviewScreenState();
+  _CommonWebViewScreenState createState() => _CommonWebViewScreenState();
 }
 
-class _CommonWebviewScreenState extends State<CommonWebviewScreen> {
+class _CommonWebViewScreenState extends State<CommonWebViewScreen> {
   final WebViewController _webViewController = WebViewController();
+  bool isLoading = true; // Track the loading state of the web view
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     webView();
   }
 
-  webView() {
+  void webView() {
     _webViewController
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0x00000000))
       ..setNavigationDelegate(
         NavigationDelegate(
-          onWebResourceError: (error) {},
-          onPageFinished: (page) {},
+          onPageStarted: (url) {
+            setState(() {
+              isLoading = true;
+            });
+          },
+          onPageFinished: (url) {
+            setState(() {
+              isLoading = false;
+            });
+          },
         ),
       )
       ..loadRequest(Uri.parse(widget.url));
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      textDirection: app_language_rtl.$! ? TextDirection.rtl : TextDirection.ltr,
+      textDirection:
+          app_language_rtl.$! ? TextDirection.rtl : TextDirection.ltr,
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: buildAppBar(context),
-        body: buildBody(),
+        body: Stack(
+          children: [
+            buildBody(),
+            if (isLoading)
+              Center(
+                child: CircularProgressIndicator(
+                  color: MyTheme.orange,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
 
-  buildBody() {
+  Widget buildBody() {
     return SizedBox.expand(
       child: WebViewWidget(controller: _webViewController),
     );

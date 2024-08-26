@@ -39,17 +39,20 @@ class _CategoryMiniCardState extends State<CategoryMiniCard> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 AspectRatio(
-                  aspectRatio: 1,
+                  aspectRatio: 1.2,
                   child: SizedBox(
                     width: double.infinity,
                     child: ClipRRect(
                       borderRadius: const BorderRadius.vertical(
                           top: Radius.circular(6), bottom: Radius.zero),
-                      child: FadeInImage.assetNetwork(
-                        placeholder: 'assets/placeholder.png',
-                        image:
-                            "https://onnwheels.com/storage/app/public/category/${widget.product.image!}",
-                        fit: BoxFit.fill,
+                      child: Padding(
+                        padding: const EdgeInsets.all(14.0),
+                        child: FadeInImage.assetNetwork(
+                          placeholder: 'assets/placeholder.png',
+                          image:
+                              "https://onnwheels.com/storage/app/public/category/${widget.product.image!}",
+                          fit: BoxFit.fill,
+                        ),
                       ),
                     ),
                   ),

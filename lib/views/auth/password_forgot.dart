@@ -21,7 +21,6 @@ class PasswordForget extends StatefulWidget {
 class _PasswordForgetState extends State<PasswordForget> {
   String _send_code_by = "email"; //phone or email
   String initialCountry = 'US';
-  // PhoneNumber phoneCode = PhoneNumber(isoCode: 'US');
   String? _phone = "";
   var countries_code = <String?>[];
   //controllers
@@ -30,20 +29,12 @@ class _PasswordForgetState extends State<PasswordForget> {
 
   @override
   void initState() {
-    //on Splash Screen hide statusbar
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.bottom]);
+
     super.initState();
     fetch_country();
   }
 
-  @override
-  void dispose() {
-    //before going to other screen show statusbar
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
-    super.dispose();
-  }
+
 
   onPressSendCode() async {
     var email = _emailController.text.toString();

@@ -7,7 +7,7 @@ class ProfileController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    initCall();
+    // initCall();
   }
 
   Rx<UserInfo> user = UserInfo().obs;

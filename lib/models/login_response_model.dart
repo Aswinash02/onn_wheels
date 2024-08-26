@@ -1,16 +1,18 @@
 import 'dart:convert';
 
-LoginResponse loginResponseFromJson(String str) => LoginResponse.fromJson(json.decode(str));
+LoginResponse loginResponseFromJson(String str) =>
+    LoginResponse.fromJson(json.decode(str));
 
-String loginResponseToJson(LoginResponse data) => json.encode(data.toJson());
 
 class LoginResponse {
   String? token;
   int? isPhoneVerified;
   User? user;
   UserKyc? userKyc;
+  List<Error>? error;
 
-  LoginResponse({this.token, this.isPhoneVerified, this.user, this.userKyc});
+  LoginResponse(
+      {this.token, this.isPhoneVerified, this.user, this.userKyc, this.error});
 
   LoginResponse.fromJson(Map<String, dynamic> json) {
     token = json['token'];
@@ -19,6 +21,11 @@ class LoginResponse {
     userKyc = json['user_kyc'] != null
         ? new UserKyc.fromJson(json['user_kyc'])
         : null;
+    if (json['errors'] != null) {
+      error = (json['errors'] as List)
+          .map((item) => Error.fromJson(item))
+          .toList();
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -32,6 +39,18 @@ class LoginResponse {
       data['user_kyc'] = this.userKyc!.toJson();
     }
     return data;
+  }
+}
+
+class Error {
+  String? code;
+  String? message;
+
+  Error({this.code, this.message});
+
+  Error.fromJson(Map<String, dynamic> json) {
+    code = json['code'];
+    message = json['message'];
   }
 }
 
@@ -64,30 +83,30 @@ class User {
 
   User(
       {this.id,
-        this.fName,
-        this.lName,
-        this.phone,
-        this.email,
-        this.image,
-        this.isPhoneVerified,
-        this.emailVerifiedAt,
-        this.createdAt,
-        this.updatedAt,
-        this.cmFirebaseToken,
-        this.status,
-        this.orderCount,
-        this.loginMedium,
-        this.socialId,
-        this.zoneId,
-        this.walletBalance,
-        this.loyaltyPoint,
-        this.refCode,
-        this.currentLanguageKey,
-        this.refBy,
-        this.tempToken,
-        this.latitude,
-        this.longitude,
-        this.userKyc});
+      this.fName,
+      this.lName,
+      this.phone,
+      this.email,
+      this.image,
+      this.isPhoneVerified,
+      this.emailVerifiedAt,
+      this.createdAt,
+      this.updatedAt,
+      this.cmFirebaseToken,
+      this.status,
+      this.orderCount,
+      this.loginMedium,
+      this.socialId,
+      this.zoneId,
+      this.walletBalance,
+      this.loyaltyPoint,
+      this.refCode,
+      this.currentLanguageKey,
+      this.refBy,
+      this.tempToken,
+      this.latitude,
+      this.longitude,
+      this.userKyc});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -167,16 +186,16 @@ class UserKyc {
 
   UserKyc(
       {this.id,
-        this.userId,
-        this.aadhar,
-        this.pan,
-        this.licenseFront,
-        this.licenseBack,
-        this.isVerified,
-        this.isReject,
-        this.status,
-        this.createdAt,
-        this.updatedAt});
+      this.userId,
+      this.aadhar,
+      this.pan,
+      this.licenseFront,
+      this.licenseBack,
+      this.isVerified,
+      this.isReject,
+      this.status,
+      this.createdAt,
+      this.updatedAt});
 
   UserKyc.fromJson(Map<String, dynamic> json) {
     id = json['id'];

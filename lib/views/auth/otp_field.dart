@@ -1,6 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:onnwheels/controllers/auth_controller.dart';
+import 'package:onnwheels/customs/loading_class.dart';
+import 'package:onnwheels/models/user_info_model.dart';
+import 'package:onnwheels/utils/shared_preference.dart';
 import 'package:onnwheels/views/main_page/main_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
@@ -20,7 +25,7 @@ class Otp extends StatefulWidget {
   String? title;
   String phoneNumber;
 
-  Otp({Key? key, this.title,this.phoneNumber = ""}) : super(key: key);
+  Otp({Key? key, this.title, this.phoneNumber = ""}) : super(key: key);
 
   @override
   _OtpState createState() => _OtpState();
@@ -31,43 +36,8 @@ class _OtpState extends State<Otp> {
   OtpFieldController _verificationController = OtpFieldController();
   String otpPin = "";
 
-  @override
-  void initState() {
-    //on Splash Screen hide statusbar
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.bottom]);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    //before going to other screen show statusbar
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
-    super.dispose();
-  }
-
-  onTapResend() async {
-    // var resendCodeResponse = await AuthRepository().getResendCodeResponse();
-    //
-    // if (resendCodeResponse.result == false) {
-    //   ToastComponent.showDialog(resendCodeResponse.message!,
-    //       gravity: Toast.center, duration: Toast.lengthLong);
-    // } else {
-    //   ToastComponent.showDialog(resendCodeResponse.message!,
-    //       gravity: Toast.center, duration: Toast.lengthLong);
-    // }
-  }
-
-  // onPressConfirm() async {
-  //   Navigator.of(context).pushReplacement(
-  //     MaterialPageRoute(builder: (context) => MainPage()),
-  //   );
-  // }
-
   onPressConfirm() async {
     var code = otpPin;
-
     if (code == "") {
       ToastComponent.showDialog(
           AppLocalizations.of(context)!.enter_verification_code,
@@ -75,27 +45,34 @@ class _OtpState extends State<Otp> {
           duration: Toast.lengthLong);
       return;
     }
+    try {
+      Loading.show(context);
 
-    var confirmCodeResponse =
-        await AuthRepository().getConfirmCodeResponse(code,widget.phoneNumber);
+      var response = await AuthRepository()
+          .getConfirmCodeResponse(code, widget.phoneNumber);
 
-    // if (!(confirmCodeResponse.result)) {
-    //   ToastComponent.showDialog(confirmCodeResponse.message,
-    //       gravity: Toast.center, duration: Toast.lengthLong);
-    // } else {
-    //   ToastComponent.showDialog(confirmCodeResponse.message,
-    //       gravity: Toast.center, duration: Toast.lengthLong);
+      if (response != null) {
+        UserInfo userInfo = UserInfo(
+          id: response.user?.id,
+          name: response.user?.fName,
+          email: response.user?.email,
+          phone: response.user?.phone,
+        );
 
-      // Navigator.push(context, MaterialPageRoute(builder: (context) {
-      //   return Login();
-      // }));
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => MainPage()),
-        (Route<dynamic> route) => false,
+        Get.find<AuthController>().saveUserInfo(userInfo);
+        SharedPreference().setUserData(loginResponse: response);
+      }
+
+      Loading.close();
+    } catch (e) {
+      Loading.close();
+      print("Error occurred during login: $e");
+      ToastComponent.showDialog(
+        e.toString(),
+        gravity: Toast.center,
+        duration: Toast.lengthLong,
       );
-
-      //Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>Main()), (route) => false);
-    // }
+    }
   }
 
   @override
@@ -109,11 +86,6 @@ class _OtpState extends State<Otp> {
         appBar: buildAppBar(context),
         body: Stack(
           children: [
-            // Container(
-            //   width: _screen_width * (3 / 4),
-            //   child: Image.asset(
-            //       "assets/app_logo.png"),
-            // ),
             Container(
               width: double.infinity,
               child: SingleChildScrollView(
@@ -209,9 +181,7 @@ class _OtpState extends State<Otp> {
                   Padding(
                     padding: const EdgeInsets.only(top: 30),
                     child: InkWell(
-                      onTap: () {
-                        onTapResend();
-                      },
+                      onTap: () {},
                       child: Text(AppLocalizations.of(context)!.resend_code_ucf,
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -245,7 +215,7 @@ class _OtpState extends State<Otp> {
                               fontWeight: FontWeight.w600),
                         ),
                         onPressed: () {
-                          onPressConfirm();
+                          Navigator.pop(context);
                         },
                       ),
                     ),

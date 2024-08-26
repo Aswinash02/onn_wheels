@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:onnwheels/models/bike_details.dart';
+import 'package:onnwheels/models/bike_details_model.dart';
+import 'package:onnwheels/mytheme.dart';
 import 'package:onnwheels/repositories/product_repositories.dart';
+import 'package:onnwheels/views/checkout/checkout_page.dart';
 
 class BikeDetailsController extends GetxController {
   var bikeImageResponse = [].obs;
@@ -16,27 +18,27 @@ class BikeDetailsController extends GetxController {
   var bikeTitle = ''.obs;
   var imageFile = ''.obs;
   var ratingCount = 0.obs;
-  var price = 0.obs;
+  RxDouble price = 0.0.obs;
   var storeId = 0.obs;
   var total = 0.obs;
-
-  // var startDateTime = ''.obs;
-  // var endDateTime = ''.obs;
-
-  // var hourlyRate = 10.0;
-  // var dailyRate = 50.0;
-  // var weeklyRate = 300.0;
-  // var monthlyRate = 1000.0;
+  RxInt kmLimit = 0.obs;
+  var selectedIndex = 0.obs;
   var hourlyRate = "".obs;
+  var hourWeekEndRate = "".obs;
   var dailyRate = "".obs;
   var weeklyRate = "".obs;
   var monthlyRate = "".obs;
   TextEditingController dateTimeCon = TextEditingController();
   TextEditingController availableAtCon = TextEditingController();
+  TextEditingController startDateCon = TextEditingController();
+  TextEditingController endDateCon = TextEditingController();
+  TextEditingController startTimeCon = TextEditingController();
+  TextEditingController endTimeCon = TextEditingController();
   RxString selectedValue = 'Item 1'.obs;
   RxList stationDropdownItems = [].obs;
   RxString startDateTime = ''.obs;
   RxString endDateTime = ''.obs;
+
   RxBool loadingState = false.obs;
 
   RxList<DropdownMenuItem<Stations>> dropdownItems =
@@ -62,31 +64,22 @@ class BikeDetailsController extends GetxController {
     loadingState.value = true;
     var bikeDetailsResponse =
         await ProductRepository().getProductDetails(id: id);
+    print('bikeDetailsResponse.name ${bikeDetailsResponse}');
 
-    // Log the rates after fetching
-    // print("Fetched Hourly Rate: ${bikeDetailsResponse.hoursPrice!.price}");
-    // print("Fetched Daily Rate: ${bikeDetailsResponse.daysPrice!.price}");
-    // print("Fetched Weekly Rate: ${bikeDetailsResponse.weekPrice!.price}");
-    // print("Fetched Monthly Rate: ${bikeDetailsResponse.monthPrice!.price}");
-    // print("Fetched Hourly Rate: ${bikeDetailsResponse.hoursPrice!.value}");
-    // print("Fetched Daily Rate: ${bikeDetailsResponse.daysPrice!.value}");
-    // print("Fetched Weekly Rate: ${bikeDetailsResponse.weekPrice!.value}");
-    // print("Fetched Monthly Rate: ${bikeDetailsResponse.monthPrice!.value}");
-
-    bikeImageResponse.addAll(bikeDetailsResponse.images!);
-    productDescription.value = bikeDetailsResponse.description!;
-    bikeTitle.value = bikeDetailsResponse.name!;
-    imageFile.value = bikeDetailsResponse.image!;
-    ratingCount.value = bikeDetailsResponse.ratingCount!;
-    price.value = bikeDetailsResponse.price!;
-    stationDropdownItems.value = bikeDetailsResponse.stations!;
-    storeId.value = bikeDetailsResponse.storeId!;
+    bikeImageResponse.addAll(bikeDetailsResponse.images ?? []);
+    bikeTitle.value = bikeDetailsResponse.name ?? '';
+    imageFile.value = bikeDetailsResponse.image ?? '';
+    stationDropdownItems.value = bikeDetailsResponse.stations ?? [];
     hourlyRate.value = bikeDetailsResponse.hoursPrice?.price ?? '0';
+    hourWeekEndRate.value =
+        bikeDetailsResponse.hoursPrice?.hourWeekendPrice ?? '0';
     dailyRate.value = bikeDetailsResponse.daysPrice?.price ?? '0';
     weeklyRate.value = bikeDetailsResponse.weekPrice?.price ?? '0';
     monthlyRate.value = bikeDetailsResponse.monthPrice?.price ?? '0';
     setDropdownItems(bikeDetailsResponse.stations ?? []);
+    bikeDetails = bikeDetailsResponse;
     loadingState.value = false;
+    update();
   }
 
   Future dateTimePicker(BuildContext context) async {
@@ -101,71 +94,154 @@ class BikeDetailsController extends GetxController {
     }, currentTime: DateTime.now(), locale: LocaleType.en);
   }
 
-  void calculatePrice(int index) {
+  void onTapBookNow({required BuildContext context, required int bikeId}) {
+    if (startDateTime.value == "" || endDateTime.value == '') {
+      const snackBar = SnackBar(
+        content: Text('Please select date and time'),
+        backgroundColor: MyTheme.accent_color,
+        elevation: 10,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.all(5),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return;
+    }
+    if (total == 0) {
+      const snackBar = SnackBar(
+        content: Text('Select Valid date and time'),
+        backgroundColor: MyTheme.accent_color,
+        elevation: 10,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.all(5),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return;
+    }
+    if (selectedStation.value == "" || selectedStation.value == null) {
+      const snackBar = SnackBar(
+        content: Text('Please select station'),
+        backgroundColor: MyTheme.accent_color,
+        elevation: 10,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.all(5),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return;
+    }
+    Get.to(
+      () => CheckoutPage(
+        imageUrl: imageFile.value,
+        startTime: startDateTime.value,
+        endTime: endDateTime.value,
+        station: selectedStation.value!.name ?? '',
+        totalPayableAmount:
+            total.value == 0 ? price.value.toString() : total.value.toString(),
+        lat: selectedStation.value!.lat!,
+        long: selectedStation.value!.lon!,
+        name: bikeTitle.value,
+        id: bikeId,
+        weekEndPrice: 0,
+        kmLimit: kmLimit.value,
+        vehicleNumber: bikeDetails!.vehicleNumber ?? '',
+        discount: double.parse(bikeDetails!.discountPrice ?? '0.0').toInt(),
+      ),
+    );
+  }
+
+  void calculatePrice() {
     if (startDateTime.isNotEmpty && endDateTime.isNotEmpty) {
       DateTime start =
-          DateFormat('MMMM d, yyyy h:mm a').parse(startDateTime.value);
-      DateTime end = DateFormat('MMMM d, yyyy h:mm a').parse(endDateTime.value);
+          DateFormat('MMM d, yyyy h:mm a').parse(startDateTime.value);
+      DateTime end = DateFormat('MMM d, yyyy h:mm a').parse(endDateTime.value);
       Duration difference = end.difference(start);
 
+      double hourlyRate = double.parse(bikeDetails!.hoursPrice!.price!);
+      double hourWeekEndRate =
+          double.parse(bikeDetails!.hoursPrice!.hourWeekendPrice!);
+      double convertWeekendPrice =
+          double.parse(bikeDetails!.weekendPrice!.toString());
+      double convertHourWeekendPrice =
+          double.parse(bikeDetails!.hoursPrice!.hourWeekendPrice ?? '0');
+      double hourlyWeekEndRate = hourlyRate + convertHourWeekendPrice;
+      double dailyRate = double.parse(bikeDetails!.daysPrice!.price!);
+      double dailyWeekEndRate = dailyRate + convertWeekendPrice;
+      double weeklyRate = double.parse(bikeDetails!.weekPrice!.price!);
+      double monthlyRate = double.parse(bikeDetails!.monthPrice!.price!);
+      double hourlyKmLimit = double.parse(bikeDetails!.hoursPrice!.kmLimit!);
+      double dailyKmLimit = double.parse(bikeDetails!.daysPrice!.kmLimit!);
+      double weeklyKmLimit = double.parse(bikeDetails!.weekPrice!.kmLimit!);
+      double monthlyKmLimit = double.parse(bikeDetails!.monthPrice!.kmLimit!);
       double calculatedPrice = 0.0;
-      String pricingMap;
-
-      print("Start DateTime: $start");
-      print("End DateTime: $end");
-      print("Duration in Hours: ${difference.inHours}");
-      print("Duration in Days: ${difference.inDays}");
+      double totalKmLimit = 0.0;
 
       try {
-        switch (index) {
-          case 0:
-            pricingMap = hourlyRate.value;
-            print("Hourly Rate: $pricingMap");
-            total.value = 0;
-            calculatedPrice =
-                (difference.inHours > 0 ? difference.inHours : 1) *
-                    double.parse(pricingMap);
-            break;
-          case 1:
-            pricingMap = dailyRate.value;
-            print("Daily Rate: $pricingMap");
-            total.value = 0;
+        int totalMonths = (difference.inDays / 30).floor();
+        int remainingDaysAfterMonths = difference.inDays % 30;
 
-            calculatedPrice = (difference.inDays > 0 ? difference.inDays : 1) *
-                double.parse(pricingMap);
-            break;
-          case 2:
-            pricingMap = weeklyRate.value;
-            print("Weekly Rate: $pricingMap");
-            total.value = 0;
+        int totalWeeks = (remainingDaysAfterMonths / 7).floor();
+        int remainingDaysAfterWeeks = remainingDaysAfterMonths % 7;
 
-            calculatedPrice =
-                (difference.inDays / 7).ceil() * double.parse(pricingMap);
-            break;
-          case 3:
-            pricingMap = monthlyRate.value;
-            print("Monthly Rate: $pricingMap");
-            total.value = 0;
+        int totalDays = remainingDaysAfterWeeks;
+        int totalHours = difference.inHours % 24;
 
-            calculatedPrice =
-                (difference.inDays / 30).ceil() * double.parse(pricingMap);
-            break;
-          default:
-            break;
+        calculatedPrice =
+            (totalMonths * monthlyRate) + (totalWeeks * weeklyRate);
+
+        for (int i = 0; i < totalDays; i++) {
+          DateTime currentDay = start.add(Duration(days: i));
+          bool isWeekendDay = currentDay.weekday == DateTime.friday ||
+              currentDay.weekday == DateTime.saturday ||
+              currentDay.weekday == DateTime.sunday;
+
+          double currentDailyRate = isWeekendDay ? dailyWeekEndRate : dailyRate;
+          calculatedPrice += currentDailyRate;
+        }
+
+        if (totalMonths == 0 &&
+            totalWeeks == 0 &&
+            totalDays == 0 &&
+            totalHours > 0) {
+          bool isStartingOnWeekend = start.weekday == DateTime.friday ||
+              start.weekday == DateTime.saturday ||
+              start.weekday == DateTime.sunday;
+          calculatedPrice = (totalMonths * monthlyRate) +
+              (totalWeeks * weeklyRate) +
+              (totalDays * dailyRate) +
+              (totalHours * hourlyRate);
+          if (isStartingOnWeekend) {
+            calculatedPrice += hourWeekEndRate;
+          }
+        } else if ((totalMonths != 0 || totalWeeks != 0 || totalDays != 0) &&
+            totalHours > 0) {
+          for (int i = 0; i < totalHours; i++) {
+            DateTime currentHour = end.add(Duration(hours: i));
+            bool isWeekendHour = currentHour.weekday == DateTime.friday ||
+                currentHour.weekday == DateTime.saturday ||
+                currentHour.weekday == DateTime.sunday;
+            double currentHourlyRate =
+                isWeekendHour ? hourlyWeekEndRate : hourlyRate;
+            calculatedPrice += currentHourlyRate;
+          }
+        }
+
+        if (totalMonths > 0) {
+          totalKmLimit += totalMonths * monthlyKmLimit;
+        }
+        if (totalWeeks > 0) {
+          totalKmLimit += totalWeeks * weeklyKmLimit;
+        }
+        if (totalDays > 0) {
+          totalKmLimit += totalDays * dailyKmLimit;
+        }
+        if (totalHours > 0) {
+          totalKmLimit += totalHours * hourlyKmLimit;
         }
       } catch (e) {
-        print("Error parsing pricingMap: $e");
         return;
       }
 
-      // Print calculated price for debugging
-      print("Calculated Price: $calculatedPrice");
-
-      // Update total price
-      total.value = (calculatedPrice).toInt();
-      print("Total Price value==================>${total.value}");
-      print(
-          "Calculated Additional Price==================>${calculatedPrice.toInt()}");
+      total.value = calculatedPrice.toInt();
+      kmLimit.value = totalKmLimit.toInt();
       update();
     }
   }
@@ -173,5 +249,67 @@ class BikeDetailsController extends GetxController {
   void changeIndex(index) {
     currentImage.value = index;
     update();
+  }
+
+  void onTapDone(BuildContext context) {
+    if (startDateTime.isNotEmpty && endDateTime.isNotEmpty) {
+      DateTime start =
+          DateFormat('MMM d, yyyy h:mm a').parse(startDateTime.value);
+      DateTime end = DateFormat('MMM d, yyyy h:mm a').parse(endDateTime.value);
+      Duration difference = end.difference(start);
+
+      bool isWeekend(DateTime date) {
+        return date.weekday == DateTime.friday ||
+            date.weekday == DateTime.saturday ||
+            date.weekday == DateTime.sunday;
+      }
+
+      bool includesWeekend(DateTime start, DateTime end) {
+        DateTime currentDate = start;
+        while (currentDate.isBefore(end) || currentDate.isAtSameMomentAs(end)) {
+          if (isWeekend(currentDate)) {
+            return true;
+          }
+          currentDate = currentDate.add(Duration(days: 1));
+        }
+        return false;
+      }
+
+      bool isValidSelection(Duration duration) {
+        bool hasWeekend = includesWeekend(start, end);
+        int minHours = hasWeekend
+            ? int.parse(bikeDetails!.hoursPrice!.hourWeekendLimit!)
+            : int.parse(bikeDetails!.hoursPrice!.hourLimit!);
+        return duration.inHours >= minHours;
+      }
+
+      if (isValidSelection(difference)) {
+        calculatePrice();
+      } else {
+        endDateTime.value = '';
+        startDateTime.value = '';
+        endTimeCon.clear();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+              'The rental period must be at least ${includesWeekend(start, end) ? int.parse(bikeDetails!.hoursPrice!.hourWeekendLimit!) : int.parse(bikeDetails!.hoursPrice!.hourLimit!)} hours.'),
+          backgroundColor: MyTheme.accent_color,
+          elevation: 10,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.all(5),
+        ));
+      }
+    }
+  }
+
+  void clearData() {
+    startDateTime.value = '';
+    endDateTime.value = '';
+    startDateCon.clear();
+    startTimeCon.clear();
+    endDateCon.clear();
+    endTimeCon.clear();
+    kmLimit.value = 0;
+    total.value = 0;
+    selectedStation.value = null;
   }
 }

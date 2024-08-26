@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:onnwheels/controllers/auth_controller.dart';
 import 'package:onnwheels/customs/loading_class.dart';
+import 'package:onnwheels/customs/toastcomponent.dart';
 import 'package:onnwheels/helpers/auth_helper.dart';
 import 'package:onnwheels/models/login_response_model.dart';
 import 'package:onnwheels/models/user_info_model.dart';
@@ -14,6 +15,7 @@ import 'package:onnwheels/views/auth/password_forgot.dart';
 import 'package:onnwheels/views/auth/phone_login.dart';
 import 'package:onnwheels/views/auth/signup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toast/toast.dart';
 import '../../customs/auth_ui.dart';
 import '../../helpers/validator_helper.dart';
 import '../../mytheme.dart';
@@ -30,108 +32,59 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  String _login_by = "email"; //phone or email
+  String _login_by = "email";
   String initialCountry = 'US';
 
-  // PhoneNumber phoneCode = PhoneNumber(isoCode: 'US', dialCode: "+1");
   var countries_code = <String?>[];
 
   String? _phone = "";
   bool _passwordVisible = false;
 
   //controllers
-  TextEditingController _phoneNumberController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
-  @override
-  void initState() {
-    //on Splash Screen hide statusbar
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.bottom]);
-    super.initState();
-    fetch_country();
-  }
-
-  fetch_country() async {
-    // var data = await AddressRepository().getCountryList();
-    // data.countries.forEach((c) => countries_code.add(c.code));
-  }
-
-  @override
-  void dispose() {
-    //before going to other screen show statusbar
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-        overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
-    super.dispose();
-  }
-
   onPressedLogin() async {
-    Loading.show(context);
-    var email = _emailController.text.toString();
-    var password = _passwordController.text.toString();
-    LoginResponse loginResponse = await AuthRepository().getLoginResponse(
-      _login_by == 'email' ? email : _phone,
-      password,
-    );
-    print('image ==== ${loginResponse.user?.image}');
-    UserInfo userInfo = UserInfo(
-        id: loginResponse.user?.id,
-        name: loginResponse.user?.fName,
-        email: loginResponse.user?.email,
-        phone: loginResponse.user?.phone,
-        image: loginResponse.user?.image,
-        isVerifiedKyc: loginResponse.user?.userKyc?.isVerified);
-    Get.find<AuthController>().saveUserInfo(userInfo);
-    SharedPreference().setUserToken(loginResponse.token!);
-    SharedPreference().setKycVerified(loginResponse.user!.userKyc!.isVerified!);
-    SharedPreference().setLogin(true);
-    Loading.close();
-    // AuthHelper().setUserData(loginResponse);
-  }
+    try {
+      Loading.show(context);
+      var email = _emailController.text.toString();
+      var password = _passwordController.text.toString();
 
-  // onPressedFacebookLogin() async {
-  //   try {
-  //     final facebookLogin = await FacebookAuth.instance
-  //         .login(loginBehavior: LoginBehavior.webOnly);
-  //
-  //     if (facebookLogin.status == LoginStatus.success) {
-  //       // get the user data
-  //       // by default we get the userId, email,name and picture
-  //       final userData = await FacebookAuth.instance.getUserData();
-  //       var loginResponse = await AuthRepository().getSocialLoginResponse(
-  //           "facebook",
-  //           userData['name'].toString(),
-  //           userData['email'].toString(),
-  //           userData['id'].toString(),
-  //           access_token: facebookLogin.accessToken!.token);
-  //       print("..........................${loginResponse.toString()}");
-  //       if (loginResponse.result == false) {
-  //         ToastComponent.showDialog(loginResponse.message!,
-  //             gravity: Toast.center, duration: Toast.lengthLong);
-  //       } else {
-  //         ToastComponent.showDialog(loginResponse.message!,
-  //             gravity: Toast.center, duration: Toast.lengthLong);
-  //
-  //         AuthHelper().setUserData(loginResponse);
-  //         Navigator.push(context, MaterialPageRoute(builder: (context) {
-  //           return MainPage();
-  //         }));
-  //         FacebookAuth.instance.logOut();
-  //       }
-  //       // final userData = await FacebookAuth.instance.getUserData(fields: "email,birthday,friends,gender,link");
-  //     } else {
-  //       print("....Facebook auth Failed.........");
-  //       print(facebookLogin.status);
-  //       print(facebookLogin.message);
-  //     }
-  //   } on Exception catch (e) {
-  //     print(e);
-  //     // TODO
-  //   }
-  // }
+      var loginResponse = await AuthRepository().getLoginResponse(
+        _login_by == 'email' ? email : _phone,
+        password,
+      );
+
+      if (loginResponse != null) {
+        UserInfo userInfo = UserInfo(
+          id: loginResponse.user?.id,
+          name: loginResponse.user?.fName,
+          email: loginResponse.user?.email,
+          phone: loginResponse.user?.phone,
+        );
+
+        Get.find<AuthController>().saveUserInfo(userInfo);
+        SharedPreference().setUserData(loginResponse: loginResponse);
+
+        if (loginResponse.user!.userKyc != null) {
+          SharedPreference()
+              .setKycVerified(loginResponse.user!.userKyc!.isVerified!);
+        }
+      }
+
+      Loading.close();
+    } catch (e) {
+      Loading.close();
+      print("Error occurred during login: $e");
+      ToastComponent.showDialog(
+        e.toString(),
+        gravity: Toast.center,
+        duration: Toast.lengthLong,
+      );
+    }
+  }
 
   String generateNonce([int length = 32]) {
     const charset =
@@ -282,11 +235,6 @@ class _LoginState extends State<Login> {
                   padding: const EdgeInsets.only(top: 30.0),
                   child: Container(
                     height: 45,
-                    decoration: BoxDecoration(
-                        border:
-                            Border.all(color: MyTheme.textfield_grey, width: 1),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(12.0))),
                     child: Btn.minWidthFixHeight(
                       minWidth: MediaQuery.of(context).size.width,
                       height: 50,
@@ -303,8 +251,6 @@ class _LoginState extends State<Login> {
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           onPressedLogin();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Processing Data')));
                         }
                       },
                     ),
@@ -404,20 +350,6 @@ class _LoginState extends State<Login> {
                               ),
                             ),
                           ),
-                        /* if (Platform.isIOS)
-                          Padding(
-                            padding: const EdgeInsets.only(left: 15.0),
-                            // visible: true,
-                            child: A(
-                              onTap: () async {
-                                signInWithApple();
-                              },
-                              child: Container(
-                                width: 28,
-                                child: Image.asset("assets/apple_logo.png"),
-                              ),
-                            ),
-                          ),*/
                       ],
                     ),
                   ),
@@ -441,7 +373,6 @@ class _LoginState extends State<Login> {
               ),
               TextButton(
                 onPressed: () {
-                  // Your action here
                   Get.to(() => Registration());
                 },
                 style: TextButton.styleFrom(

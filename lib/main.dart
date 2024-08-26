@@ -13,7 +13,7 @@ import 'package:shared_value/shared_value.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  Get.lazyPut(() => AuthController());
+  Get.put(AuthController());
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -59,3 +59,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+

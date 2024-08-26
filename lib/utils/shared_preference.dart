@@ -72,8 +72,13 @@ class SharedPreference {
     return prefs.getInt("kyc_verified") ?? "";
   }
 
-  Future<void> setUserData({required LoginResponse loginResponse}) async {
+  Future<void> setUserData({required loginResponse}) async {
     setLogin(true);
+    print(loginResponse.user!.id!.toString());
+    print(loginResponse.user!.fName!);
+    print(loginResponse.user!.email!);
+    print(loginResponse.user!.phone!);
+    print(loginResponse.token!);
     setUserId(loginResponse.user!.id!.toString());
     setUserName(loginResponse.user!.fName!);
     setUserEmail(loginResponse.user!.email!);
@@ -82,9 +87,16 @@ class SharedPreference {
   }
 
   Future<void> clearUserData() async {
-    final prefs = await SharedPreferences.getInstance();
+    await setUserId("");
+    await setUserName("");
+    await setUserEmail("");
+    await setUserPhoneNo("");
+    await setUserToken("");
+  }
+
+  Future<void> clearUserInfo() async {
     await setLogin(false);
-    await prefs.remove("user_info");
+    await saveUserInfo("");
   }
 
   Future<void> saveUserInfo(String value) async {

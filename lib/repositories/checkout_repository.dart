@@ -31,6 +31,10 @@ class CheckoutRepository {
     double distance,
     String startDate,
     String? endDate,
+    int? weekEndPrice,
+    int? kmLimit,
+    String? vehicleNumber,
+    int? discount,
   ) async {
     var post_body = jsonEncode({
       "user_id": userId,
@@ -42,13 +46,17 @@ class CheckoutRepository {
       "lat": "$lat",
       "store_id": store_id,
       "order_amount": amount,
-      "unit_price" : unitAmount,
+      "unit_price": unitAmount,
       "payment_status": "$status",
       "transaction_reference": "$transactionReference",
       "item_id": item_id,
       "distance": distance,
       "start_date": "$startDate",
-      "end_date": "$endDate"
+      "end_date": "$endDate",
+      "weekend_price": weekEndPrice,
+      "km_limit": kmLimit,
+      "vehicle_number": vehicleNumber,
+      "discount": discount
     });
 
     String url = ("${AppConfig.BASE_URL}/items/create-order");
@@ -62,9 +70,9 @@ class CheckoutRepository {
         body: post_body);
     print("order response=======>${response.body}");
     if (response.statusCode == 200) {
-      Get.to(
-        () => OrderCardListView(),
-      );
+      // Get.to(
+      //   () => OrderCardListView(),
+      // );
       return checkoutResponseFromJson(response.body);
     } else if (response.statusCode == 403) {
       ToastComponent.showDialog("Not Applicable",
@@ -79,8 +87,6 @@ class CheckoutRepository {
         url: url,
         headers: {"moduleId": '1'},
       );
-      // List<dynamic> jsonList = jsonDecode(response.body);
-      // return jsonList.map((json) => gstResponse.fromJson(json)).toList();
       return gstResponseFromJson(response.body);
     } catch (e) {
       print(e);

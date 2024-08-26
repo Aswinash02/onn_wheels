@@ -24,7 +24,7 @@ class Validator {
     if (confirmPassword == null || confirmPassword.isEmpty) {
       return 'Confirm password cannot be empty';
     } else if (password != confirmPassword) {
-      return 'Passwords do not match';
+      return 'Passwords does not match';
     }
     return null;
   }

@@ -29,14 +29,6 @@ class CustomWidget {
         itemBuilder: (context, index) {
           return MiniProductCard(
             product: productList[index],
-            // id: 2,
-            // name: "Yamaha FZ",
-            // image: "assets/yezdi.jpeg",
-            // discount: "20%",
-            // is_wholesale: false,
-            // main_price: "20000",
-            // stroked_price: "24000",
-            // cc_value: "150cc",
           );
         },
       );
@@ -56,13 +48,15 @@ class CustomWidget {
 
   static buildSearchListProduct(context, productList) {
     return Container(
-      height: productList.length > 0 ? 270 : 0,
+      height: productList.length > 0 ? 205 : 0,
       padding: EdgeInsets.all(5),
       margin: EdgeInsets.all(2),
       child: ListView.separated(
         itemCount: productList.length,
         scrollDirection: Axis.horizontal,
-        separatorBuilder: (context, index) =>SizedBox(width: 10,),
+        separatorBuilder: (context, index) => SizedBox(
+          width: 10,
+        ),
         itemBuilder: (context, index) {
           final product = productList[index];
           return MiniProductCard(

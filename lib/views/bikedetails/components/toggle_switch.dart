@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:onnwheels/controllers/bike_details_controller.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 Widget toggleSwitch({void Function(int?)? toggle}) {
+  final BikeDetailsController bikeDetailsController =
+  Get.find<BikeDetailsController>();
   return Container(
     width: double.infinity,
     padding: EdgeInsets.all(2),
@@ -19,10 +23,10 @@ Widget toggleSwitch({void Function(int?)? toggle}) {
         activeFgColor: Colors.white,
         inactiveBgColor: Colors.white,
         inactiveFgColor: Colors.black,
-        initialLabelIndex: 0,
+        initialLabelIndex: bikeDetailsController.selectedIndex.value,
         totalSwitches: 4,
-        labels: ['HOUR', 'Day', 'WEEk', 'MONTH'],
-        fontSize: 8,
+        labels: ['HOUR', 'DAY', 'WEEK', 'MONTH'],
+        fontSize: 10,
         radiusStyle: true,
         onToggle: toggle),
     decoration: BoxDecoration(
