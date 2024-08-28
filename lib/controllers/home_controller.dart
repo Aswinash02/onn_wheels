@@ -1,13 +1,15 @@
 import 'package:get/get.dart';
+import 'package:onnwheels/models/filter_bikes_model.dart';
 import 'package:onnwheels/repositories/product_repositories.dart';
 
 import '../models/all_bike_response.dart';
 
 class HomeController extends GetxController {
-  var allBikeProducts = <BikeData>[].obs;
+  List<BikeData> allBikeProducts = [];
   Set<int> productIds = {};
   var searchBikeProducts = <BikeData>[].obs;
   RxBool loadingState = false.obs;
+  List<BikeData> _filterBikeList = [];
 
   var userName = "".obs;
   var userEmail = "".obs;
@@ -17,6 +19,163 @@ class HomeController extends GetxController {
   var dateValue2 = "".obs;
 
   var loading = false.obs;
+  String? _selectedHourPrice;
+  String? _selectedDayPrice;
+  String? _selectedWeekPrice;
+  String? _selectedMonthPrice;
+  String? _selectedBrand;
+  String? _selectedFuelType;
+  String? _selectedAttributeType;
+  String? _selectedTransmissionType;
+  String? _selectedPackage;
+
+  Stations? _selectedStation;
+  bool _isFilter = false;
+
+  List<String> _hourPriceList = [];
+  List<String> _dayPriceList = [];
+  List<String> _weekPriceList = [];
+  List<String> _monthPriceList = [];
+  List<String> _brandList = [];
+  List<Stations> _stationList = [];
+  List<String> _fuelTypeList = ["Petrol", "Diesel", "EV"];
+  List<String> _attributeTypeList = ["fuel_type", "transmission_type"];
+  List<String> _transmissionTypeList = ["Automatic", "Manual"];
+
+  String? get selectedHourPrice => _selectedHourPrice;
+
+  String? get selectedPackage => _selectedPackage;
+
+  String? get selectedDayPrice => _selectedDayPrice;
+
+  String? get selectedWeekPrice => _selectedWeekPrice;
+
+  String? get selectedMonthPrice => _selectedMonthPrice;
+
+  String? get selectedBrand => _selectedBrand;
+
+  String? get selectedFuelType => _selectedFuelType;
+
+  String? get selectedAttributeType => _selectedAttributeType;
+
+  Stations? get selectedStation => _selectedStation;
+
+  bool get isFilter => _isFilter;
+
+  String? get selectedTransmissionType => _selectedTransmissionType;
+
+  List<String> get hourPriceList => _hourPriceList;
+
+  List<String> get dayPriceList => _dayPriceList;
+
+  List<String> get weekPriceList => _weekPriceList;
+
+  List<String> get monthPriceList => _monthPriceList;
+
+  List<String> get brandList => _brandList;
+
+  List<String> get fuelTypeList => _fuelTypeList;
+
+  List<String> get attributeTypeList => _attributeTypeList;
+
+  List<String> get transmissionTypeList => _transmissionTypeList;
+
+  List<Stations> get stationList => _stationList;
+
+  List<BikeData> get filterBikeList => _filterBikeList;
+
+  Future<void> fetchFilterDropDownData() async {
+// isLoadingData.value = true;
+    FilterBikesModel response =
+        await ProductRepository().fetchFilterDropDownData();
+    if (response.hourPrices != null) {
+      _hourPriceList.addAll(response.hourPrices!);
+    }
+    if (response.dayPrices != null) {
+      _dayPriceList.addAll(response.dayPrices!);
+    }
+    if (response.weekPrices != null) {
+      _weekPriceList.addAll(response.weekPrices!);
+    }
+    if (response.monthPrices != null) {
+      _monthPriceList.addAll(response.monthPrices!);
+    }
+    if (response.brands != null) {
+      _brandList.addAll(response.brands!);
+    }
+    if (response.stations != null) {
+      _stationList.addAll(response.stations!);
+    }
+// isLoadingData.value = false;
+  }
+
+  void onChangeHourPrice(String? value) {
+    _selectedHourPrice = value;
+    update();
+  }
+
+  void onChangeDailyPrice(String? value) {
+    _selectedDayPrice = value;
+    update();
+  }
+
+  void onChangeWeekPrice(String? value) {
+    _selectedWeekPrice = value;
+    update();
+  }
+
+  void onChangeMonthPrice(String? value) {
+    _selectedMonthPrice = value;
+    update();
+  }
+
+  void onChangeBrand(String? value) {
+    _selectedBrand = value;
+    update();
+  }
+
+  void onChangePackage(String? value) {
+    _selectedPackage = value;
+    update();
+  }
+
+  void onChangeStation(Stations? value) {
+    _selectedStation = value;
+    update();
+  }
+
+  void onChangeTransmissionType(String? value) {
+    _selectedTransmissionType = value;
+    update();
+  }
+
+  void onChangeFuelType(String? value) {
+    _selectedFuelType = value;
+    update();
+  }
+
+  void onChangeAttributeType(String? value) {
+    _selectedAttributeType = value;
+    update();
+  }
+
+  void clearData({bool? isDefault}) {
+    _selectedHourPrice = null;
+    _selectedDayPrice = null;
+    _selectedWeekPrice = null;
+    _selectedMonthPrice = null;
+    _selectedBrand = null;
+    _selectedFuelType = null;
+    _selectedTransmissionType = null;
+    _selectedStation = null;
+    _selectedAttributeType = null;
+    _selectedPackage = null;
+    if (isDefault != null && isDefault) {
+      _isFilter = false;
+      _filterBikeList.clear();
+      update();
+    }
+  }
 
   @override
   void onInit() {
@@ -52,11 +211,12 @@ class HomeController extends GetxController {
   getAllProductsHome() async {
     loadingState.value = true;
     var allProductsResponse = await ProductRepository().getAllProducts();
-
-    for (var product in allProductsResponse.data!) {
-      if (!productIds.contains(product.id)) {
-        allBikeProducts.add(product);
-        productIds.add(product.id!);
+    if (allProductsResponse.data != null) {
+      for (var product in allProductsResponse.data!) {
+        if (!productIds.contains(product.id)) {
+          allBikeProducts.add(product);
+          productIds.add(product.id!);
+        }
       }
     }
 
@@ -91,12 +251,30 @@ class HomeController extends GetxController {
         productIds.add(product.id);
       }
     });
-
-    print('searchBikeProducts ${searchBikeProducts.length}');
-    if (searchBikeProducts.isNotEmpty) {
-      print("search products Datas---------.${searchBikeProducts[0].name}");
-    }
     loading.value = false;
+    update();
+  }
+
+  Future<void> getFilterBikes() async {
+    _filterBikeList.clear();
+    AllBikeResponse response = await ProductRepository().getFilterBikes(
+      package:
+          _selectedPackage != null ? _selectedPackage!.toLowerCase() : null,
+      fuelType:
+          _selectedFuelType != null ? _selectedFuelType!.toLowerCase() : null,
+      transmissionType: _selectedTransmissionType != null
+          ? _selectedTransmissionType!.toLowerCase()
+          : null,
+      brand: _selectedBrand,
+
+
+      stationId: _selectedStation != null ? _selectedStation!.id : null,
+    );
+    if (response.data != null) {
+      _filterBikeList.addAll(response.data!);
+    }
+    _isFilter = true;
+    clearData();
     update();
   }
 }

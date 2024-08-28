@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:onnwheels/helpers/api_helpers.dart';
 import 'package:onnwheels/models/category_models.dart';
+import 'package:onnwheels/models/filter_bikes_model.dart';
 import 'package:onnwheels/utils/shared_value.dart';
 import '../models/category_product_models.dart';
 import '../utils/app_config.dart';
@@ -44,4 +45,5 @@ class CategoryRepository {
 
     return categoryProductResponseFromJson(response.body);
   }
+
 }

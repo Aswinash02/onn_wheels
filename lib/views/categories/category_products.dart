@@ -7,6 +7,7 @@ import 'package:onnwheels/customs/mini_product_card.dart';
 import 'package:onnwheels/helpers/shimmer_helper.dart';
 import 'package:onnwheels/models/category_product_models.dart';
 import 'package:onnwheels/mytheme.dart';
+import 'package:onnwheels/views/home/components/filter_dialog.dart';
 import 'package:onnwheels/views/main_page/components/custom_appbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -48,6 +49,8 @@ class _CategoryProductsState extends State<CategoryProducts> {
       body: buildProductList(context, categoryController),
     );
   }
+
+
 
   Widget buildProductList(
       BuildContext context, CategoryProductController categoryController) {

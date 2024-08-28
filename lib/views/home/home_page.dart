@@ -6,6 +6,7 @@ import 'package:onnwheels/utils/image_directory.dart';
 import 'package:onnwheels/utils/shared_preference.dart';
 import 'package:onnwheels/views/bikedetails/components/date_time_picker.dart';
 import 'package:onnwheels/views/home/components/custom_gridview.dart';
+import 'package:onnwheels/views/home/components/filter_dialog.dart';
 import '../../controllers/home_controller.dart';
 import '../../mytheme.dart';
 
@@ -134,6 +135,7 @@ class _HomePageState extends State<HomePage> {
       }
     });
     fetchUserName();
+    homeController.fetchFilterDropDownData();
     super.initState();
   }
 
@@ -557,18 +559,39 @@ class _HomePageState extends State<HomePage> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 10.0),
-                        child: Text(
-                          "All Vehicles",
-                          style: TextStyle(
-                              color: Color(0XFF003361),
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600),
+                        child: Row(
+                          children: [
+                            Text(
+                              "All Vehicles",
+                              style: TextStyle(
+                                  color: Color(0XFF003361),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            Spacer(),
+                            GestureDetector(
+                              onTap: () {
+                                _showFilterDialog(context);
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 14.0),
+                                child: Icon(
+                                  Icons.filter_list,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Obx(
-                        () => CustomWidget.buildCustomGridView(
-                            context, homeController.allBikeProducts),
-                      ),
+                      GetBuilder<HomeController>(builder: (controller) {
+                        return controller.isFilter
+                            ? CustomWidget.buildCustomGridView(
+                                context, homeController.filterBikeList)
+                            : CustomWidget.buildCustomGridView(
+                                context, homeController.allBikeProducts);
+                      })
                     ],
                   ),
                 ),
@@ -579,6 +602,16 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+void _showFilterDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return FilterDialog();
+    },
+  );
 }
 
 Future<void> displayTimePicker(

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:onnwheels/models/filter_bikes_model.dart';
 import 'package:onnwheels/repositories/category_repository.dart';
 
 class CategoryProductController extends GetxController {

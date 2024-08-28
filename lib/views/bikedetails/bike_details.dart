@@ -31,7 +31,6 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
   @override
   void initState() {
     // TODO: implement initState
-    print('widget.id --------- ${widget.id}');
     bikeDetailsController.fetchProductDetailsData(id: widget.id);
     super.initState();
   }

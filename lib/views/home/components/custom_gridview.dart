@@ -10,13 +10,20 @@ import '../../../mytheme.dart';
 class CustomWidget {
   static buildCustomGridView(context, productList) {
     if (productList.length == 0) {
-      return SingleChildScrollView(
-        child: ShimmerHelper().buildProductGridShimmer(),
+      return SizedBox(
+        height: 100,
+        child: Center(
+          child: Text(
+            AppLocalizations.of(context)!.no_product_is_available,
+            style: const TextStyle(color: MyTheme.font_grey),
+          ),
+        ),
       );
+      // return SingleChildScrollView(
+      //   child: ShimmerHelper().buildProductGridShimmer(),
+      // );
     } else if (productList.length > 0) {
       return
-          // Obx(
-          //         () =>
           MasonryGridView.count(
         crossAxisCount: 2,
         mainAxisSpacing: 14,
@@ -32,7 +39,6 @@ class CustomWidget {
           );
         },
       );
-      // );
     } else {
       return SizedBox(
         height: 100,
