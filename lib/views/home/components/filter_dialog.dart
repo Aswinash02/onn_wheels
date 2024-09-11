@@ -23,67 +23,6 @@ class FilterDialog extends StatelessWidget {
             filterRadio(title: 'Day'),
             filterRadio(title: 'Week'),
             filterRadio(title: 'Month'),
-            // CustomText(
-            //   text: "Hourly Pricing",
-            //   fontSize: 14,
-            //   fontWeight: FontWeight.w500,
-            // ),
-            // SizedBox(
-            //   height: 2,
-            // ),
-            // FilterTextField(
-            //     itemList: controller.hourPriceList,
-            //     hintText: "Select Hourly Price",
-            //     onChange: controller.onChangeHourPrice,
-            //     value: controller.selectedHourPrice),
-            // SizedBox(
-            //   height: 8,
-            // ),
-            // CustomText(
-            //   text: "Daily Pricing",
-            //   fontSize: 14,
-            //   fontWeight: FontWeight.w500,
-            // ),
-            // SizedBox(
-            //   height: 2,
-            // ),
-            // FilterTextField(
-            //     itemList: controller.dayPriceList,
-            //     hintText: "Select Daily Price",
-            //     onChange: controller.onChangeDailyPrice,
-            //     value: controller.selectedDayPrice),
-            // SizedBox(
-            //   height: 8,
-            // ),
-            // CustomText(
-            //   text: "Weekly Pricing",
-            //   fontSize: 14,
-            //   fontWeight: FontWeight.w500,
-            // ),
-            // SizedBox(
-            //   height: 2,
-            // ),
-            // FilterTextField(
-            //     itemList: controller.weekPriceList,
-            //     hintText: "Select Weekly Price",
-            //     onChange: controller.onChangeWeekPrice,
-            //     value: controller.selectedWeekPrice),
-            // SizedBox(
-            //   height: 8,
-            // ),
-            // CustomText(
-            //   text: "Monthly Pricing",
-            //   fontSize: 14,
-            //   fontWeight: FontWeight.w500,
-            // ),
-            // SizedBox(
-            //   height: 2,
-            // ),
-            // FilterTextField(
-            //     itemList: controller.monthPriceList,
-            //     hintText: "Select Monthly Price",
-            //     onChange: controller.onChangeMonthPrice,
-            //     value: controller.selectedMonthPrice),
             SizedBox(
               height: 8,
             ),

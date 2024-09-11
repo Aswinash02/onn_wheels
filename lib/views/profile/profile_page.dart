@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:onnwheels/about_us_screen.dart';
 import 'package:onnwheels/controllers/auth_controller.dart';
 import 'package:onnwheels/controllers/profile_controller.dart';
 import 'package:onnwheels/models/user_info_model.dart';
+import 'package:onnwheels/privacy_policy.dart';
 import 'package:onnwheels/repositories/auth_repositories.dart';
+import 'package:onnwheels/safety_screen.dart';
+import 'package:onnwheels/terms_and_condition.dart';
 import 'package:onnwheels/utils/image_directory.dart';
 import 'package:onnwheels/utils/shared_preference.dart';
 import 'package:onnwheels/views/bikedetails/components/text_widget.dart';
@@ -75,6 +79,7 @@ class _ProfilePageState extends State<ProfilePage> {
     // TODO: implement initState
     super.initState();
     profileController.initCall();
+    profileController.fetchProfilePageResponse();
   }
 
   @override
@@ -137,8 +142,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         CustomListTile(
                           icons: Container(
-                            height: 45,
-                            width: 45,
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 6),
+                            height: 22,
+                            width: 22,
                             child: Center(
                               child: Image.asset(
                                 ImageDirectory.my_booking,
@@ -163,8 +170,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         CustomListTile(
                           icons: Container(
-                            height: 45,
-                            width: 45,
+                            margin: EdgeInsets.symmetric(horizontal: 8),
+                            height: 30,
+                            width: 30,
                             child: Center(
                               child: Image.asset(
                                 ImageDirectory.about_us,
@@ -176,10 +184,14 @@ class _ProfilePageState extends State<ProfilePage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => CommonWebViewScreen(
-                                          url: "https://onnwheels.com/about-us",
-                                          page_name: "About Us",
-                                        )));
+                                    builder: (context) => AboutUsScreen()));
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => CommonWebViewScreen(
+                            //               url: "https://onnwheels.com/about-us",
+                            //               page_name: "About Us",
+                            //             )));
                           },
                           heading: const Text("About Us"),
                         ),
@@ -204,10 +216,14 @@ class _ProfilePageState extends State<ProfilePage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => CommonWebViewScreen(
-                                          url: "https://onnwheels.com/safety",
-                                          page_name: "Safety",
-                                        )));
+                                    builder: (context) => SafetyScreen()));
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => CommonWebViewScreen(
+                            //               url: "https://onnwheels.com/safety",
+                            //               page_name: "Safety",
+                            //             )));
                           },
                           heading: const Text("Safety"),
                         ),
@@ -232,11 +248,15 @@ class _ProfilePageState extends State<ProfilePage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => CommonWebViewScreen(
-                                          url:
-                                              "https://onnwheels.com/privacy-policy",
-                                          page_name: "Privacy Policy",
-                                        )));
+                                    builder: (context) => PrivacyPolicy()));
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => CommonWebViewScreen(
+                            //               url:
+                            //                   "https://onnwheels.com/privacy-policy",
+                            //               page_name: "Privacy Policy",
+                            //             )));
                           },
                           heading: const Text("Privacy Policy"),
                         ),
@@ -261,11 +281,15 @@ class _ProfilePageState extends State<ProfilePage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => CommonWebViewScreen(
-                                          url:
-                                              "https://onnwheels.com/terms-and-conditions",
-                                          page_name: "Terms & Condition",
-                                        )));
+                                    builder: (context) => TermsAndCondition()));
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => CommonWebViewScreen(
+                            //               url:
+                            //                   "https://onnwheels.com/terms-and-conditions",
+                            //               page_name: "Terms & Condition",
+                            //             )));
                           },
                           heading: const Text("Terms & Condition"),
                         ),
@@ -280,11 +304,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           icons: Container(
                             height: 45,
                             width: 45,
-                            // decoration: BoxDecoration(
-                            //     shape: BoxShape.circle, color: MyTheme.polo_blue),
                             child: Center(
                               child: Image.asset(
-                                ImageDirectory.helps,
+                                ImageDirectory.kycDetails,
                                 height: 20,
                                 width: 20,
                                 color: MyTheme.black,

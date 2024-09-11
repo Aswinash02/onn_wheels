@@ -92,17 +92,15 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       detailsRow(
                           title: 'CreatedAt',
                           value: "${orderController.order.value.createdAt}",
+                          valueFontSize: 14),detailsRow(
+                          title: 'Pickup Date',
+                          value: "${orderController.order.value.items!.first.fromDate}",
+                          valueFontSize: 14),detailsRow(
+                          title: 'Drop Date',
+                          value: "${orderController.order.value.items!.first.toDate}",
                           valueFontSize: 14),
                       detailsRow(
-                          title: 'GST (${orderController.order.value.gst}%) ',
-                          value:
-                              "\u20B9 ${orderController.order.value.items?.first.gstAmount}"),
-                      detailsRow(
-                          title: 'SGST (${orderController.order.value.sgst}%) ',
-                          value:
-                              "\u20B9 ${orderController.order.value.items?.first.sgstAmount}"),
-                      detailsRow(
-                        title: 'Unit Price',
+                        title: 'Item Price',
                         value: orderController
                                     .order.value.items?.first.unitPrice !=
                                 null
@@ -110,23 +108,27 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                             : "\u20B9 0",
                       ),
                       detailsRow(
-                        title: 'Subtotal',
-                        value: orderController
-                                    .order.value.items?.first.subtotal !=
-                                null
-                            ? "\u20B9 ${orderController.order.value.items?.first.subtotal}"
+                          title:
+                              'GST (${orderController.order.value.gst}%) ',
+                          value:
+                              "\u20B9 ${orderController.order.value.items?.first.gstAmount}"),
+                      detailsRow(
+                          title: 'SGST (${orderController.order.value.sgst}%) ',
+                          value:
+                              "\u20B9 ${orderController.order.value.items?.first.sgstAmount}"),
+                      detailsRow(
+                        title: 'Helmet Price',
+                        value: "\u20B9 ${orderController.order.value.items!.first.helmetPrice}",
+                      ),
+                      detailsRow(
+                        title: 'Discount',
+                        value: orderController.order.value.items!.first.discount !=
+                            null
+                            ? "\u20B9 ${orderController.order.value.items!.first.discount}"
                             : "\u20B9 0",
                       ),
                       detailsRow(
-                        title: 'WeekEnd Price ',
-                        value: orderController
-                                    .order.value.items?.first.weekendPrice !=
-                                null
-                            ? "\u20B9 ${orderController.order.value.items?.first.weekendPrice}"
-                            : "\u20B9 0",
-                      ),
-                      detailsRow(
-                        title: 'Price',
+                        title: 'Total Price',
                         value: orderController.order.value.items?.first.price !=
                                 null
                             ? "\u20B9 ${orderController.order.value.items?.first.price}"

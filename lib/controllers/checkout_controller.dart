@@ -24,7 +24,7 @@ class CheckoutController extends GetxController {
     loadingState.value = false;
   }
 
-  fetchGstData(String totalPayableAmount) async {
+  fetchGstData(int totalPayableAmount) async {
     loadingState.value = true;
 
     var getGstResponse = await CheckoutRepository().getGstValue();
@@ -34,7 +34,7 @@ class CheckoutController extends GetxController {
 
     sgst.value = (sgstValue).toString();
     gst.value = (gstValue).toString();
-    calculateNinePercent(int.tryParse(totalPayableAmount)!);
+    calculateNinePercent(totalPayableAmount);
 
     loadingState.value = false;
   }
@@ -47,26 +47,5 @@ class CheckoutController extends GetxController {
     gstValue2.value = (totalAmount * percentage2) ~/ 100;
     update();
     return gstValue.value + totalAmount + gstValue2.value;
-  }
-
-  int removeGstFromAmount(int totalAmount) {
-    int percentage = int.tryParse(sgst.value) ?? 0;
-    double originalAmount = totalAmount / (1 + (percentage / 100));
-    return originalAmount.round();
-  }
-
-  int getGstValueFromTotal(int totalAmount) {
-    int percentage = int.tryParse(sgst.value) ?? 0;
-    int originalAmount = removeGstFromAmount(totalAmount);
-    return totalAmount - originalAmount;
-  }
-
-  int? parseInt(String value) {
-    try {
-      return int.parse(value);
-    } catch (e) {
-      print('Error parsing integer: $e');
-      return null;
-    }
   }
 }

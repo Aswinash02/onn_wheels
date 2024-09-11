@@ -18,22 +18,41 @@ class BikeDetailsResponse {
   PriceDetail? daysPrice;
   List<Stations>? stations;
   String? vehicleNumber;
+  String? makeYear;
+  String? displacement;
+  String? topSpeed;
+  String? fullCapacity;
+  String? kmsDriven;
+  String? kerbWeight;
+  String? mileage;
+  String? seat;
+  int? helmetPrice;
 
-  BikeDetailsResponse(
-      {this.id,
-      this.name,
-      this.description,
-      this.weekendPrice,
-      this.discountPrice,
-      this.categories,
-      this.image,
-      this.images,
-      this.hoursPrice,
-      this.weekPrice,
-      this.monthPrice,
-      this.daysPrice,
-      this.stations,
-      this.vehicleNumber});
+  BikeDetailsResponse({
+    this.id,
+    this.name,
+    this.description,
+    this.weekendPrice,
+    this.discountPrice,
+    this.categories,
+    this.image,
+    this.images,
+    this.hoursPrice,
+    this.weekPrice,
+    this.monthPrice,
+    this.daysPrice,
+    this.stations,
+    this.vehicleNumber,
+    this.makeYear,
+    this.displacement,
+    this.topSpeed,
+    this.fullCapacity,
+    this.kmsDriven,
+    this.kerbWeight,
+    this.mileage,
+    this.seat,
+    this.helmetPrice
+  });
 
   BikeDetailsResponse.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -60,6 +79,15 @@ class BikeDetailsResponse {
       });
     }
     vehicleNumber = json['vehicle_number'];
+    makeYear = json['make_year'];
+    displacement = json['displacement'];
+    topSpeed = json['top_speed'];
+    fullCapacity = json['fuel_capacity'];
+    kmsDriven = json['kms_driven'];
+    kerbWeight = json['kerb_weight'];
+    mileage = json['mileage'];
+    seat = json['seats'];
+    helmetPrice = json['extra_helmet'];
   }
 }
 

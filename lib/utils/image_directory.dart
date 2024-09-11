@@ -24,6 +24,7 @@ class ImageDirectory{
   static const String wishListImg = "assets/wishlist_images.png";
   static const String download = "assets/download.png";
   static const String helps = "assets/headphone.png";
+  static const String kycDetails = "assets/kyc_details.png";
   static const String conversations = "assets/classified_product.png";
   static const String favoriteSeller = "assets/favoriteseller.png";
   static const String myWallet = "assets/wallet.png";
@@ -33,8 +34,8 @@ class ImageDirectory{
   static const String halfPrice = "assets/halfprice.jpg";
   static const String whatsApp = "assets/whatsapp.png";
   static const String cancellation_image = "assets/cancellation_image.png";
-  static const String my_booking = "assets/my_booking.png";
-  static const String about_us = "assets/about_us.png";
+  static const String my_booking = "assets/bookings_icon.png";
+  static const String about_us = "assets/about_us_icon.png";
   static const String home_main = "assets/home_image.png";
   static const String log_out = "assets/logout.png";
 

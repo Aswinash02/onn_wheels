@@ -28,6 +28,8 @@ class BikeDetailsController extends GetxController {
   var dailyRate = "".obs;
   var weeklyRate = "".obs;
   var monthlyRate = "".obs;
+  RxBool isConfirm = false.obs;
+  RxBool extraHelmet = false.obs;
   TextEditingController dateTimeCon = TextEditingController();
   TextEditingController availableAtCon = TextEditingController();
   TextEditingController startDateCon = TextEditingController();
@@ -65,7 +67,6 @@ class BikeDetailsController extends GetxController {
     var bikeDetailsResponse =
         await ProductRepository().getProductDetails(id: id);
     print('bikeDetailsResponse.name ${bikeDetailsResponse}');
-
     bikeImageResponse.addAll(bikeDetailsResponse.images ?? []);
     bikeTitle.value = bikeDetailsResponse.name ?? '';
     imageFile.value = bikeDetailsResponse.image ?? '';
@@ -79,7 +80,6 @@ class BikeDetailsController extends GetxController {
     setDropdownItems(bikeDetailsResponse.stations ?? []);
     bikeDetails = bikeDetailsResponse;
     loadingState.value = false;
-    update();
   }
 
   Future dateTimePicker(BuildContext context) async {
@@ -128,14 +128,24 @@ class BikeDetailsController extends GetxController {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     }
+    if (!isConfirm.value) {
+      const snackBar = SnackBar(
+        content: Text('Confirm Your 18 years of age'),
+        backgroundColor: MyTheme.accent_color,
+        elevation: 10,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.all(5),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return;
+    }
     Get.to(
       () => CheckoutPage(
         imageUrl: imageFile.value,
         startTime: startDateTime.value,
         endTime: endDateTime.value,
         station: selectedStation.value!.name ?? '',
-        totalPayableAmount:
-            total.value == 0 ? price.value.toString() : total.value.toString(),
+        totalPayableAmount: total.value,
         lat: selectedStation.value!.lat!,
         long: selectedStation.value!.lon!,
         name: bikeTitle.value,
@@ -143,6 +153,7 @@ class BikeDetailsController extends GetxController {
         weekEndPrice: 0,
         kmLimit: kmLimit.value,
         vehicleNumber: bikeDetails!.vehicleNumber ?? '',
+        helmetPrice: extraHelmet.value ? bikeDetails!.helmetPrice! : 0,
         discount: double.parse(bikeDetails!.discountPrice ?? '0.0').toInt(),
       ),
     );
@@ -300,16 +311,28 @@ class BikeDetailsController extends GetxController {
       }
     }
   }
-
+void clearControllerData(){
+  startDateTime.value = '';
+  endDateTime.value = '';
+  startDateCon.clear();
+  startTimeCon.clear();
+  endDateCon.clear();
+  endTimeCon.clear();
+  kmLimit.value = 0;
+  total.value = 0;
+}
   void clearData() {
-    startDateTime.value = '';
-    endDateTime.value = '';
-    startDateCon.clear();
-    startTimeCon.clear();
-    endDateCon.clear();
-    endTimeCon.clear();
-    kmLimit.value = 0;
-    total.value = 0;
+    clearControllerData();
     selectedStation.value = null;
+    extraHelmet.value = false;
+    isConfirm.value = false;
+  }
+
+  void onChangeConfirm(bool? value) {
+    isConfirm.value = value!;
+  }
+
+  void onChangeExtraHelmet(bool? value) {
+    extraHelmet.value = value!;
   }
 }

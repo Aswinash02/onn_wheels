@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:onnwheels/models/all_station_detail_model.dart';
 import 'package:onnwheels/models/filter_bikes_model.dart';
 import 'package:onnwheels/repositories/product_repositories.dart';
 
@@ -30,6 +31,7 @@ class HomeController extends GetxController {
   String? _selectedPackage;
 
   Stations? _selectedStation;
+  StationData? _selectedHomeFilterStation;
   bool _isFilter = false;
 
   List<String> _hourPriceList = [];
@@ -38,6 +40,7 @@ class HomeController extends GetxController {
   List<String> _monthPriceList = [];
   List<String> _brandList = [];
   List<Stations> _stationList = [];
+  List<StationData> _homeFilterStationList = [];
   List<String> _fuelTypeList = ["Petrol", "Diesel", "EV"];
   List<String> _attributeTypeList = ["fuel_type", "transmission_type"];
   List<String> _transmissionTypeList = ["Automatic", "Manual"];
@@ -59,6 +62,8 @@ class HomeController extends GetxController {
   String? get selectedAttributeType => _selectedAttributeType;
 
   Stations? get selectedStation => _selectedStation;
+
+  StationData? get selectedHomeFilterStation => _selectedHomeFilterStation;
 
   bool get isFilter => _isFilter;
 
@@ -82,9 +87,17 @@ class HomeController extends GetxController {
 
   List<Stations> get stationList => _stationList;
 
+  List<StationData> get homeFilterStationList => _homeFilterStationList;
+
   List<BikeData> get filterBikeList => _filterBikeList;
 
   Future<void> fetchFilterDropDownData() async {
+    _hourPriceList.clear();
+    _dayPriceList.clear();
+    _weekPriceList.clear();
+    _monthPriceList.clear();
+    _brandList.clear();
+    _stationList.clear();
 // isLoadingData.value = true;
     FilterBikesModel response =
         await ProductRepository().fetchFilterDropDownData();
@@ -141,6 +154,11 @@ class HomeController extends GetxController {
 
   void onChangeStation(Stations? value) {
     _selectedStation = value;
+    update();
+  }
+
+  void onChangeHomeFilterStation(StationData? value) {
+    _selectedHomeFilterStation = value;
     update();
   }
 
@@ -234,11 +252,11 @@ class HomeController extends GetxController {
     searchBikeProducts.clear();
 
     var searchProductResponse = await ProductRepository().filterProductDateTime(
-      startDate: startDate,
-      endDate: endDate,
-      startTime: startTime,
-      endTime: endTime,
-    );
+        startDate: startDate,
+        endDate: endDate,
+        startTime: startTime,
+        endTime: endTime,
+        stationId: selectedHomeFilterStation!.id.toString());
 
     print('data ===== ${searchProductResponse.data!}');
 
@@ -266,8 +284,6 @@ class HomeController extends GetxController {
           ? _selectedTransmissionType!.toLowerCase()
           : null,
       brand: _selectedBrand,
-
-
       stationId: _selectedStation != null ? _selectedStation!.id : null,
     );
     if (response.data != null) {
@@ -275,6 +291,15 @@ class HomeController extends GetxController {
     }
     _isFilter = true;
     clearData();
+    update();
+  }
+
+  Future<void> getAllStation() async {
+    _homeFilterStationList.clear();
+    AllStationDetailModel response = await ProductRepository().getAllStation();
+    if (response.data != null) {
+      _homeFilterStationList.addAll(response.data!);
+    }
     update();
   }
 }

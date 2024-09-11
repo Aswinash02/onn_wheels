@@ -31,13 +31,14 @@ class CheckoutPage extends StatefulWidget {
       required this.weekEndPrice,
       required this.kmLimit,
       required this.vehicleNumber,
-      required this.discount});
+      required this.discount,
+      required this.helmetPrice});
 
   final String imageUrl;
   final String startTime;
   final String endTime;
   final String station;
-  final String totalPayableAmount;
+  final int totalPayableAmount;
   final String lat;
   final String long;
   final String name;
@@ -46,6 +47,7 @@ class CheckoutPage extends StatefulWidget {
   final int kmLimit;
   final String vehicleNumber;
   final int discount;
+  final int helmetPrice;
 
   @override
   State<CheckoutPage> createState() => _CheckoutPageState();
@@ -62,8 +64,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
   @override
   void initState() {
+    print('totalPayableAmount ------ ${widget.totalPayableAmount}');
     checkoutController.fetchUserName();
-    checkoutController.fetchGstData(widget.totalPayableAmount);
+
+    checkoutController
+        .fetchGstData(widget.totalPayableAmount + widget.helmetPrice);
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handleExternalWallet);
@@ -159,6 +164,14 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 fontSize: 14,
                                 fontSize2: 14,
                               ),
+                              keyValueWidget(
+                                firstText: 'Helmet Fee',
+                                lastText: "\u20B9 ${widget.helmetPrice}",
+                                fontWeight: FontWeight.w500,
+                                fontWeight2: FontWeight.w500,
+                                fontSize: 16,
+                                fontSize2: 16,
+                              ),
                               Obx(
                                 () => keyValueWidget(
                                   firstText: 'GST 9%',
@@ -182,9 +195,17 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 ),
                               ),
                               keyValueWidget(
+                                firstText: 'Discount',
+                                lastText: "\u20B9 ${widget.discount}",
+                                fontWeight: FontWeight.w500,
+                                fontWeight2: FontWeight.w500,
+                                fontSize: 16,
+                                fontSize2: 16,
+                              ),
+                              keyValueWidget(
                                 firstText: 'Total Payable Amount',
                                 lastText:
-                                    "\u20B9 ${checkoutController.calculateNinePercent(int.tryParse(widget.totalPayableAmount)!)}",
+                                    "\u20B9 ${checkoutController.calculateNinePercent(widget.totalPayableAmount + widget.helmetPrice) - widget.discount}",
                                 fontWeight: FontWeight.bold,
                                 fontWeight2: FontWeight.bold,
                                 fontSize: 16,
@@ -195,14 +216,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         );
                       }),
                       Padding(
-                        padding: const EdgeInsets.only(top: 30),
+                        padding: const EdgeInsets.only(top: 20),
                         child: InkWell(
                           onTap: () async {
                             paymentData = {
-                              'amount': checkoutController.calculateNinePercent(
-                                      int.tryParse(
-                                          widget.totalPayableAmount)!) *
-                                  100,
+                              'amount':
+                                  (checkoutController.calculateNinePercent(
+                                              widget.totalPayableAmount +
+                                                  widget.helmetPrice) -
+                                          widget.discount) *
+                                      100,
                               'currency': 'INR',
                               'receipt': 'order_receipt',
                               'payment_capture': '1',
@@ -265,28 +288,29 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
   createOrder(String status) async {
     await CheckoutRepository().getCheckoutResponse(
-      checkoutController.userId.value,
-      checkoutController.userName.value,
-      checkoutController.userPhone.value,
-      checkoutController.userEmail.value,
-      widget.station,
-      widget.long,
-      widget.lat,
-      bikeDetailsController.storeId.value,
-      checkoutController
-          .calculateNinePercent(int.parse(widget.totalPayableAmount)),
-      int.parse(widget.totalPayableAmount),
-      status,
-      checkoutController.orderId.value,
-      widget.id,
-      0.0,
-      widget.startTime,
-      widget.endTime,
-      widget.weekEndPrice,
-      widget.kmLimit,
-      widget.vehicleNumber,
-      widget.discount,
-    );
+        userId: checkoutController.userId.value,
+        userName: checkoutController.userName.value,
+        phone: checkoutController.userPhone.value,
+        email: checkoutController.userEmail.value,
+        address: widget.station,
+        long: widget.long,
+        lat: widget.lat,
+        store_id: bikeDetailsController.storeId.value,
+        amount: checkoutController.calculateNinePercent(
+                widget.totalPayableAmount + widget.helmetPrice) -
+            widget.discount,
+        unitAmount: widget.totalPayableAmount,
+        status: status,
+        transactionReference: checkoutController.orderId.value,
+        item_id: widget.id,
+        distance: 0.0,
+        startDate: widget.startTime,
+        endDate: widget.endTime,
+        weekEndPrice: widget.weekEndPrice,
+        kmLimit: widget.kmLimit,
+        vehicleNumber: widget.vehicleNumber,
+        discount: widget.discount,
+        helmetPrice: widget.helmetPrice);
   }
 
   void handlePaymentSuccess(PaymentSuccessResponse response) {
@@ -303,7 +327,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
     print('response Error code ${response.code}');
     print('response Error message ${response.message}');
     print('response Error error ${response.error}');
-    Navigator.pushReplacement(
+    Navigator.push(
         context, MaterialPageRoute(builder: (context) => MainPage()));
   }
 
@@ -320,7 +344,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
         Uri.parse(apiUrl),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Basic ${base64Encode(utf8.encode('$apiKey:$apiSecret'))}',
+          'Authorization':
+              'Basic ${base64Encode(utf8.encode('$apiKey:$apiSecret'))}',
         },
         body: jsonEncode(paymentData),
       );
@@ -359,5 +384,4 @@ class _CheckoutPageState extends State<CheckoutPage> {
       debugPrint('Exception during payment initiation: $e');
     }
   }
-
 }

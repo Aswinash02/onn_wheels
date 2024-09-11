@@ -20,7 +20,9 @@ class _OrderCardListViewState extends State<OrderCardListView> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    allOrdersController.getAllOrders();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      allOrdersController.getAllOrders();
+    });
   }
 
   @override

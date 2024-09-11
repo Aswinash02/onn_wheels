@@ -17,15 +17,6 @@ class OrderController extends GetxController {
     allOrdersList.clear();
     var response = await OrderRepository().getAllOrders(int.parse(userId));
     allOrdersList.addAll(response);
-    // Set<int?> orderIds = allOrdersList.map((order) => order.orderId).toSet();
-    //
-    // for (var order in response) {
-    //   if (!orderIds.contains(order.orderId)) {
-    //     allOrdersList.add(order);
-    //     orderIds.add(order.orderId);
-    //   }
-    // }
-
     loading.value = false;
     update();
   }

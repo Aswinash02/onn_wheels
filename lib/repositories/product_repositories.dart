@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:onnwheels/models/all_station_detail_model.dart';
 import 'package:onnwheels/models/bike_details_model.dart';
 import 'package:onnwheels/models/filter_bikes_model.dart';
 import '../helpers/api_helpers.dart';
@@ -32,6 +33,7 @@ class ProductRepository {
         "zoneId": "2"
       },
     );
+    print('body ----------- > ${response.body}');
     return bikeDetailsResponseFromJson(response.body);
   }
 
@@ -39,11 +41,13 @@ class ProductRepository {
       {String? startDate,
       String? startTime,
       String? endDate,
-      String? endTime}) async {
+      String? endTime,
+      String? stationId}) async {
     String url = ("${AppConfig.BASE_URL}/items/vehicle-availability-search");
     var post_body = jsonEncode({
       "start_date": "$startDate  $startTime",
-      "end_date": "$endDate $endTime"
+      "end_date": "$endDate $endTime",
+      "station": stationId
     });
     final response = await ApiHelper.post(
         url: url,
@@ -53,6 +57,7 @@ class ProductRepository {
           "zoneId": "[1]"
         },
         body: post_body);
+
     return allBikeResponseFromJson(response.body);
   }
 
@@ -81,6 +86,20 @@ class ProductRepository {
         body: post_body);
 
     return allBikeResponseFromJson(response.body);
+  }
+
+  Future<AllStationDetailModel> getAllStation({int? id}) async {
+    String url = ("${AppConfig.BASE_URL}/items/get-all-stations");
+
+    final response = await ApiHelper.get(
+      url: url,
+      headers: {
+        "Content-Type": "application/json",
+        "moduleId": "1",
+        "zoneId": "2"
+      },
+    );
+    return AllStationDetailModel.fromJson(jsonDecode(response.body));
   }
 
   Future<FilterBikesModel> fetchFilterDropDownData() async {

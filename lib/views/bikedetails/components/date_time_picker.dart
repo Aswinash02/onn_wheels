@@ -372,7 +372,7 @@ class _BikeDetailDateTimeRangePickerState
           DateFormat('MMM d, yyyy h:mm a').format(date);
 
       if (destination == "startDate") {
-        bikeDetailsController.clearData();
+        bikeDetailsController.clearControllerData();
         _startDateTime = DateTime(date.year, date.month, date.day);
         bikeDetailsController.startDateTime.value = formattedDateTime;
         bikeDetailsController.startDateCon.text = formattedDate;

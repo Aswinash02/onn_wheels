@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:onnwheels/repositories/product_repositories.dart';
+import 'package:onnwheels/models/all_station_detail_model.dart';
 import 'package:onnwheels/utils/image_directory.dart';
 import 'package:onnwheels/utils/shared_preference.dart';
 import 'package:onnwheels/views/bikedetails/components/date_time_picker.dart';
+import 'package:onnwheels/views/bikedetails/components/text_widget.dart';
 import 'package:onnwheels/views/home/components/custom_gridview.dart';
 import 'package:onnwheels/views/home/components/filter_dialog.dart';
 import '../../controllers/home_controller.dart';
@@ -49,10 +50,6 @@ class _HomePageState extends State<HomePage> {
           _startDateTime!.day,
           picked.hour,
           picked.minute);
-      print('pickedDateTime ${pickedDateTime}');
-      print(' picked.hour, ${picked.hour}');
-      print('picked.minute ${picked.minute}');
-      print('now ${now}');
       if (pickedDateTime.isBefore(now)) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Pick Valid Date & Time'),
@@ -136,6 +133,7 @@ class _HomePageState extends State<HomePage> {
     });
     fetchUserName();
     homeController.fetchFilterDropDownData();
+    homeController.getAllStation();
     super.initState();
   }
 
@@ -153,19 +151,21 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: MyTheme.white,
         title: Text(
-          "ONN WHEELS",
+          "THE WHEELS",
           style: TextStyle(color: Colors.black),
         ),
         actions: [
-          Container(
-            height: 60,
-            width: 60,
-            margin: EdgeInsets.only(right: 20),
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/app_logo.png"),
+          Row(
+            children: [
+              Container(
+                height: 40,
+                width: 50,
+                child: Image.asset("assets/app_logo.png",fit: BoxFit.fill),
               ),
-            ),
+              SizedBox(
+                width: 20,
+              )
+            ],
           )
         ],
       ),
@@ -197,7 +197,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       Container(
                         padding: const EdgeInsets.all(15),
-                        height: 310,
+                        height: 350,
                         width: 380,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
@@ -426,8 +426,70 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ],
                             ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            CustomText(
+                              text: "Station",
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            SizedBox(
+                              height: 2,
+                            ),
+                            GetBuilder<HomeController>(builder: (controller) {
+                              return Container(
+                                height: 40,
+                                child: DropdownButtonFormField<StationData>(
+                                  value: controller.selectedHomeFilterStation,
+                                  iconDisabledColor: MyTheme.accent_color,
+                                  iconEnabledColor: MyTheme.accent_color,
+                                  onChanged:
+                                      controller.onChangeHomeFilterStation,
+                                  items: controller.homeFilterStationList
+                                      .map((item) {
+                                    return DropdownMenuItem(
+                                      value: item,
+                                      child: Text(item.name ?? ''),
+                                    );
+                                  }).toList(),
+                                  style: TextStyle(
+                                      fontSize: 14, color: MyTheme.black),
+                                  decoration: InputDecoration(
+                                    fillColor: MyTheme.white,
+                                    filled: true,
+                                    hintText: "Select Station",
+                                    hintStyle: const TextStyle(
+                                        color: MyTheme.grey_153, fontSize: 14),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(6.0),
+                                      borderSide: const BorderSide(
+                                        color: Colors.grey,
+                                        width: 0.5,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(6.0),
+                                      borderSide: const BorderSide(
+                                        color: Colors.grey,
+                                        width: 0.5,
+                                      ),
+                                    ),
+                                    disabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(6.0),
+                                      borderSide: const BorderSide(
+                                        color: Colors.grey,
+                                        width: 0.5,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }),
                             Padding(
-                              padding: const EdgeInsets.only(top: 40),
+                              padding: const EdgeInsets.only(top: 30),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -523,6 +585,24 @@ class _HomePageState extends State<HomePage> {
                                               );
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(snackdemo);
+                                              return;
+                                            }
+
+                                            if (Get.find<HomeController>()
+                                                    .selectedHomeFilterStation ==
+                                                null) {
+                                              const snackDemo = SnackBar(
+                                                content: Text(
+                                                    'Please select Station'),
+                                                backgroundColor:
+                                                    MyTheme.accent_color,
+                                                elevation: 10,
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                                margin: EdgeInsets.all(5),
+                                              );
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(snackDemo);
                                               return;
                                             }
                                             homeController
@@ -630,129 +710,3 @@ Future<void> displayTimePicker(
   }
 }
 
-// class CustomTimePickerDialog extends StatefulWidget {
-//   final TimeOfDay initialTime;
-//
-//   CustomTimePickerDialog({required this.initialTime});
-//
-//   @override
-//   _CustomTimePickerDialogState createState() => _CustomTimePickerDialogState();
-// }
-//
-// class _CustomTimePickerDialogState extends State<CustomTimePickerDialog> {
-//   late int selectedHour;
-//   late int selectedMinute;
-//   late String selectedPeriod;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     selectedHour = widget.initialTime.hourOfPeriod == 0
-//         ? 12
-//         : widget.initialTime.hourOfPeriod;
-//     selectedMinute = _roundToNearest15(widget.initialTime.minute);
-//     selectedPeriod = widget.initialTime.period == DayPeriod.am ? "AM" : "PM";
-//   }
-//
-//   int _roundToNearest15(int minute) {
-//     if (minute < 15) return 15;
-//     if (minute < 30) return 30;
-//     if (minute < 45) return 45;
-//     return 0;
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Dialog(
-//       child: Column(
-//         mainAxisSize: MainAxisSize.min,
-//         children: [
-//           Padding(
-//             padding: const EdgeInsets.symmetric(vertical: 10.0),
-//             child: Row(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               children: [
-//                 DropdownButton<int>(
-//                   value: selectedHour,
-//                   items: List.generate(12, (index) {
-//                     int hour = index + 1;
-//                     return DropdownMenuItem(
-//                       value: hour,
-//                       child: Text(hour.toString().padLeft(2, '0')),
-//                     );
-//                   }).toList(),
-//                   onChanged: (value) {
-//                     setState(() {
-//                       print('value 1============ >  $value');
-//                       selectedHour = value!;
-//                       // _startDateTime = DateTime(
-//                       //     _startDateTime!.year,
-//                       //     _startDateTime!.month,
-//                       //     _startDateTime!.day,
-//                       //     selectedHour,
-//                       //     selectedMinute);
-//                       // String startDateTime = DateFormat('MMMM d, yyyy h:mm a')
-//                       //     .format(_startDateTime!);
-//                       // bikeDetailsController.startDateTime.value =
-//                       //     startDateTime.toString();
-//                     });
-//                   },
-//                 ),
-//                 DropdownButton<int>(
-//                   value: selectedMinute,
-//                   items: [0, 15, 30, 45].map((minute) {
-//                     return DropdownMenuItem(
-//                       value: minute,
-//                       child: Text(minute.toString().padLeft(2, '0')),
-//                     );
-//                   }).toList(),
-//                   onChanged: (value) {
-//                     setState(() {
-//                       print('value ============ >  $value');
-//                       selectedMinute = value!;
-//                     });
-//                     // _startDateTime = DateTime(
-//                     //     _startDateTime!.year,
-//                     //     _startDateTime!.month,
-//                     //     _startDateTime!.day,
-//                     //     selectedHour,
-//                     //     selectedMinute);
-//                     // String startDateTime = DateFormat('MMMM d, yyyy h:mm a')
-//                     //     .format(_startDateTime!);
-//                     // bikeDetailsController.startDateTime.value =
-//                     //     startDateTime.toString();
-//                   },
-//                 ),
-//                 DropdownButton<String>(
-//                   value: selectedPeriod,
-//                   items: ["AM", "PM"].map((period) {
-//                     return DropdownMenuItem(
-//                       value: period,
-//                       child: Text(period),
-//                     );
-//                   }).toList(),
-//                   onChanged: (value) {
-//                     setState(() {
-//                       selectedPeriod = value!;
-//                     });
-//                   },
-//                 ),
-//               ],
-//             ),
-//           ),
-//           ElevatedButton(
-//             onPressed: () {
-//               int hour = selectedHour % 12;
-//               if (selectedPeriod == "PM") {
-//                 hour += 12;
-//               }
-//               Navigator.pop(
-//                   context, TimeOfDay(hour: hour, minute: selectedMinute));
-//             },
-//             child: Text('Confirm'),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }

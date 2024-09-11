@@ -2,6 +2,7 @@ class OrderDetailModel {
   String? gst;
   String? sgst;
   int? orderId;
+
   int? orderAmount;
   String? paymentStatus;
   String? orderStatus;
@@ -28,6 +29,7 @@ class OrderDetailModel {
     paymentStatus = json['payment_status'];
     orderStatus = json['order_status'];
     createdAt = json['created_at'];
+
     if (json['items'] != null) {
       items = <Items>[];
       json['items'].forEach((v) {
@@ -62,13 +64,17 @@ class Items {
   int? itemId;
   String? itemName;
   int? quantity;
-  String? unitPrice;
-  double? gstAmount;
-  double? sgstAmount;
+  int? unitPrice;
+  int? gstAmount;
+  int? sgstAmount;
   int? price;
+  int? discount;
+  int? helmetPrice;
   int? subtotal;
-  String? weekendPrice;
+  int? weekendPrice;
   String? image;
+  String? fromDate;
+  String? toDate;
 
   Items(
       {this.itemId,
@@ -79,7 +85,11 @@ class Items {
       this.sgstAmount,
       this.price,
       this.subtotal,
+      this.helmetPrice,
+      this.discount,
       this.weekendPrice,
+      this.fromDate,
+      this.toDate,
       this.image});
 
   Items.fromJson(Map<String, dynamic> json) {
@@ -87,16 +97,16 @@ class Items {
     itemName = json['item_name'];
     quantity = json['quantity'];
     unitPrice = json['unit_price'];
-    gstAmount = (json['gst_amount'] is int)
-        ? (json['gst_amount'] as int).toDouble()
-        : json['gst_amount'] as double?;
-    sgstAmount = (json['sgst_amount'] is int)
-        ? (json['sgst_amount'] as int).toDouble()
-        : json['sgst_amount'] as double?;
+    gstAmount = json['gst_amount'];
+    sgstAmount = json['sgst_amount'];
     price = json['price'];
     subtotal = json['subtotal'];
+    discount = json['discount'];
+    helmetPrice = json['helmet_amount'];
     weekendPrice = json['weekend_price'];
     image = json['image'];
+    fromDate = json['from_date'];
+    toDate = json['to_date'];
   }
 
   Map<String, dynamic> toJson() {

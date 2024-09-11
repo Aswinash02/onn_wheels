@@ -1,41 +1,37 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
 import 'package:onnwheels/customs/toastcomponent.dart';
 import 'package:onnwheels/helpers/api_helpers.dart';
 import 'package:onnwheels/models/checkout_model.dart';
 import 'package:onnwheels/models/get_gst_model.dart';
-import 'package:onnwheels/utils/shared_value.dart';
-import 'package:onnwheels/views/order_details/components/order_page_card.dart';
-import 'package:onnwheels/views/order_details/order_details_screen.dart';
 import 'package:toast/toast.dart';
 
 import '../utils/app_config.dart';
 
 class CheckoutRepository {
-  Future getCheckoutResponse(
-    String userId,
-    String userName,
-    String phone,
-    String email,
-    String address,
-    String long,
-    String lat,
-    int store_id,
-    int amount,
-    int unitAmount,
-    String status,
-    String transactionReference,
-    int item_id,
-    double distance,
-    String startDate,
+  Future getCheckoutResponse({
+    required String userId,
+    required String userName,
+    required String phone,
+    required String email,
+    required String address,
+    required String long,
+    required String lat,
+    required int store_id,
+    required int amount,
+    required int unitAmount,
+    required String status,
+    required String transactionReference,
+    required int item_id,
+    required double distance,
+    required String startDate,
     String? endDate,
     int? weekEndPrice,
     int? kmLimit,
     String? vehicleNumber,
     int? discount,
-  ) async {
+    int? helmetPrice,
+  }) async {
     var post_body = jsonEncode({
       "user_id": userId,
       "contact_person_name": "$userName",
@@ -56,9 +52,9 @@ class CheckoutRepository {
       "weekend_price": weekEndPrice,
       "km_limit": kmLimit,
       "vehicle_number": vehicleNumber,
-      "discount": discount
+      "discount": discount,
+      "helmet_amount": helmetPrice.toString()
     });
-
     String url = ("${AppConfig.BASE_URL}/items/create-order");
     final response = await ApiHelper.post(
         url: url,
@@ -68,11 +64,7 @@ class CheckoutRepository {
           "zoneId": "2"
         },
         body: post_body);
-    print("order response=======>${response.body}");
     if (response.statusCode == 200) {
-      // Get.to(
-      //   () => OrderCardListView(),
-      // );
       return checkoutResponseFromJson(response.body);
     } else if (response.statusCode == 403) {
       ToastComponent.showDialog("Not Applicable",

@@ -7,12 +7,18 @@ import 'package:onnwheels/models/bike_details_model.dart';
 import 'package:onnwheels/mytheme.dart';
 import 'package:onnwheels/simmer/bike_details_simmer.dart';
 import 'package:onnwheels/views/bikedetails/components/bike_details_widgets.dart';
+import 'package:onnwheels/views/bikedetails/components/daily_price_details.dart';
 import 'package:onnwheels/views/bikedetails/components/date_time_picker.dart';
+import 'package:onnwheels/views/bikedetails/components/hour_price_details.dart';
+import 'package:onnwheels/views/bikedetails/components/month_price_details.dart';
 import 'package:onnwheels/views/bikedetails/components/toggle_switch.dart';
+import 'package:onnwheels/views/bikedetails/components/week_price_details.dart';
 import 'package:onnwheels/views/checkout/checkout_page.dart';
 import 'package:onnwheels/views/main_page/components/custom_appbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:onnwheels/views/webview/webview.dart';
 
+import 'components/bike_feature_container.dart';
 import 'components/text_widget.dart';
 
 class BikeDetailsPage extends StatefulWidget {
@@ -31,7 +37,9 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
   @override
   void initState() {
     // TODO: implement initState
-    bikeDetailsController.fetchProductDetailsData(id: widget.id);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      bikeDetailsController.fetchProductDetailsData(id: widget.id);
+    });
     super.initState();
   }
 
@@ -75,12 +83,25 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Obx(
-                            () => CustomText(
-                              text: bikeDetailsController.bikeTitle.value,
-                              fontWeight: FontWeight.w600,
-                              fontSize: screenWidth / 18,
-                            ),
+                          Row(
+                            children: [
+                              Obx(
+                                () => CustomText(
+                                  maxLines: 3,
+                                  text: bikeDetailsController.bikeTitle.value,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: screenWidth / 18,
+                                ),
+                              ),
+                              SizedBox(width: 4),
+                              CustomText(
+                                text:
+                                    "(${bikeDetailsController.bikeDetails!.vehicleNumber})",
+                                fontWeight: FontWeight.w600,
+                                fontSize: screenWidth / 36,
+                                textAlign: TextAlign.justify,
+                              ),
+                            ],
                           ),
                           CustomText(
                             text: bikeDetailsController
@@ -90,6 +111,87 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                             fontSize: screenWidth / 36,
                             maxLines: 100,
                             textAlign: TextAlign.justify,
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          CustomText(
+                            text: "Bike Features",
+                            fontWeight: FontWeight.bold,
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Row(
+                            children: [
+                              bikeFeatureContainer(
+                                  title: "Make Year",
+                                  value: bikeDetailsController
+                                          .bikeDetails!.makeYear ??
+                                      '',
+                                  icon: "assets/icons/make_year.png"),
+                              SizedBox(width: 5),
+                              bikeFeatureContainer(
+                                  title: "Displacement",
+                                  value: bikeDetailsController
+                                          .bikeDetails!.displacement ??
+                                      '',
+                                  icon: "assets/icons/displacement.png"),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              bikeFeatureContainer(
+                                  title: "Top Speed",
+                                  value: bikeDetailsController
+                                          .bikeDetails!.topSpeed ??
+                                      '',
+                                  icon: "assets/icons/speed.png"),
+                              SizedBox(width: 5),
+                              bikeFeatureContainer(
+                                  title: "Fuel Capacity",
+                                  value: bikeDetailsController
+                                          .bikeDetails!.fullCapacity ??
+                                      '',
+                                  icon: "assets/icons/fuel_capacity.png"),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              bikeFeatureContainer(
+                                  title: "KMs Driven",
+                                  value: bikeDetailsController
+                                          .bikeDetails!.kmsDriven ??
+                                      '',
+                                  icon: "assets/icons/kms_driven.png"),
+                              SizedBox(width: 5),
+                              bikeFeatureContainer(
+                                  title: "Kerb Weight",
+                                  value: bikeDetailsController
+                                          .bikeDetails!.kerbWeight ??
+                                      '',
+                                  icon: "assets/icons/kerb_weight.png"),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              bikeFeatureContainer(
+                                  title: "Mileage",
+                                  value: bikeDetailsController
+                                          .bikeDetails!.mileage ??
+                                      '',
+                                  icon: "assets/icons/mileage.png"),
+                              SizedBox(width: 5),
+                              bikeFeatureContainer(
+                                  title: "Seat",
+                                  value:
+                                      bikeDetailsController.bikeDetails!.seat ??
+                                          '',
+                                  icon: "assets/icons/seat.png"),
+                            ],
                           ),
                           SizedBox(
                             height: 10,
@@ -109,8 +211,20 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                                 index:
                                     bikeDetailsController.selectedIndex.value),
                           ),
-                          SizedBox(
-                            height: 10,
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: bikeDetailsController.extraHelmet.value,
+                                onChanged:
+                                    bikeDetailsController.onChangeExtraHelmet,
+                                fillColor: MaterialStateProperty.all(
+                                    Color(0XFF000080)),
+                              ),
+                              CustomText(
+                                  text:
+                                      "Extra Helmet \u20B9 ${bikeDetailsController.bikeDetails!.helmetPrice}",
+                                  fontWeight: FontWeight.w500),
+                            ],
                           ),
                           BikeDetailDateTimeRangePicker(),
                           Obx(
@@ -211,7 +325,64 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                                 : SizedBox(),
                           ),
                           SizedBox(
-                            height: 30,
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: bikeDetailsController.isConfirm.value,
+                                onChanged:
+                                    bikeDetailsController.onChangeConfirm,
+                                fillColor: MaterialStateProperty.all(
+                                    Color(0XFF000080)),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CustomText(
+                                        text:
+                                            "Confirm that you are above 18 years of age",
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500),
+                                    Row(
+                                      children: [
+                                        CustomText(
+                                            text: "and you are agree to all",
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500),
+                                        SizedBox(
+                                          width: 4,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        CommonWebViewScreen(
+                                                          url:
+                                                              "https://onnwheels.com/terms-and-conditions",
+                                                          page_name:
+                                                              "Terms&Condition",
+                                                        )));
+                                          },
+                                          child: CustomText(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 12,
+                                            color: Color(0XFF000080),
+                                            text: "Terms & Condition",
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
                           ),
                           GestureDetector(
                             onTap: () {
@@ -255,249 +426,5 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
       case 3:
         return referencePriceDetailMonth();
     }
-  }
-
-  Widget referencePriceDetailHour() {
-    return GetBuilder<BikeDetailsController>(builder: (controller) {
-      return Container(
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                CustomText(
-                  text: "Mon - Thu",
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-                SizedBox(
-                  width: 2,
-                ),
-                CustomText(
-                  text:
-                      "(Min ${controller.bikeDetails!.hoursPrice!.hourLimit} hrs booking)",
-                  fontSize: 10,
-                  fontWeight: FontWeight.w500,
-                ),
-              ],
-            ),
-            rupeeRow(
-                title: 'Per Hour',
-                rupee:
-                    "\u{20B9} ${controller.bikeDetails!.hoursPrice!.price ?? ''}"),
-            Row(
-              children: [
-                CustomText(
-                  text: "Fri - Sun",
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-                SizedBox(
-                  width: 2,
-                ),
-                CustomText(
-                  text:
-                      "(Min ${controller.bikeDetails!.hoursPrice!.hourWeekendLimit} hrs booking)",
-                  fontSize: 10,
-                  fontWeight: FontWeight.w500,
-                ),
-              ],
-            ),
-            rupeeRow(
-                title: 'Per Hour',
-                rupee:
-                    "\u{20B9} ${int.parse(controller.bikeDetails!.hoursPrice!.price ?? '0')}"),
-            rupeeRow(
-                title: 'WeekEnd Price',
-                rupee:
-                    "\u{20B9} ${controller.bikeDetails!.hoursPrice!.hourWeekendPrice ?? '0'}"),
-            CustomText(
-              text: "Extras",
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-            rupeeRow(
-                title: 'Km limit',
-                rupee:
-                    '\u{20B9} ${controller.bikeDetails!.hoursPrice!.kmLimit ?? ''}/hr'),
-            rupeeRow(
-                title: 'Excess Km charges',
-                rupee:
-                    '\u{20B9} ${controller.bikeDetails!.hoursPrice!.kmCharges ?? ''}/km'),
-            rupeeRow(
-                title: 'Excess hour charges',
-                rupee:
-                    "\u{20B9} ${controller.bikeDetails!.hoursPrice!.extraHours ?? ''}"),
-          ],
-        ),
-      );
-    });
-  }
-
-  Widget referencePriceDetailDay() {
-    return GetBuilder<BikeDetailsController>(builder: (controller) {
-      return Container(
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomText(
-              text: "Mon - Thu",
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-            rupeeRow(
-                title: 'Per Day',
-                rupee:
-                    '\u{20B9} ${controller.bikeDetails!.daysPrice!.price ?? ''}'),
-            CustomText(
-              text: "Fri - Sun",
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-            rupeeRow(
-                title: 'Per Day',
-                rupee:
-                    '\u{20B9} ${int.parse(controller.bikeDetails!.daysPrice!.price ?? '0') + (controller.bikeDetails!.weekendPrice ?? 0)}'),
-            // rupeeRow(
-            //     title: 'WeekEnd Extra Price',
-            //     rupee:
-            //         '\u{20B9} ${controller.bikeDetails!.weekendPrice ?? ''}'),
-            CustomText(
-              text: "Extras",
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-            rupeeRow(
-                title: 'Km limit',
-                rupee:
-                    '\u{20B9} ${controller.bikeDetails!.daysPrice!.kmLimit ?? ''}/day'),
-            rupeeRow(
-                title: 'Excess Km charges',
-                rupee:
-                    '\u{20B9} ${controller.bikeDetails!.daysPrice!.kmCharges ?? ''}/km'),
-            rupeeRow(
-                title: 'Excess hour charges',
-                rupee:
-                    '\u{20B9} ${controller.bikeDetails!.daysPrice!.extraHours ?? ''}'),
-          ],
-        ),
-      );
-    });
-  }
-
-  Widget referencePriceDetailWeek() {
-    return GetBuilder<BikeDetailsController>(builder: (controller) {
-      return Container(
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomText(
-              text: "Weekly",
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-            rupeeRow(
-                title: 'Per Week',
-                rupee:
-                    '\u{20B9} ${controller.bikeDetails!.weekPrice!.price ?? ''}'),
-            CustomText(
-              text: "Extras",
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-            rupeeRow(
-                title: 'Km limit',
-                rupee:
-                    '\u{20B9} ${controller.bikeDetails!.weekPrice!.kmLimit ?? ''}/week'),
-            rupeeRow(
-                title: 'Excess Km charges',
-                rupee:
-                    '\u{20B9} ${controller.bikeDetails!.weekPrice!.kmCharges ?? ''}/km'),
-            rupeeRow(
-                title: 'Excess hour charges',
-                rupee:
-                    '\u{20B9} ${controller.bikeDetails!.weekPrice!.extraHours ?? ''}'),
-          ],
-        ),
-      );
-    });
-  }
-
-  Widget referencePriceDetailMonth() {
-    return GetBuilder<BikeDetailsController>(builder: (controller) {
-      return Container(
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomText(
-              text: "Monthly",
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-            rupeeRow(
-                title: 'Per Month',
-                rupee:
-                    '\u{20B9} ${controller.bikeDetails!.monthPrice!.price ?? ''}'),
-            CustomText(
-              text: "Extras",
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-            rupeeRow(
-                title: 'Km limit',
-                rupee:
-                    '\u{20B9} ${controller.bikeDetails!.monthPrice!.kmLimit ?? ''}/month'),
-            rupeeRow(
-                title: 'Excess Km charges',
-                rupee:
-                    '\u{20B9} ${controller.bikeDetails!.monthPrice!.kmCharges ?? ''}/km'),
-            rupeeRow(
-                title: 'Excess hour charges',
-                rupee:
-                    '\u{20B9} ${controller.bikeDetails!.monthPrice!.extraHours ?? ''}'),
-          ],
-        ),
-      );
-    });
-  }
-
-  Widget rupeeRow({required String title, required String rupee}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: SizedBox(
-              // width: 130,
-              child: CustomText(
-                text: "${title}",
-                fontSize: 12,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: CustomText(
-              text: ":",
-              fontSize: 12,
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 30),
-              child: CustomText(
-                text: "$rupee",
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
