@@ -88,6 +88,32 @@ class ProductRepository {
     return allBikeResponseFromJson(response.body);
   }
 
+  Future<String> getCalculatePrice({
+    required String id,
+    required String type,
+    required String startDate,
+    required String endDate
+  }) async {
+    String url = ("${AppConfig.BASE_URL}/items/calculate-price");
+    var post_body = jsonEncode({
+      "item_id":id,
+      "type":type,          // hour, day, week, month
+      "start_date": startDate,
+      "end_date": endDate
+    });
+    print('post_body --------> $post_body');
+    final response = await ApiHelper.post(
+        url: url,
+        headers: {
+          "Content-Type": "application/json",
+          "moduleId": "1",
+          "zoneId": "[1]"
+        },
+        body: post_body);
+
+    return response.body;
+  }
+
   Future<AllStationDetailModel> getAllStation({int? id}) async {
     String url = ("${AppConfig.BASE_URL}/items/get-all-stations");
 

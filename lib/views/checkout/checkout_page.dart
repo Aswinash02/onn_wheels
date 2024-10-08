@@ -115,7 +115,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           color: Colors.grey[200],
                           image: DecorationImage(
                             image: NetworkImage(
-                                "https://onnwheels.com/storage/app/public/product/${widget.imageUrl}"),
+                                "${AppConfig.BASE_URL}/storage/app/public/product/${widget.imageUrl}"),
                           ),
                         ),
                       ),
@@ -238,11 +238,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             height: 40,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: Color(0XFFF89520)),
+                                color: MyTheme.accent_color),
                             child: Center(
                               child: CustomText(
                                 text: "Make Payment",
-                                color: MyTheme.black,
+                                color: MyTheme.white,
                                 fontSize:
                                     MediaQuery.of(context).size.width / 20,
                               ),

@@ -237,7 +237,6 @@ class _ContactUsPageState extends State<ContactUsPage> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
                           child: SizedBox(
-                            // height: 45,
                             child: TextFormField(
                               controller: _messageController,
                               autofocus: false,
@@ -292,7 +291,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                             height: 40,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: Color(0XFF000080)),
+                                color: MyTheme.accent_color),
                             child: Center(
                               child: CustomText(
                                 text: "Send Message",

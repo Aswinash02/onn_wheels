@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:onnwheels/customs/box_decorations.dart';
 import 'package:onnwheels/models/category_models.dart';
 import 'package:onnwheels/mytheme.dart';
+import 'package:onnwheels/utils/app_config.dart';
 import 'package:onnwheels/views/categories/category_products.dart';
 
 class CategoryMiniCard extends StatefulWidget {
@@ -26,6 +27,7 @@ class _CategoryMiniCardState extends State<CategoryMiniCard> {
 
   @override
   Widget build(BuildContext context) {
+    print('category image --- > ${"${AppConfig.BASE_URL}/storage/app/public/category/${widget.product.image!}"}');
     return InkWell(
       onTap: () {
         Get.to(() => CategoryProducts(categoryId: widget.product.id!));
@@ -50,7 +52,7 @@ class _CategoryMiniCardState extends State<CategoryMiniCard> {
                         child: FadeInImage.assetNetwork(
                           placeholder: 'assets/placeholder.png',
                           image:
-                              "https://onnwheels.com/storage/app/public/category/${widget.product.image!}",
+                              "${AppConfig.BASE_URL}/storage/app/public/category/${widget.product.image!}",
                           fit: BoxFit.fill,
                         ),
                       ),

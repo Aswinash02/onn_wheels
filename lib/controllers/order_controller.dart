@@ -13,6 +13,7 @@ class OrderController extends GetxController {
 
   Future<void> getAllOrders() async {
     loading.value = true;
+    update();
     String userId = await SharedPreference().getUserId();
     allOrdersList.clear();
     var response = await OrderRepository().getAllOrders(int.parse(userId));

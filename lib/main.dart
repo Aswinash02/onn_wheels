@@ -37,11 +37,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'OnnWheels',
+      title: 'The Wheels',
       builder: OneContext().builder,
       navigatorKey: OneContext().navigator.key,
       debugShowCheckedModeBanner: false,
-      theme: theme(),
+      // theme: theme(),
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

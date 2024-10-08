@@ -92,10 +92,10 @@ class _HomePageState extends State<HomePage> {
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
-            primaryColor: MyTheme.orange,
-            hintColor: MyTheme.orange,
+            primaryColor: MyTheme.accent_color,
+            hintColor: MyTheme.accent_color,
             colorScheme: ColorScheme.light(
-              primary: MyTheme.orange,
+              primary: MyTheme.accent_color,
               onPrimary: Colors.white,
               onSurface: Colors.black,
             ),
@@ -170,7 +170,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: Container(
-        padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
         child: Stack(
           children: [
             CustomScrollView(
@@ -203,8 +203,10 @@ class _HomePageState extends State<HomePage> {
                           borderRadius: BorderRadius.circular(20),
                           gradient: const LinearGradient(
                             colors: [
-                              Color(0XFFF89520),
-                              Color(0XFF003361),
+                              MyTheme.accent_color,
+                              MyTheme.secondary_accent_color,
+                              // Color(0XFFF89520),
+                              // Color(0XFF003361),
                             ],
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
@@ -216,8 +218,9 @@ class _HomePageState extends State<HomePage> {
                             const Text(
                               "Book Your Next Ride",
                               style: TextStyle(
-                                color: MyTheme.black,
+                                // color: MyTheme.black,
                                 fontSize: 16,
+                                color: MyTheme.white,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -227,7 +230,8 @@ class _HomePageState extends State<HomePage> {
                             const Text(
                               "Pickup",
                               style: TextStyle(
-                                color: MyTheme.black,
+                                // color: MyTheme.black,
+                                color: MyTheme.white,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -253,14 +257,14 @@ class _HomePageState extends State<HomePage> {
                                       decoration: InputDecoration(
                                         prefixIcon: Icon(
                                           Icons.date_range,
-                                          color: MyTheme.orange,
+                                          color: MyTheme.accent_color,
                                         ),
                                         hintText: "Select Date",
                                         hintStyle: TextStyle(
                                             color: MyTheme.grey_153,
                                             fontSize: 14),
                                         contentPadding: EdgeInsets.symmetric(
-                                            vertical: 1, horizontal: 6),
+                                             horizontal: 6,vertical: 4),
                                         border: InputBorder.none,
                                         enabledBorder: InputBorder.none,
                                         focusedBorder: InputBorder.none,
@@ -297,14 +301,14 @@ class _HomePageState extends State<HomePage> {
                                       decoration: InputDecoration(
                                         prefixIcon: Icon(
                                           Icons.access_time,
-                                          color: MyTheme.orange,
+                                          color: MyTheme.accent_color,
                                         ),
                                         hintText: "Select time",
                                         hintStyle: TextStyle(
                                             color: MyTheme.grey_153,
                                             fontSize: 14),
                                         contentPadding: EdgeInsets.symmetric(
-                                            vertical: 1, horizontal: 6),
+                                            vertical: 4, horizontal: 6),
                                         border: InputBorder.none,
                                         enabledBorder: InputBorder.none,
                                         focusedBorder: InputBorder.none,
@@ -331,7 +335,8 @@ class _HomePageState extends State<HomePage> {
                             const Text(
                               "Drop",
                               style: TextStyle(
-                                color: MyTheme.black,
+                                // color: MyTheme.black,
+                                color: MyTheme.white,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -356,14 +361,14 @@ class _HomePageState extends State<HomePage> {
                                       decoration: InputDecoration(
                                         prefixIcon: Icon(
                                           Icons.date_range,
-                                          color: MyTheme.orange,
+                                          color: MyTheme.accent_color,
                                         ),
                                         hintText: "Select Date",
                                         hintStyle: TextStyle(
                                             color: MyTheme.grey_153,
                                             fontSize: 14),
                                         contentPadding: EdgeInsets.symmetric(
-                                            vertical: 1, horizontal: 6),
+                                            vertical: 4, horizontal: 6),
                                         border: InputBorder.none,
                                         enabledBorder: InputBorder.none,
                                         focusedBorder: InputBorder.none,
@@ -400,14 +405,14 @@ class _HomePageState extends State<HomePage> {
                                       decoration: InputDecoration(
                                         prefixIcon: Icon(
                                           Icons.access_time,
-                                          color: MyTheme.orange,
+                                          color: MyTheme.accent_color,
                                         ),
                                         hintText: "Select time",
                                         hintStyle: TextStyle(
                                             color: MyTheme.grey_153,
                                             fontSize: 14),
                                         contentPadding: EdgeInsets.symmetric(
-                                            vertical: 1, horizontal: 6),
+                                            vertical: 4, horizontal: 6),
                                         border: InputBorder.none,
                                         enabledBorder: InputBorder.none,
                                         focusedBorder: InputBorder.none,
@@ -433,6 +438,7 @@ class _HomePageState extends State<HomePage> {
                               text: "Station",
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
+                              color: MyTheme.white,
                             ),
                             SizedBox(
                               height: 2,

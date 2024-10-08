@@ -8,6 +8,7 @@ class CategoryProductController extends GetxController {
 
   Future<void> fetchCategoryProductList({required int categoryId}) async {
     isLoadingData.value = true;
+    categoryProducts.clear();
     var categoryResponse = await CategoryRepository()
         .fetchCategoryProducts(categoryId: categoryId);
     if (categoryResponse.products != null) {

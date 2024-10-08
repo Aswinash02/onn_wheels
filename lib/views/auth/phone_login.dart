@@ -259,7 +259,7 @@ class _PhoneLoginState extends State<PhoneLogin> {
                 child: Btn.minWidthFixHeight(
                   minWidth: MediaQuery.of(context).size.width,
                   height: 50,
-                  color: MyTheme.amber,
+                  color: MyTheme.orange,
                   shape: RoundedRectangleBorder(
                     borderRadius: const BorderRadius.all(
                       Radius.circular(6.0),

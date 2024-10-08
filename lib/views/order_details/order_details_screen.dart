@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:onnwheels/controllers/order_controller.dart';
 import 'package:onnwheels/mytheme.dart';
 import 'package:onnwheels/simmer/bike_details_simmer.dart';
+import 'package:onnwheels/utils/app_config.dart';
 import 'package:onnwheels/views/bikedetails/components/text_widget.dart';
 
 class OrderDetailsScreen extends StatefulWidget {
@@ -51,7 +52,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                         decoration: BoxDecoration(
                             image: DecorationImage(
                                 image: NetworkImage(
-                                    'https://onnwheels.com/storage/app/public/product/${orderController.order.value.items?.first.image}'))),
+                                    '${AppConfig.BASE_URL}/storage/app/public/product/${orderController.order.value.items?.first.image}'))),
                       ),
                       SizedBox(
                         height: 15,

@@ -32,7 +32,9 @@ class _CategoryProductsState extends State<CategoryProducts> {
     categoryController.fetchCategoryProductList(categoryId: widget.categoryId);
     super.initState();
   }
-
+  Future<void> _onRefresh() async {
+    await categoryController.fetchCategoryProductList(categoryId: widget.categoryId);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,11 +48,12 @@ class _CategoryProductsState extends State<CategoryProducts> {
             icon: Icon(Icons.arrow_back, color: MyTheme.black),
           ),
           textColor: MyTheme.black),
-      body: buildProductList(context, categoryController),
+      body: RefreshIndicator(
+        color: MyTheme.accent_color,
+        onRefresh: _onRefresh,
+          child: buildProductList(context, categoryController)),
     );
   }
-
-
 
   Widget buildProductList(
       BuildContext context, CategoryProductController categoryController) {

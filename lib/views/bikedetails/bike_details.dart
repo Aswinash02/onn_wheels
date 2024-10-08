@@ -6,6 +6,7 @@ import 'package:onnwheels/controllers/bike_details_controller.dart';
 import 'package:onnwheels/models/bike_details_model.dart';
 import 'package:onnwheels/mytheme.dart';
 import 'package:onnwheels/simmer/bike_details_simmer.dart';
+import 'package:onnwheels/utils/app_config.dart';
 import 'package:onnwheels/views/bikedetails/components/bike_details_widgets.dart';
 import 'package:onnwheels/views/bikedetails/components/daily_price_details.dart';
 import 'package:onnwheels/views/bikedetails/components/date_time_picker.dart';
@@ -201,7 +202,7 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                             child: toggleSwitch(toggle: (index) {
                               bikeDetailsController.selectedIndex.value =
                                   index!;
-                            }),
+                            },screenWidth: screenWidth),
                           ),
                           SizedBox(
                             height: 10,
@@ -217,8 +218,8 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                                 value: bikeDetailsController.extraHelmet.value,
                                 onChanged:
                                     bikeDetailsController.onChangeExtraHelmet,
-                                fillColor: MaterialStateProperty.all(
-                                    Color(0XFF000080)),
+                                checkColor: MyTheme.white,
+                               activeColor: MyTheme.accent_color,
                               ),
                               CustomText(
                                   text:
@@ -244,7 +245,7 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
-                                              color: Color(0XFF000080),
+                                              color: MyTheme.accent_color,
                                               borderRadius:
                                                   BorderRadius.circular(6)),
                                           padding: EdgeInsets.symmetric(
@@ -333,8 +334,8 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                                 value: bikeDetailsController.isConfirm.value,
                                 onChanged:
                                     bikeDetailsController.onChangeConfirm,
-                                fillColor: MaterialStateProperty.all(
-                                    Color(0XFF000080)),
+                                checkColor: MyTheme.white,
+                                activeColor: MyTheme.accent_color,
                               ),
                               Expanded(
                                 child: Column(
@@ -362,7 +363,7 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                                                     builder: (context) =>
                                                         CommonWebViewScreen(
                                                           url:
-                                                              "https://onnwheels.com/terms-and-conditions",
+                                                              "${AppConfig.BASE_URL}/terms-and-conditions",
                                                           page_name:
                                                               "Terms&Condition",
                                                         )));
@@ -370,7 +371,7 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                                           child: CustomText(
                                             fontWeight: FontWeight.w700,
                                             fontSize: 12,
-                                            color: Color(0XFF000080),
+                                            color: MyTheme.secondary_accent_color,
                                             text: "Terms & Condition",
                                           ),
                                         )
@@ -394,7 +395,7 @@ class _BikeDetailsPageState extends State<BikeDetailsPage> {
                               height: 40,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: Color(0XFF000080),
+                                color: MyTheme.accent_color,
                               ),
                               child: Center(
                                 child: CustomText(

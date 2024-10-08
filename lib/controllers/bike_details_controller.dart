@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
@@ -68,6 +70,9 @@ class BikeDetailsController extends GetxController {
         await ProductRepository().getProductDetails(id: id);
     print('bikeDetailsResponse.name ${bikeDetailsResponse}');
     bikeImageResponse.addAll(bikeDetailsResponse.images ?? []);
+    bikeImageResponse.forEach((element) {
+      print('image ---------- > $element');
+    });
     bikeTitle.value = bikeDetailsResponse.name ?? '';
     imageFile.value = bikeDetailsResponse.image ?? '';
     stationDropdownItems.value = bikeDetailsResponse.stations ?? [];
@@ -159,6 +164,39 @@ class BikeDetailsController extends GetxController {
     );
   }
 
+  Future<void> getCalculatePrice() async {
+    String type = getType(selectedIndex.value);
+    String startDate = formatedDate(startDateTime.value);
+    String endDate = formatedDate(endDateTime.value);
+    var response = await ProductRepository().getCalculatePrice(
+        id: bikeDetails!.id.toString(),
+        type: type,
+        startDate: startDate,
+        endDate: endDate);
+    var decodeResponse = jsonDecode(response);
+    total.value = decodeResponse["price"];
+    kmLimit.value = decodeResponse["km_limit"];
+    update();
+  }
+
+  String formatedDate(String date) {
+    DateTime parsedDate = DateFormat('MMM d, yyyy h:mm a').parse(date);
+    return DateFormat('yyyy-MM-dd HH:mm:ss').format(parsedDate);
+  }
+
+  String getType(int index) {
+    switch (index) {
+      case 0:
+        return "hour";
+      case 1:
+        return "day";
+      case 2:
+        return "week";
+      default:
+        return "month";
+    }
+  }
+
   void calculatePrice() {
     if (startDateTime.isNotEmpty && endDateTime.isNotEmpty) {
       DateTime start =
@@ -167,6 +205,7 @@ class BikeDetailsController extends GetxController {
       Duration difference = end.difference(start);
 
       double hourlyRate = double.parse(bikeDetails!.hoursPrice!.price!);
+      double halfAnHourRate = double.parse(bikeDetails!.hoursPrice!.price!) / 2;
       double hourWeekEndRate =
           double.parse(bikeDetails!.hoursPrice!.hourWeekendPrice!);
       double convertWeekendPrice =
@@ -174,6 +213,7 @@ class BikeDetailsController extends GetxController {
       double convertHourWeekendPrice =
           double.parse(bikeDetails!.hoursPrice!.hourWeekendPrice ?? '0');
       double hourlyWeekEndRate = hourlyRate + convertHourWeekendPrice;
+      double halfAnHourWeekEndRate = (hourlyRate + convertHourWeekendPrice) / 2;
       double dailyRate = double.parse(bikeDetails!.daysPrice!.price!);
       double dailyWeekEndRate = dailyRate + convertWeekendPrice;
       double weeklyRate = double.parse(bikeDetails!.weekPrice!.price!);
@@ -194,6 +234,7 @@ class BikeDetailsController extends GetxController {
 
         int totalDays = remainingDaysAfterWeeks;
         int totalHours = difference.inHours % 24;
+        int remainingMinutes = difference.inMinutes % 60;
 
         calculatedPrice =
             (totalMonths * monthlyRate) + (totalWeeks * weeklyRate);
@@ -235,6 +276,14 @@ class BikeDetailsController extends GetxController {
           }
         }
 
+        if (remainingMinutes >= 30) {
+          bool isHalfHourOnWeekend = end.weekday == DateTime.friday ||
+              end.weekday == DateTime.saturday ||
+              end.weekday == DateTime.sunday;
+          calculatedPrice +=
+              isHalfHourOnWeekend ? halfAnHourWeekEndRate : halfAnHourRate;
+        }
+
         if (totalMonths > 0) {
           totalKmLimit += totalMonths * monthlyKmLimit;
         }
@@ -246,6 +295,9 @@ class BikeDetailsController extends GetxController {
         }
         if (totalHours > 0) {
           totalKmLimit += totalHours * hourlyKmLimit;
+        }
+        if (remainingMinutes >= 30) {
+          totalKmLimit += hourlyKmLimit / 2;
         }
       } catch (e) {
         return;
@@ -295,7 +347,8 @@ class BikeDetailsController extends GetxController {
       }
 
       if (isValidSelection(difference)) {
-        calculatePrice();
+        getCalculatePrice();
+        // calculatePrice();
       } else {
         endDateTime.value = '';
         startDateTime.value = '';
@@ -311,16 +364,18 @@ class BikeDetailsController extends GetxController {
       }
     }
   }
-void clearControllerData(){
-  startDateTime.value = '';
-  endDateTime.value = '';
-  startDateCon.clear();
-  startTimeCon.clear();
-  endDateCon.clear();
-  endTimeCon.clear();
-  kmLimit.value = 0;
-  total.value = 0;
-}
+
+  void clearControllerData() {
+    startDateTime.value = '';
+    endDateTime.value = '';
+    startDateCon.clear();
+    startTimeCon.clear();
+    endDateCon.clear();
+    endTimeCon.clear();
+    kmLimit.value = 0;
+    total.value = 0;
+  }
+
   void clearData() {
     clearControllerData();
     selectedStation.value = null;

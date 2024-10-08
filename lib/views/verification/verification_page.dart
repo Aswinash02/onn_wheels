@@ -7,6 +7,7 @@ import 'package:onnwheels/customs/toastcomponent.dart';
 import 'package:onnwheels/mytheme.dart';
 import 'package:onnwheels/repositories/verification_repositories.dart';
 import 'package:onnwheels/simmer/bike_details_simmer.dart';
+import 'package:onnwheels/utils/app_config.dart';
 import 'package:onnwheels/views/bikedetails/components/text_widget.dart';
 import 'package:onnwheels/views/main_page/components/custom_appbar.dart';
 import 'package:onnwheels/views/verification/kyc_status_screen.dart';
@@ -75,8 +76,6 @@ class _VerificationFlowPageState extends State<VerificationFlowPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(
-        'verifyController.user.value.isVerifiedKyc --- ${verifyController.user.value.isVerifiedKyc}');
     return Scaffold(
       appBar: AppBars().customAppBar(
         textColor: MyTheme.black,
@@ -303,7 +302,7 @@ class _VerificationFlowPageState extends State<VerificationFlowPage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Image.network(
-                                  "https://onnwheels.com/public$imgUrl"),
+                                  "${AppConfig.BASE_URL}/public$imgUrl"),
                               SizedBox(height: 10),
                               CustomText(text: 'License $imgName'),
                             ],

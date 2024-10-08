@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onnwheels/helpers/auth_helper.dart';
+import 'package:onnwheels/mytheme.dart';
 import 'package:onnwheels/utils/app_config.dart';
 import 'package:onnwheels/utils/shared_preference.dart';
 import 'package:onnwheels/utils/shared_value.dart';
@@ -74,8 +75,10 @@ class _SplashScreenState extends State<SplashScreen> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(0XFFF89520),
-              Color(0XFF003361),
+              MyTheme.accent_color,
+              MyTheme.secondary_accent_color
+              // Color(0XFFF89520),
+              // Color(0XFF003361),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,

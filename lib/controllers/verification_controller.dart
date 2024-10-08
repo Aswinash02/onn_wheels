@@ -54,9 +54,9 @@ class VerificationController extends GetxController {
 
   Future<void> getKycUpdateData() async {
     String licenseFrontUrl =
-        'https://onnwheels.com/public/${kycResponse.value.data!.licenseFront ?? ''}';
+        '${AppConfig.BASE_URL}/public/${kycResponse.value.data!.licenseFront ?? ''}';
     String licenseBackUrl =
-        'https://onnwheels.com/public/${kycResponse.value.data!.licenseBack ?? ''}';
+        '${AppConfig.BASE_URL}/public/${kycResponse.value.data!.licenseBack ?? ''}';
 
     String licenseFrontFileName = Uri.parse(licenseFrontUrl).pathSegments.last;
     String licenseBackFileName = Uri.parse(licenseBackUrl).pathSegments.last;

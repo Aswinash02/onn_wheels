@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:onnwheels/controllers/bike_details_controller.dart';
 import 'package:onnwheels/helpers/shimmer_helper.dart';
 import 'package:onnwheels/mytheme.dart';
+import 'package:onnwheels/utils/app_config.dart';
 
 class BikeDetailWidgets {
   static buildProductSliderImageSection(
@@ -35,6 +36,7 @@ class BikeDetailWidgets {
             },
           ),
           items: controller.bikeImageResponse.map((i) {
+            print("image ====== > ${"${AppConfig.BASE_URL}/storage/app/public/product/$i"}");
             return Container(
               child: Stack(
                 children: <Widget>[
@@ -45,7 +47,7 @@ class BikeDetailWidgets {
                       child: FadeInImage.assetNetwork(
                         placeholder: 'assets/placeholder_rectangle.png',
                         image:
-                            "https://onnwheels.com/storage/app/public/product/$i",
+                            "${AppConfig.BASE_URL}/storage/app/public/product/$i",
                         imageErrorBuilder: (context, error, stackTrace) {
                           return Image.asset(
                             'assets/placeholder_rectangle.png',

@@ -106,7 +106,7 @@ class _MainPageState extends State<MainPage> {
               currentIndex: _currentIndex,
               type: BottomNavigationBarType.fixed,
               backgroundColor: Colors.white.withOpacity(0.95),
-              unselectedItemColor: MyTheme.black,
+              unselectedItemColor: MyTheme.grey_153,
               selectedItemColor: MyTheme.accent_color,
               selectedLabelStyle: const TextStyle(
                   fontWeight: FontWeight.w800,
@@ -114,7 +114,7 @@ class _MainPageState extends State<MainPage> {
                   fontSize: 12),
               unselectedLabelStyle: const TextStyle(
                   fontWeight: FontWeight.w400,
-                  color: MyTheme.black,
+                  color: MyTheme.grey_153,
                   fontSize: 12),
               items: [
                 BottomNavigationBarItem(
@@ -124,7 +124,7 @@ class _MainPageState extends State<MainPage> {
                       ImageDirectory.homeIconImage,
                       color: _currentIndex == 0
                           ? MyTheme.accent_color
-                          : MyTheme.black,
+                          : MyTheme.grey_153,
                       height: 16,
                     ),
                   ),
@@ -137,7 +137,7 @@ class _MainPageState extends State<MainPage> {
                       ImageDirectory.bikesIconImage,
                       color: _currentIndex == 1
                           ? MyTheme.accent_color
-                          : MyTheme.black,
+                          : MyTheme.grey_153,
                       height: 16,
                     ),
                   ),
@@ -150,7 +150,7 @@ class _MainPageState extends State<MainPage> {
                         ImageDirectory.helps,
                         color: _currentIndex == 2
                             ? MyTheme.accent_color
-                            : MyTheme.black,
+                            : MyTheme.grey_153,
                         height: 16,
                       ),
                     ),
@@ -162,7 +162,7 @@ class _MainPageState extends State<MainPage> {
                       ImageDirectory.profileIconImage,
                       color: _currentIndex == 3
                           ? MyTheme.accent_color
-                          : MyTheme.black,
+                          : MyTheme.grey_153,
                       height: 16,
                     ),
                   ),

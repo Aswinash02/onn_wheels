@@ -86,7 +86,7 @@ class _MiniProductCardState extends State<MiniProductCard> {
                         padding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                         decoration: const BoxDecoration(
-                          color: Color(0XFF000080),
+                          color: MyTheme.accent_color,
                           borderRadius: BorderRadius.all(
                             Radius.circular(6),
                           ),
