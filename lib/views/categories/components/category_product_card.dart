@@ -21,14 +21,7 @@ class MiniProductCardCategory extends StatefulWidget {
 
 class _MiniProductCardCategoryState extends State<MiniProductCardCategory> {
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    print('image path --------- ${widget.product.imagePath}');
     return InkWell(
       onTap: () {
         Get.to(

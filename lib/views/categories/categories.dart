@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:onnwheels/controllers/category_controller.dart';
 import 'package:onnwheels/mytheme.dart';
@@ -52,12 +51,13 @@ class _CategoriesPageState extends State<CategoriesPage> {
                           text: "No Category Found",
                         ),
                       )
-                    : MasonryGridView.builder(
+                    : GridView.builder(
                         padding: const EdgeInsets.all(8.0),
-                        gridDelegate:
-                            SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                        ),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 10,
+                            childAspectRatio : 0.9,
+                            crossAxisSpacing: 10),
                         itemCount: categoryController.categoryList.length,
                         itemBuilder: (context, index) {
                           return CategoryMiniCard(

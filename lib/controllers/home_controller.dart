@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
+import 'package:onnwheels/customs/toastcomponent.dart';
 import 'package:onnwheels/models/all_station_detail_model.dart';
 import 'package:onnwheels/models/filter_bikes_model.dart';
 import 'package:onnwheels/repositories/product_repositories.dart';
+import 'package:onnwheels/utils/shared_preference.dart';
 
 import '../models/all_bike_response.dart';
 
@@ -10,6 +12,7 @@ class HomeController extends GetxController {
   Set<int> productIds = {};
   var searchBikeProducts = <BikeData>[].obs;
   RxBool loadingState = false.obs;
+  RxBool filterLoadingState = false.obs;
   List<BikeData> _filterBikeList = [];
 
   var userName = "".obs;
@@ -31,8 +34,8 @@ class HomeController extends GetxController {
   String? _selectedPackage;
 
   Stations? _selectedStation;
-  StationData? _selectedHomeFilterStation;
-  bool _isFilter = false;
+  StationData? selectedHomeFilterStation;
+  RxBool _isFilter = false.obs;
 
   List<String> _hourPriceList = [];
   List<String> _dayPriceList = [];
@@ -63,9 +66,8 @@ class HomeController extends GetxController {
 
   Stations? get selectedStation => _selectedStation;
 
-  StationData? get selectedHomeFilterStation => _selectedHomeFilterStation;
 
-  bool get isFilter => _isFilter;
+  RxBool get isFilter => _isFilter;
 
   String? get selectedTransmissionType => _selectedTransmissionType;
 
@@ -158,7 +160,7 @@ class HomeController extends GetxController {
   }
 
   void onChangeHomeFilterStation(StationData? value) {
-    _selectedHomeFilterStation = value;
+    selectedHomeFilterStation = value;
     update();
   }
 
@@ -189,24 +191,24 @@ class HomeController extends GetxController {
     _selectedAttributeType = null;
     _selectedPackage = null;
     if (isDefault != null && isDefault) {
-      _isFilter = false;
+      _isFilter.value = false;
       _filterBikeList.clear();
       update();
     }
   }
 
-  @override
-  void onInit() {
-    // TODO: implement onInit
-    getAllProductsHome();
-    super.onInit();
-  }
-
-  @override
-  void onClose() {
-    // TODO: implement onClose
-    super.onClose();
-  }
+  // @override
+  // void onInit() {
+  //   // TODO: implement onInit
+  //   getAllProductsHome();
+  //   super.onInit();
+  // }
+  //
+  // @override
+  // void onClose() {
+  //   // TODO: implement onClose
+  //   super.onClose();
+  // }
 
   final List<String> tamilNaduCities = [
     'Chennai',
@@ -228,6 +230,8 @@ class HomeController extends GetxController {
 
   getAllProductsHome() async {
     loadingState.value = true;
+    allBikeProducts.clear();
+    productIds.clear();
     var allProductsResponse = await ProductRepository().getAllProducts();
     if (allProductsResponse.data != null) {
       for (var product in allProductsResponse.data!) {
@@ -237,10 +241,18 @@ class HomeController extends GetxController {
         }
       }
     }
-
     loadingState.value = false;
     update();
   }
+
+  Future<void> fetchUserName() async {
+    SharedPreference sharedPreference = SharedPreference();
+    userName.value = await sharedPreference.getUserName();
+    userId.value = await sharedPreference.getUserId();
+    userEmail.value = await sharedPreference.getUserEmail();
+    userPhone.value = await sharedPreference.getUserPhoneNo();
+  }
+
 
   getSearchProductsHome({
     String? startDate,
@@ -258,8 +270,6 @@ class HomeController extends GetxController {
         endTime: endTime,
         stationId: selectedHomeFilterStation!.id.toString());
 
-    print('data ===== ${searchProductResponse.data!}');
-
     Set<int?> productIds =
         searchBikeProducts.map((product) => product.id).toSet();
 
@@ -269,11 +279,15 @@ class HomeController extends GetxController {
         productIds.add(product.id);
       }
     });
+    if (searchBikeProducts.isEmpty) {
+      ToastComponent.showDialog("No Vehicle Found");
+    }
     loading.value = false;
     update();
   }
 
   Future<void> getFilterBikes() async {
+    filterLoadingState.value = true;
     _filterBikeList.clear();
     AllBikeResponse response = await ProductRepository().getFilterBikes(
       package:
@@ -289,8 +303,9 @@ class HomeController extends GetxController {
     if (response.data != null) {
       _filterBikeList.addAll(response.data!);
     }
-    _isFilter = true;
+    _isFilter.value = true;
     clearData();
+    filterLoadingState.value = false;
     update();
   }
 

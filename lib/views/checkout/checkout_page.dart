@@ -64,7 +64,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
   @override
   void initState() {
-    print('totalPayableAmount ------ ${widget.totalPayableAmount}');
     checkoutController.fetchUserName();
 
     checkoutController
@@ -115,7 +114,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           color: Colors.grey[200],
                           image: DecorationImage(
                             image: NetworkImage(
-                                "${AppConfig.BASE_URL}/storage/app/public/product/${widget.imageUrl}"),
+                                "${AppConfig.RAW_BASE_URL}/storage/app/public/product/${widget.imageUrl}"),
                           ),
                         ),
                       ),

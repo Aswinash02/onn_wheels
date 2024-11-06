@@ -41,7 +41,6 @@ class CategoryRepository {
         "zoneId": '[2]'
       },
     );
-    print("get All Category Product Data response=======>${response.body}");
 
     return categoryProductResponseFromJson(response.body);
   }

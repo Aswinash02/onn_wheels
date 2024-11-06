@@ -6,8 +6,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:onnwheels/controllers/auth_controller.dart';
 import 'package:onnwheels/utils/routes.dart';
-import 'package:onnwheels/utils/themes.dart';
-import 'package:onnwheels/views/auth/signin.dart';
 import 'package:onnwheels/views/auth/splash_screen.dart';
 import 'package:shared_value/shared_value.dart';
 
@@ -41,7 +39,7 @@ class MyApp extends StatelessWidget {
       builder: OneContext().builder,
       navigatorKey: OneContext().navigator.key,
       debugShowCheckedModeBanner: false,
-      // theme: theme(),
+       // theme: theme(),
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

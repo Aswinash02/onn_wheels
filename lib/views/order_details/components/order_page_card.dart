@@ -79,7 +79,7 @@ class _OrderCardListViewState extends State<OrderCardListView> {
                                         child: FadeInImage.assetNetwork(
                                           placeholder: 'assets/placeholder.png',
                                           image:
-                                              '${AppConfig.BASE_URL}/storage/app/public/product/${data.image}',
+                                              '${AppConfig.RAW_BASE_URL}/storage/app/public/product/${data.image}',
                                           imageErrorBuilder:
                                               (context, error, stackTrace) {
                                             return Image.asset(

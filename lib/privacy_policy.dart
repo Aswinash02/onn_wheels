@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:onnwheels/controllers/profile_controller.dart';
-import 'package:onnwheels/models/profile_page_model.dart';
 import 'package:onnwheels/mytheme.dart';
 import 'package:onnwheels/views/bikedetails/components/text_widget.dart';
 

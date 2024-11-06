@@ -123,10 +123,14 @@ class VerificationController extends GetxController {
 
   getUserKycDetails() async {
     loading.value = true;
-    var getKycDetails = await VerificationRepository().getKycDetails();
-    if (getKycDetails.data != null) {
-      kycResponse.value = getKycDetails;
-    }
+    try {
+      var getKycDetails = await VerificationRepository().getKycDetails();
+
+      if (getKycDetails.data != null) {
+        kycResponse.value = getKycDetails;
+      }
+    } catch (_) {}
+
     loading.value = false;
   }
 

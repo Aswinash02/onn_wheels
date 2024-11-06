@@ -52,7 +52,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                         decoration: BoxDecoration(
                             image: DecorationImage(
                                 image: NetworkImage(
-                                    '${AppConfig.BASE_URL}/storage/app/public/product/${orderController.order.value.items?.first.image}'))),
+                                    '${AppConfig.RAW_BASE_URL}/storage/app/public/product/${orderController.order.value.items?.first.image}'))),
                       ),
                       SizedBox(
                         height: 15,

@@ -34,12 +34,12 @@ class SafetyScreen extends StatelessWidget {
               ),
               CustomText(
                 text:
-                "With safety being the top priority for every individual, it gets riskier to use public transport at the moment with so many concerns regarding the hygiene and safety of such transportation. At the same time social distancing is becoming our number one practise which makes it even more difficult to use any kind of transport. Two wheelers being the most safest for commuting at this point, ONN Bikes is taking every measure to make two wheelers available to the public in a safe manner.",
+                "With safety being the top priority for every individual, it gets riskier to use public transport at the moment with so many concerns regarding the hygiene and safety of such transportation. At the same time social distancing is becoming our number one practise which makes it even more difficult to use any kind of transport. Two wheelers being the most safest for commuting at this point, The Wheels Bikes is taking every measure to make two wheelers available to the public in a safe manner.",
                 maxLines: 20,
               ),
               SizedBox(height: 10),
               CustomText(
-                text: "How ONN is ensuring safety for everyone",
+                text: "How The Wheels is ensuring safety for everyone",
                 maxLines: 3,
                 fontWeight: FontWeight.w500,
                 fontSize: 20,
@@ -100,7 +100,7 @@ class SafetyScreen extends StatelessWidget {
               SizedBox(height: 10),
               CustomText(
                 text:
-                "With social distancing being imperative, ONN provides the on-ground team with masks. The teams are directed to wear the masks at all times.",
+                "With social distancing being imperative, The Wheels provides the on-ground team with masks. The teams are directed to wear the masks at all times.",
                 maxLines: 20,
               ),
               SizedBox(height: 10),
@@ -126,12 +126,12 @@ class SafetyScreen extends StatelessWidget {
               SizedBox(height: 10),
               CustomText(
                 text:
-                "ONN Stations are being sanitized with disinfectant daily, our team makes sure that the station is safe for customers to visit at all times",
+                "The Wheels Stations are being sanitized with disinfectant daily, our team makes sure that the station is safe for customers to visit at all times",
                 maxLines: 20,
               ),
               SizedBox(height: 10),
               CustomText(
-                text: "Benefits of choosing ONN",
+                text: "Benefits of choosing The Wheels",
                 maxLines: 2,
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
@@ -172,7 +172,7 @@ class SafetyScreen extends StatelessWidget {
               SizedBox(height: 10),
               CustomText(
                 text:
-                "Ride a different bike every time you book. Choose from a wide variety of bikes available at ONN Bikes. We have a bike for all your commute needs.",
+                "Ride a different bike every time you book. Choose from a wide variety of bikes available at The Wheels Bikes. We have a bike for all your commute needs.",
                 maxLines: 20,
               ), SizedBox(height: 10),
               CustomText(
@@ -184,7 +184,7 @@ class SafetyScreen extends StatelessWidget {
               SizedBox(height: 10),
               CustomText(
                 text:
-                "Combining tech and mobility, ONN Bikes offers the most efficient platform for all your commute needs. Get access to flexible plans",
+                "Combining tech and mobility, The Wheels Bikes offers the most efficient platform for all your commute needs. Get access to flexible plans",
                 maxLines: 20,
               ),
             ],

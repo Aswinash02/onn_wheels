@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
-import 'package:onnwheels/controllers/category_controller.dart';
 import 'package:onnwheels/controllers/category_product_controller.dart';
-import 'package:onnwheels/customs/mini_product_card.dart';
-import 'package:onnwheels/helpers/shimmer_helper.dart';
-import 'package:onnwheels/models/category_product_models.dart';
 import 'package:onnwheels/mytheme.dart';
-import 'package:onnwheels/views/home/components/filter_dialog.dart';
+import 'package:onnwheels/simmer/category_shimmer.dart';
 import 'package:onnwheels/views/main_page/components/custom_appbar.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'components/category_product_card.dart';
 
@@ -28,18 +23,20 @@ class _CategoryProductsState extends State<CategoryProducts> {
 
   @override
   void initState() {
-    // TODO: implement initState
     categoryController.fetchCategoryProductList(categoryId: widget.categoryId);
     super.initState();
   }
+
   Future<void> _onRefresh() async {
-    await categoryController.fetchCategoryProductList(categoryId: widget.categoryId);
+    await categoryController.fetchCategoryProductList(
+        categoryId: widget.categoryId);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBars().customAppBar(
-          title: AppLocalizations.of(context)!.category_products,
+          title: "Vehicles",
           backgroundColor: MyTheme.white,
           setLeading: IconButton(
             onPressed: () {
@@ -51,36 +48,28 @@ class _CategoryProductsState extends State<CategoryProducts> {
       body: RefreshIndicator(
         color: MyTheme.accent_color,
         onRefresh: _onRefresh,
-          child: buildProductList(context, categoryController)),
+        child: Obx(() {
+          if (categoryController.isLoadingData.value) {
+            return CategorySimmer();
+          } else if (categoryController.categoryProducts.isEmpty) {
+            return Center(child: Text('No Vehicles Found.'));
+          } else {
+            return MasonryGridView.count(
+              crossAxisCount: 2,
+              mainAxisSpacing: 14,
+              crossAxisSpacing: 14,
+              itemCount: categoryController.categoryProducts.length,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return MiniProductCardCategory(
+                  product: categoryController.categoryProducts[index],
+                );
+              },
+            );
+          }
+        }),
+      ),
     );
-  }
-
-  Widget buildProductList(
-      BuildContext context, CategoryProductController categoryController) {
-    return Obx(() {
-      if (categoryController.isLoadingData.value) {
-        return ShimmerHelper().buildProductGridShimmer();
-      } else if (categoryController.categoryProducts.isEmpty) {
-        return Center(child: Text('No products available.'));
-      } else {
-        return SingleChildScrollView(
-          child: MasonryGridView.count(
-            crossAxisCount: 2,
-            mainAxisSpacing: 14,
-            crossAxisSpacing: 14,
-            itemCount: categoryController.categoryProducts.length,
-            shrinkWrap: true,
-            padding: const EdgeInsets.only(
-                top: 20.0, bottom: 10, left: 30, right: 30),
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              return MiniProductCardCategory(
-                product: categoryController.categoryProducts[index],
-              );
-            },
-          ),
-        );
-      }
-    });
   }
 }

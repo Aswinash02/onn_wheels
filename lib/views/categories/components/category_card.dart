@@ -27,7 +27,7 @@ class _CategoryMiniCardState extends State<CategoryMiniCard> {
 
   @override
   Widget build(BuildContext context) {
-    print('category image --- > ${"${AppConfig.BASE_URL}/storage/app/public/category/${widget.product.image!}"}');
+    print('category image --- > ${"${AppConfig.RAW_BASE_URL}/storage/app/public/category/${widget.product.image!}"}');
     return InkWell(
       onTap: () {
         Get.to(() => CategoryProducts(categoryId: widget.product.id!));
@@ -52,7 +52,7 @@ class _CategoryMiniCardState extends State<CategoryMiniCard> {
                         child: FadeInImage.assetNetwork(
                           placeholder: 'assets/placeholder.png',
                           image:
-                              "${AppConfig.BASE_URL}/storage/app/public/category/${widget.product.image!}",
+                              "${AppConfig.RAW_BASE_URL}/storage/app/public/category/${widget.product.image!}",
                           fit: BoxFit.fill,
                         ),
                       ),

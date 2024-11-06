@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:onnwheels/controllers/home_controller.dart';
 import 'package:onnwheels/models/filter_bikes_model.dart';
@@ -122,22 +124,22 @@ class FilterDialog extends StatelessWidget {
           ],
         ),
         actions: [
-          TextButton(
-            onPressed: () {
-              controller.clearData(isDefault: true);
-              Navigator.of(context).pop();
-            },
-            child: CustomText(text: 'Default', color: MyTheme.accent_color),
-          ),
-          TextButton(
-            onPressed: () {
-              controller.clearData();
-              Navigator.of(context).pop();
-            },
-            child: CustomText(text: 'Cancel', color: MyTheme.accent_color),
-          ),
-          ElevatedButton(
-            onPressed: () async {
+          GestureDetector(
+              onTap: () {
+                controller.clearData(isDefault: true);
+                Navigator.of(context).pop();
+              },
+              child: CustomText(text: 'Default', color: MyTheme.accent_color)),
+          SizedBox(width: 10),
+          GestureDetector(
+              onTap: () {
+                controller.clearData();
+                Navigator.of(context).pop();
+              },
+              child: CustomText(text: 'Cancel', color: MyTheme.accent_color)),
+          SizedBox(width: 10),
+          GestureDetector(
+            onTap: () async {
               if (controller.selectedPackage != null ||
                   controller.selectedStation != null ||
                   controller.selectedFuelType != null ||
@@ -148,10 +150,16 @@ class FilterDialog extends StatelessWidget {
               }
               Navigator.of(context).pop();
             },
-            child: CustomText(text: 'Apply'),
-            style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all(MyTheme.accent_color)),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                  color: MyTheme.accent_color,
+                  borderRadius: BorderRadius.circular(4)),
+              child: CustomText(
+                text: "Apply",
+                color: MyTheme.white,
+              ),
+            ),
           ),
         ],
       );

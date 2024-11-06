@@ -61,6 +61,10 @@ class _ContactUsPageState extends State<ContactUsPage> {
     controller.getGeneralDetails();
   }
 
+  Future<void> _onRefresh() async {
+    await controller.getGeneralDetails();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,253 +72,257 @@ class _ContactUsPageState extends State<ContactUsPage> {
           title: AppLocalizations.of(context)!.contact_us_ucf,
           backgroundColor: MyTheme.white,
           textColor: MyTheme.black),
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Obx(
-                    () => GestureDetector(
-                      onTap: controller.generalDetail.value.phone == null
-                          ? null
-                          : () {
-                              controller.launchPhone();
-                            },
-                      child: controller.loadingState.value
-                          ? buildShimmerCard()
-                          : CardWidget(
-                              imageDirectory: "assets/contact_call.png",
-                              mainText: "Call Us",
-                              subText: controller.generalDetail.value.phone
-                                  .toString()),
+      body: RefreshIndicator(
+        color: MyTheme.accent_color,
+        onRefresh: _onRefresh,
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Obx(
+                      () => GestureDetector(
+                        onTap: controller.generalDetail.value.phone == null
+                            ? null
+                            : () {
+                                controller.launchPhone();
+                              },
+                        child: controller.loadingState.value
+                            ? buildShimmerCard()
+                            : CardWidget(
+                                imageDirectory: "assets/contact_call.png",
+                                mainText: "Call Us",
+                                subText: controller.generalDetail.value.phone
+                                    .toString()),
+                      ),
                     ),
-                  ),
-                  Obx(
-                    () => GestureDetector(
-                      onTap: controller.generalDetail.value.email == null
-                          ? null
-                          : () async {
-                              controller.launchEmail();
-                            },
-                      child: controller.loadingState.value
+                    Obx(
+                      () => GestureDetector(
+                        onTap: controller.generalDetail.value.email == null
+                            ? null
+                            : () async {
+                                controller.launchEmail();
+                              },
+                        child: controller.loadingState.value
+                            ? buildShimmerCard()
+                            : CardWidget(
+                                imageDirectory: "assets/contact_mail.png",
+                                mainText: "Email",
+                                subText: controller.generalDetail.value.email ??
+                                    '...'),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Obx(
+                      () => controller.loadingState.value
                           ? buildShimmerCard()
                           : CardWidget(
-                              imageDirectory: "assets/contact_mail.png",
-                              mainText: "Email",
-                              subText: controller.generalDetail.value.email ??
+                              imageDirectory: "assets/contact_location.png",
+                              mainText: "Address",
+                              subText: controller.generalDetail.value.address ??
                                   '...'),
                     ),
-                  )
-                ],
+                    Obx(
+                      () => controller.loadingState.value
+                          ? buildShimmerCard()
+                          : CardWidget(
+                              imageDirectory: "assets/contact_time.png",
+                              mainText: "Time",
+                              subText:
+                                  "${controller.generalDetail.value.openingTime} - ${controller.generalDetail.value.closingTime}"),
+                    )
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Obx(
-                    () => controller.loadingState.value
-                        ? buildShimmerCard()
-                        : CardWidget(
-                            imageDirectory: "assets/contact_location.png",
-                            mainText: "Address",
-                            subText: controller.generalDetail.value.address ??
-                                '...'),
-                  ),
-                  Obx(
-                    () => controller.loadingState.value
-                        ? buildShimmerCard()
-                        : CardWidget(
-                            imageDirectory: "assets/contact_time.png",
-                            mainText: "Time",
-                            subText:
-                                "${controller.generalDetail.value.openingTime} - ${controller.generalDetail.value.closingTime}"),
-                  )
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 10),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 4.0),
-                          child: Text(
-                            AppLocalizations.of(context)!.name_ucf,
-                            style: const TextStyle(
-                                color: MyTheme.black,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: SizedBox(
-                            // height: 45,
-                            child: TextFormField(
-                              controller: _nameController,
-                              autofocus: false,
-                              cursorColor: MyTheme.orange,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                    RegExp('[a-z A-Z]'))
-                              ],
-                              decoration:
-                                  InputDecorations.buildInputDecoration_1(
-                                      hint_text: "Your Name"),
-                              validator: Validator.validateName,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0, vertical: 10),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 4.0),
+                            child: Text(
+                              AppLocalizations.of(context)!.name_ucf,
+                              style: const TextStyle(
+                                  color: MyTheme.black,
+                                  fontWeight: FontWeight.w600),
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 4.0),
-                          child: Text(
-                            AppLocalizations.of(context)!.email_ucf,
-                            style: const TextStyle(
-                                color: MyTheme.black,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: SizedBox(
-                            // height: 45,
-                            child: TextFormField(
-                              controller: _emailController,
-                              autofocus: false,
-                              cursorColor: MyTheme.orange,
-                              decoration:
-                                  InputDecorations.buildInputDecoration_1(
-                                      hint_text: "Your Email"),
-                              validator: Validator.validateEmail,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 4.0),
-                          child: Text(
-                            AppLocalizations.of(context)!.subject_ucf,
-                            style: const TextStyle(
-                                color: MyTheme.black,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: SizedBox(
-                            // height: 45,
-                            child: TextFormField(
-                              controller: _subjectController,
-                              autofocus: false,
-                              cursorColor: MyTheme.orange,
-                              decoration:
-                                  InputDecorations.buildInputDecoration_1(
-                                      hint_text: "Subject"),
-                              validator: Validator.validateSubject,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 4.0),
-                          child: Text(
-                            AppLocalizations.of(context)!.message_ucf,
-                            style: const TextStyle(
-                                color: MyTheme.black,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: SizedBox(
-                            child: TextFormField(
-                              controller: _messageController,
-                              autofocus: false,
-                              maxLines: 5,
-                              cursorColor: MyTheme.orange,
-                              decoration: InputDecoration(
-                                  hintText: "Message",
-                                  filled: true,
-                                  fillColor: MyTheme.white,
-                                  hintStyle: const TextStyle(
-                                      fontSize: 12.0,
-                                      color: MyTheme.textfield_grey),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: MyTheme.textfield_grey,
-                                        width: 0.2),
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.circular(6.0),
-                                    ),
-                                  ),
-                                  focusedBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: MyTheme.accent_color,
-                                        width: 0.5),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(6.0),
-                                    ),
-                                  ),
-                                  errorBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: MyTheme.brick_red, width: 1),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(6.0),
-                                    ),
-                                  ),
-                                  focusedErrorBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: MyTheme.brick_red, width: 2),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(6.0),
-                                    ),
-                                  ),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 16.0, vertical: 10)),
-                              validator: Validator.validateMessage,
-                            ),
-                          ),
-                        ),
-                        InkWell(
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 40,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: MyTheme.accent_color),
-                            child: Center(
-                              child: CustomText(
-                                text: "Send Message",
-                                color: MyTheme.white,
-                                fontSize:
-                                    MediaQuery.of(context).size.width / 20,
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: SizedBox(
+                              // height: 45,
+                              child: TextFormField(
+                                controller: _nameController,
+                                autofocus: false,
+                                cursorColor: MyTheme.orange,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp('[a-z A-Z]'))
+                                ],
+                                decoration:
+                                    InputDecorations.buildInputDecoration_1(
+                                        hint_text: "Your Name"),
+                                validator: Validator.validateName,
                               ),
                             ),
                           ),
-                          onTap: () async {
-                            if (_formKey.currentState!.validate()) {
-                              sendMessage();
-                              clearData();
-                            }
-                          },
-                        ),
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 4.0),
+                            child: Text(
+                              AppLocalizations.of(context)!.email_ucf,
+                              style: const TextStyle(
+                                  color: MyTheme.black,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: SizedBox(
+                              // height: 45,
+                              child: TextFormField(
+                                controller: _emailController,
+                                autofocus: false,
+                                cursorColor: MyTheme.orange,
+                                decoration:
+                                    InputDecorations.buildInputDecoration_1(
+                                        hint_text: "Your Email"),
+                                validator: Validator.validateEmail,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 4.0),
+                            child: Text(
+                              AppLocalizations.of(context)!.subject_ucf,
+                              style: const TextStyle(
+                                  color: MyTheme.black,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: SizedBox(
+                              // height: 45,
+                              child: TextFormField(
+                                controller: _subjectController,
+                                autofocus: false,
+                                cursorColor: MyTheme.orange,
+                                decoration:
+                                    InputDecorations.buildInputDecoration_1(
+                                        hint_text: "Subject"),
+                                validator: Validator.validateSubject,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 4.0),
+                            child: Text(
+                              AppLocalizations.of(context)!.message_ucf,
+                              style: const TextStyle(
+                                  color: MyTheme.black,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: SizedBox(
+                              child: TextFormField(
+                                controller: _messageController,
+                                autofocus: false,
+                                maxLines: 5,
+                                cursorColor: MyTheme.orange,
+                                decoration: InputDecoration(
+                                    hintText: "Message",
+                                    filled: true,
+                                    fillColor: MyTheme.white,
+                                    hintStyle: const TextStyle(
+                                        fontSize: 12.0,
+                                        color: MyTheme.textfield_grey),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: MyTheme.textfield_grey,
+                                          width: 0.2),
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(6.0),
+                                      ),
+                                    ),
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: MyTheme.accent_color,
+                                          width: 0.5),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(6.0),
+                                      ),
+                                    ),
+                                    errorBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: MyTheme.brick_red, width: 1),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(6.0),
+                                      ),
+                                    ),
+                                    focusedErrorBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: MyTheme.brick_red, width: 2),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(6.0),
+                                      ),
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 16.0, vertical: 10)),
+                                validator: Validator.validateMessage,
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: MyTheme.accent_color),
+                              child: Center(
+                                child: CustomText(
+                                  text: "Send Message",
+                                  color: MyTheme.white,
+                                  fontSize:
+                                      MediaQuery.of(context).size.width / 20,
+                                ),
+                              ),
+                            ),
+                            onTap: () async {
+                              if (_formKey.currentState!.validate()) {
+                                sendMessage();
+                                clearData();
+                              }
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

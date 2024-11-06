@@ -97,8 +97,12 @@ class Items {
     itemName = json['item_name'];
     quantity = json['quantity'];
     unitPrice = json['unit_price'];
-    gstAmount = json['gst_amount'];
-    sgstAmount = json['sgst_amount'];
+    gstAmount = json['gst_amount'] is double
+        ? (json['gst_amount'] as num).toInt()
+        : json['gst_amount'];
+    sgstAmount = json['sgst_amount'] is double
+        ? (json['sgst_amount'] as num).toInt()
+        : json['sgst_amount'];
     price = json['price'];
     subtotal = json['subtotal'];
     discount = json['discount'];

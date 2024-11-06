@@ -44,6 +44,8 @@ class BikeDetailsController extends GetxController {
   RxString endDateTime = ''.obs;
 
   RxBool loadingState = false.obs;
+  RxBool calculatePriceLoadingState = false.obs;
+  RxBool isValidDateAndTime = false.obs;
 
   RxList<DropdownMenuItem<Stations>> dropdownItems =
       <DropdownMenuItem<Stations>>[].obs;
@@ -165,6 +167,7 @@ class BikeDetailsController extends GetxController {
   }
 
   Future<void> getCalculatePrice() async {
+    calculatePriceLoadingState.value = true;
     String type = getType(selectedIndex.value);
     String startDate = formatedDate(startDateTime.value);
     String endDate = formatedDate(endDateTime.value);
@@ -176,6 +179,7 @@ class BikeDetailsController extends GetxController {
     var decodeResponse = jsonDecode(response);
     total.value = decodeResponse["price"];
     kmLimit.value = decodeResponse["km_limit"];
+    calculatePriceLoadingState.value = false;
     update();
   }
 
@@ -316,6 +320,7 @@ class BikeDetailsController extends GetxController {
 
   void onTapDone(BuildContext context) {
     if (startDateTime.isNotEmpty && endDateTime.isNotEmpty) {
+
       DateTime start =
           DateFormat('MMM d, yyyy h:mm a').parse(startDateTime.value);
       DateTime end = DateFormat('MMM d, yyyy h:mm a').parse(endDateTime.value);
@@ -347,11 +352,13 @@ class BikeDetailsController extends GetxController {
       }
 
       if (isValidSelection(difference)) {
-        getCalculatePrice();
-        // calculatePrice();
+        isValidDateAndTime.value = true;
+
+        calculatePrice();
       } else {
         endDateTime.value = '';
         startDateTime.value = '';
+        isValidDateAndTime.value = false;
         endTimeCon.clear();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(
@@ -363,6 +370,7 @@ class BikeDetailsController extends GetxController {
         ));
       }
     }
+
   }
 
   void clearControllerData() {
@@ -372,6 +380,7 @@ class BikeDetailsController extends GetxController {
     startTimeCon.clear();
     endDateCon.clear();
     endTimeCon.clear();
+    isValidDateAndTime.value = false;
     kmLimit.value = 0;
     total.value = 0;
   }

@@ -36,7 +36,7 @@ class BikeDetailWidgets {
             },
           ),
           items: controller.bikeImageResponse.map((i) {
-            print("image ====== > ${"${AppConfig.BASE_URL}/storage/app/public/product/$i"}");
+            print("image ====== > ${"${AppConfig.RAW_BASE_URL}/storage/app/public/product/$i"}");
             return Container(
               child: Stack(
                 children: <Widget>[
@@ -47,7 +47,7 @@ class BikeDetailWidgets {
                       child: FadeInImage.assetNetwork(
                         placeholder: 'assets/placeholder_rectangle.png',
                         image:
-                            "${AppConfig.BASE_URL}/storage/app/public/product/$i",
+                            "${AppConfig.RAW_BASE_URL}/storage/app/public/product/$i",
                         imageErrorBuilder: (context, error, stackTrace) {
                           return Image.asset(
                             'assets/placeholder_rectangle.png',

@@ -125,6 +125,7 @@ class VerificationRepository {
 
   Future<kycResultResponse> getKycDetails() async {
     String getToken = await SharedPreference().getUserToken();
+    print("getToken ------- > ${getToken}");
     String url = ("${AppConfig.BASE_URL}/customer/user-kyc-status");
     final response = await ApiHelper.get(
       url: url,

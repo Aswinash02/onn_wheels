@@ -1,13 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
-
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:onnwheels/controllers/bike_details_controller.dart';
 import 'package:onnwheels/mytheme.dart';
 import 'package:onnwheels/views/bikedetails/components/text_widget.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class CustomTimePickerDialog extends StatefulWidget {
   final TimeOfDay initialTime;
@@ -293,6 +289,14 @@ class _BikeDetailDateTimeRangePickerState
     return Container(
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [
+              MyTheme.accent_color,
+              MyTheme.secondary_accent_color,
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: MyTheme.accent_color)),
       child: Column(
@@ -301,7 +305,7 @@ class _BikeDetailDateTimeRangePickerState
           const Text(
             "Pick Date & Time",
             style: TextStyle(
-              color: MyTheme.black,
+              color: MyTheme.white,
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),
@@ -315,7 +319,7 @@ class _BikeDetailDateTimeRangePickerState
                 ? CustomText(
                     text:
                         "${bikeDetailsController.startDateTime} - ${bikeDetailsController.endDateTime}",
-                    color: Colors.black,
+                    color: Colors.white,
                   )
                 : SizedBox(),
           ),
@@ -325,7 +329,7 @@ class _BikeDetailDateTimeRangePickerState
           const Text(
             "Pickup",
             style: TextStyle(
-              color: MyTheme.black,
+              color: MyTheme.white,
               fontSize: 12,
               fontWeight: FontWeight.w600,
             ),
@@ -357,7 +361,7 @@ class _BikeDetailDateTimeRangePickerState
                       hintStyle:
                           TextStyle(color: MyTheme.grey_153, fontSize: 14),
                       contentPadding:
-                          EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                          EdgeInsets.symmetric(vertical: 1, horizontal: 4),
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
@@ -395,7 +399,7 @@ class _BikeDetailDateTimeRangePickerState
                       hintStyle:
                           TextStyle(color: MyTheme.grey_153, fontSize: 14),
                       contentPadding:
-                          EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                          EdgeInsets.symmetric(vertical: 1, horizontal: 4),
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
@@ -423,7 +427,7 @@ class _BikeDetailDateTimeRangePickerState
           const Text(
             "Drop",
             style: TextStyle(
-              color: MyTheme.black,
+              color: MyTheme.white,
               fontSize: 12,
               fontWeight: FontWeight.w600,
             ),
@@ -455,7 +459,7 @@ class _BikeDetailDateTimeRangePickerState
                       hintStyle:
                           TextStyle(color: MyTheme.grey_153, fontSize: 14),
                       contentPadding:
-                          EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                          EdgeInsets.symmetric(vertical: 1, horizontal: 4),
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
@@ -496,7 +500,7 @@ class _BikeDetailDateTimeRangePickerState
                       hintStyle:
                           TextStyle(color: MyTheme.grey_153, fontSize: 14),
                       contentPadding:
-                          EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                          EdgeInsets.symmetric(vertical: 1, horizontal: 4),
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
@@ -515,6 +519,54 @@ class _BikeDetailDateTimeRangePickerState
               ),
             ],
           ),
+          // SizedBox(height: 20),
+          // InkWell(
+          //   child: Obx(
+          //     () => Container(
+          //       // width: 248,
+          //       height: 37,
+          //       decoration: BoxDecoration(
+          //         color: MyTheme.accent_color,
+          //         borderRadius: BorderRadius.circular(12),
+          //       ),
+          //       child: Center(
+          //         child: bikeDetailsController.calculatePriceLoadingState.value
+          //             ? SizedBox(
+          //                 height: 18,
+          //                 width: 18,
+          //                 child: CircularProgressIndicator(
+          //                   color: Colors.white,
+          //                   strokeWidth: 2,
+          //                 ),
+          //               )
+          //             : Text(
+          //                 "Confirm",
+          //                 style: TextStyle(
+          //                     color: MyTheme.white,
+          //                     fontWeight: FontWeight.w600),
+          //               ),
+          //       ),
+          //     ),
+          //   ),
+          //   onTap: bikeDetailsController.calculatePriceLoadingState.value
+          //       ? null
+          //       : () {
+          //           if (bikeDetailsController.startDateTime == '' &&
+          //               bikeDetailsController.endDateTime == '') {
+          //             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          //               content: Text('Please select Valid Date & Time'),
+          //               backgroundColor: MyTheme.accent_color,
+          //               elevation: 10,
+          //               behavior: SnackBarBehavior.floating,
+          //               margin: EdgeInsets.all(5),
+          //             ));
+          //             return;
+          //           }
+          //           if (bikeDetailsController.isValidDateAndTime.value) {
+          //             bikeDetailsController.getCalculatePrice();
+          //           }
+          //         },
+          // )
         ],
       ),
     );
